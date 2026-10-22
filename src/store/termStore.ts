@@ -112,10 +112,12 @@ import {
   loadSettings,
   loadSoundEnabled,
   normalizeInputLatencyThreshold,
+  sanitizeBrowserShortcuts,
   sanitizeComposerInlineChips,
   saveSettings,
   visualOf,
   type AgentDefaultConfig,
+  type BrowserShortcut,
   type ComposerChipId,
   type ImagePasteMode,
   type MemoryPrefs,
@@ -1143,6 +1145,8 @@ interface TermStore {
   composerInlineChips: ComposerChipId[];
   /** Revision of the default inline set the saved list has been migrated to. */
   composerInlineChipsRevision: number;
+  /** Quick-access shortcuts under the browser address bar, in display order. */
+  browserShortcuts: BrowserShortcut[];
 
   /** Saved agent launch configurations shown in the new-session menu, in menu order. */
   agentPresets: AgentPreset[];
@@ -1540,6 +1544,8 @@ interface TermStore {
   toggleInfoSection: (id: string) => void;
   /** Replaces the ordered list of composer chips shown inline; chips left out are off. */
   setComposerInlineChips: (ids: ComposerChipId[]) => void;
+  /** Replaces the browser quick-access shortcuts; an empty list hides every shortcut. */
+  setBrowserShortcuts: (list: BrowserShortcut[]) => void;
   /** Turns the backend's automatic usage polling on or off. */
   setUsageAutoRefresh: (v: boolean) => void;
   /** Sets how often the backend refreshes the usage snapshot, in seconds. */
@@ -1756,6 +1762,7 @@ function persistAndApplyVisual(getState: () => TermStore) {
     infoCollapsed: s.infoCollapsed,
     composerInlineChips: s.composerInlineChips,
     composerInlineChipsRevision: s.composerInlineChipsRevision,
+    browserShortcuts: s.browserShortcuts,
   };
   saveSettings(ps);
   applyVisual(visualOf(ps));
@@ -4740,6 +4747,10 @@ export const useTermStore = create<TermStore>((set, get) => ({
   },
   setComposerInlineChips: (ids) => {
     set({ composerInlineChips: sanitizeComposerInlineChips(ids) });
+    persistAndApplyVisual(get);
+  },
+  setBrowserShortcuts: (list) => {
+    set({ browserShortcuts: sanitizeBrowserShortcuts(list) });
     persistAndApplyVisual(get);
   },
   setUsageAutoRefresh: (v) => {

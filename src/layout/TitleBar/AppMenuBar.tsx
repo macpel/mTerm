@@ -21,7 +21,6 @@ import { focusTerminal } from "../../terminal/registry";
 import { runMenuAction } from "./appMenuActions";
 
 const WEBSITE_URL = "https://velaterm.com";
-const FEEDBACK_URL = "https://velaterm.com/feedback";
 
 interface MenuItemDef {
   label: string;
@@ -103,15 +102,6 @@ export function AppMenuBar() {
           {
             label: t("menubar.visitWebsite"),
             run: () => void platform.opener.openExternal(WEBSITE_URL),
-          },
-          {
-            label: `${t("menubar.sendFeedback")}…`,
-            run: () => void platform.opener.openExternal(FEEDBACK_URL),
-          },
-          "separator",
-          {
-            label: `❤️ ${t("titlebar.share")}…`,
-            run: () => runMenuAction("share"),
           },
         ],
       },

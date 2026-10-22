@@ -448,7 +448,6 @@ const ru: typeof en = {
   "titlebar.themeDark": "Тёмная", // Dark
   "titlebar.themeClassicDark": "Классическая тёмная", // Classic Dark
   "titlebar.themeLight": "Светлая", // Light
-  "titlebar.gameCenter": "Игровой центр",
   "titlebar.browser": "Встроенный браузер", // Built-in Browser
   "titlebar.remoteAccess": "Удалённый доступ (браузер)", // Remote Access (Browser)
   "titlebar.connectRemote": "Подключиться к удалённому серверу", // Connect to Remote Server
@@ -461,15 +460,12 @@ const ru: typeof en = {
   "titlebar.clientsTitle": "Подключённые клиенты", // Attached clients
   "titlebar.clientUnnamed": "Клиент без имени", // Unnamed client
   "titlebar.clientSince": (time: string) => `с ${time}`, // since {time}
-  "titlebar.feedback": "Обратная связь", // Feedback
-  "titlebar.share": "Поделиться", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "Файл", // File
   "menubar.terminal": "Терминал", // Terminal
   "menubar.help": "Справка", // Help
   "menubar.newTerminal": "Новый терминал", // New Terminal
   "menubar.visitWebsite": "Открыть сайт", // Visit Website
-  "menubar.sendFeedback": "Отправить отзыв", // Send Feedback
   "menubar.clearBadges": "Очистить значки уведомлений", // Clear Notification Badges
   "share.title": "Поделиться VelaTerm", // Share VelaTerm
   "share.subtitle":
@@ -1406,6 +1402,15 @@ const ru: typeof en = {
   "browser.openExternal": "Открыть в системном браузере", // Open in system browser
   "browser.addressPlaceholder": "Введите URL или поисковый запрос", // Enter URL or search terms
   "browser.quickAccess": "Быстрый доступ", // Quick access
+  "browser.shortcutAdd": "Добавить ярлык", // Add shortcut
+  "browser.shortcutAddCurrent": "Добавить текущую страницу", // Add current page
+  "browser.shortcutRename": "Переименовать ярлык", // Rename shortcut
+  "browser.shortcutEdit": "Изменить ярлык", // Edit shortcut
+  "browser.shortcutDelete": "Удалить ярлык", // Delete shortcut
+  "browser.shortcutReset": "Восстановить ярлыки по умолчанию", // Reset to default shortcuts
+  "browser.shortcutName": "Название", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "Введите корректный адрес http:// или https://.", // Enter a valid http:// or https:// address.
   "browser.loading": "Загрузка…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "Закрыть VelaTerm?", // Quit VelaTerm?

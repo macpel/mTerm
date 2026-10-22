@@ -339,7 +339,11 @@ export function BrowserView({ tab, hidden }: { tab: BrowserTab; hidden: boolean 
               </ToolBtn>
             )}
           </div>
-          <BrowserQuickAccess label={t("browser.quickAccess")} onNavigate={navigateTo} />
+          <BrowserQuickAccess
+            label={t("browser.quickAccess")}
+            onNavigate={navigateTo}
+            current={{ url: tab.url, title: tab.title }}
+          />
         </>
       )}
       {/* Placeholder rectangle for the overlaid native child WebView; content is outside the DOM. */}

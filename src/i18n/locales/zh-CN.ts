@@ -437,7 +437,6 @@ const zhCN: typeof en = {
   "titlebar.themeDark": "暗色",
   "titlebar.themeClassicDark": "经典暗色",
   "titlebar.themeLight": "亮色",
-  "titlebar.gameCenter": "游戏中心",
   "titlebar.browser": "内置浏览器",
   "titlebar.remoteAccess": "远程访问（浏览器）",
   "titlebar.connectRemote": "连接远程服务",
@@ -450,15 +449,12 @@ const zhCN: typeof en = {
   "titlebar.clientsTitle": "已连接的客户端", // Attached clients
   "titlebar.clientUnnamed": "未命名客户端", // Unnamed client
   "titlebar.clientSince": (time: string) => `${time} 起`, // since {time}
-  "titlebar.feedback": "反馈", // Feedback
-  "titlebar.share": "分享", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "文件", // File
   "menubar.terminal": "终端", // Terminal
   "menubar.help": "帮助", // Help
   "menubar.newTerminal": "新建终端", // New Terminal
   "menubar.visitWebsite": "访问官网", // Visit Website
-  "menubar.sendFeedback": "发送反馈", // Send Feedback
   "menubar.clearBadges": "清除通知标识", // Clear Notification Badges
   "share.title": "分享 VelaTerm", // Share VelaTerm
   "share.subtitle":
@@ -1361,6 +1357,15 @@ const zhCN: typeof en = {
   "browser.openExternal": "在系统浏览器中打开",
   "browser.addressPlaceholder": "输入网址或搜索词",
   "browser.quickAccess": "快速访问",
+  "browser.shortcutAdd": "添加快捷方式",
+  "browser.shortcutAddCurrent": "添加当前页面",
+  "browser.shortcutRename": "重命名快捷方式",
+  "browser.shortcutEdit": "编辑快捷方式",
+  "browser.shortcutDelete": "删除快捷方式",
+  "browser.shortcutReset": "恢复默认快捷方式",
+  "browser.shortcutName": "名称",
+  "browser.shortcutUrl": "网址",
+  "browser.shortcutInvalidUrl": "请输入有效的 http:// 或 https:// 地址。",
   "browser.loading": "加载中…",
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "退出 VelaTerm？", // Quit VelaTerm?

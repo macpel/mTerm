@@ -438,7 +438,6 @@ const de: typeof en = {
   "titlebar.themeDark": "Dunkel", // Dark
   "titlebar.themeClassicDark": "Dunkel (klassisch)", // Classic Dark
   "titlebar.themeLight": "Hell", // Light
-  "titlebar.gameCenter": "Spielecenter",
   "titlebar.browser": "Integrierter Browser", // Built-in Browser
   "titlebar.remoteAccess": "Fernzugriff (Browser)", // Remote Access (Browser)
   "titlebar.connectRemote": "Mit Remote-Server verbinden", // Connect to Remote Server
@@ -451,15 +450,12 @@ const de: typeof en = {
   "titlebar.clientsTitle": "Verbundene Clients", // Attached clients
   "titlebar.clientUnnamed": "Unbenannter Client", // Unnamed client
   "titlebar.clientSince": (time: string) => `seit ${time}`, // since {time}
-  "titlebar.feedback": "Feedback", // Feedback
-  "titlebar.share": "Teilen", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "Datei", // File
   "menubar.terminal": "Terminal",
   "menubar.help": "Hilfe", // Help
   "menubar.newTerminal": "Neues Terminal", // New Terminal
   "menubar.visitWebsite": "Website besuchen", // Visit Website
-  "menubar.sendFeedback": "Feedback senden", // Send Feedback
   "menubar.clearBadges": "Benachrichtigungsmarkierungen löschen", // Clear Notification Badges
   "share.title": "VelaTerm teilen", // Share VelaTerm
   "share.subtitle":
@@ -1394,6 +1390,15 @@ const de: typeof en = {
   "browser.openExternal": "Im System-Browser öffnen", // Open in system browser
   "browser.addressPlaceholder": "URL oder Suchbegriffe eingeben", // Enter URL or search terms
   "browser.quickAccess": "Schnellzugriff", // Quick access
+  "browser.shortcutAdd": "Verknüpfung hinzufügen", // Add shortcut
+  "browser.shortcutAddCurrent": "Aktuelle Seite hinzufügen", // Add current page
+  "browser.shortcutRename": "Verknüpfung umbenennen", // Rename shortcut
+  "browser.shortcutEdit": "Verknüpfung bearbeiten", // Edit shortcut
+  "browser.shortcutDelete": "Verknüpfung löschen", // Delete shortcut
+  "browser.shortcutReset": "Standardverknüpfungen wiederherstellen", // Reset to default shortcuts
+  "browser.shortcutName": "Name", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "Geben Sie eine gültige http://- oder https://-Adresse ein.", // Enter a valid http:// or https:// address.
   "browser.loading": "Lädt…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "VelaTerm beenden?", // Quit VelaTerm?

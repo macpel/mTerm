@@ -438,7 +438,6 @@ const zhTW: typeof en = {
   "titlebar.themeDark": "深色", // Dark
   "titlebar.themeClassicDark": "經典深色", // Classic Dark
   "titlebar.themeLight": "淺色", // Light
-  "titlebar.gameCenter": "遊戲中心",
   "titlebar.browser": "內建瀏覽器", // Built-in Browser
   "titlebar.remoteAccess": "遠端存取（瀏覽器）", // Remote Access (Browser)
   "titlebar.connectRemote": "連線到遠端服務", // Connect to Remote Server
@@ -451,15 +450,12 @@ const zhTW: typeof en = {
   "titlebar.clientsTitle": "已連線的用戶端", // Attached clients
   "titlebar.clientUnnamed": "未命名用戶端", // Unnamed client
   "titlebar.clientSince": (time: string) => `${time} 起`, // since {time}
-  "titlebar.feedback": "意見回饋", // Feedback
-  "titlebar.share": "分享", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "檔案", // File
   "menubar.terminal": "終端機", // Terminal
   "menubar.help": "說明", // Help
   "menubar.newTerminal": "新增終端機", // New Terminal
   "menubar.visitWebsite": "造訪官網", // Visit Website
-  "menubar.sendFeedback": "傳送意見回饋", // Send Feedback
   "menubar.clearBadges": "清除通知標識", // Clear Notification Badges
   "share.title": "分享 VelaTerm", // Share VelaTerm
   "share.subtitle":
@@ -1362,6 +1358,15 @@ const zhTW: typeof en = {
   "browser.openExternal": "以系統瀏覽器開啟", // Open in system browser
   "browser.addressPlaceholder": "輸入網址或搜尋字詞", // Enter URL or search terms
   "browser.quickAccess": "快速存取", // Quick access
+  "browser.shortcutAdd": "新增捷徑", // Add shortcut
+  "browser.shortcutAddCurrent": "新增目前頁面", // Add current page
+  "browser.shortcutRename": "重新命名捷徑", // Rename shortcut
+  "browser.shortcutEdit": "編輯捷徑", // Edit shortcut
+  "browser.shortcutDelete": "刪除捷徑", // Delete shortcut
+  "browser.shortcutReset": "還原預設捷徑", // Reset to default shortcuts
+  "browser.shortcutName": "名稱", // Name
+  "browser.shortcutUrl": "網址", // URL
+  "browser.shortcutInvalidUrl": "請輸入有效的 http:// 或 https:// 位址。", // Enter a valid http:// or https:// address.
   "browser.loading": "載入中…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "結束 VelaTerm？", // Quit VelaTerm?

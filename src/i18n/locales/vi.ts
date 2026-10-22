@@ -438,7 +438,6 @@ const vi: typeof en = {
   "titlebar.themeDark": "Tối",
   "titlebar.themeClassicDark": "Tối cổ điển",
   "titlebar.themeLight": "Sáng",
-  "titlebar.gameCenter": "Trung tâm trò chơi",
   "titlebar.browser": "Trình duyệt tích hợp",
   "titlebar.remoteAccess": "Truy cập từ xa (Trình duyệt)",
   "titlebar.connectRemote": "Kết nối máy chủ từ xa",
@@ -451,15 +450,12 @@ const vi: typeof en = {
   "titlebar.clientsTitle": "Máy khách đang kết nối", // Attached clients
   "titlebar.clientUnnamed": "Máy khách chưa đặt tên", // Unnamed client
   "titlebar.clientSince": (time: string) => `từ ${time}`, // since {time}
-  "titlebar.feedback": "Phản hồi", // Feedback
-  "titlebar.share": "Chia sẻ",
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "Tệp", // File
   "menubar.terminal": "Terminal",
   "menubar.help": "Trợ giúp", // Help
   "menubar.newTerminal": "Terminal mới", // New Terminal
   "menubar.visitWebsite": "Truy cập trang web", // Visit Website
-  "menubar.sendFeedback": "Gửi phản hồi", // Send Feedback
   "menubar.clearBadges": "Xóa huy hiệu thông báo", // Clear Notification Badges
   "share.title": "Chia sẻ VelaTerm",
   "share.subtitle":
@@ -1364,6 +1360,15 @@ const vi: typeof en = {
   "browser.openExternal": "Mở trong trình duyệt hệ thống",
   "browser.addressPlaceholder": "Nhập URL hoặc từ khóa tìm kiếm",
   "browser.quickAccess": "Truy cập nhanh",
+  "browser.shortcutAdd": "Thêm lối tắt",
+  "browser.shortcutAddCurrent": "Thêm trang hiện tại",
+  "browser.shortcutRename": "Đổi tên lối tắt",
+  "browser.shortcutEdit": "Sửa lối tắt",
+  "browser.shortcutDelete": "Xóa lối tắt",
+  "browser.shortcutReset": "Khôi phục lối tắt mặc định",
+  "browser.shortcutName": "Tên",
+  "browser.shortcutUrl": "URL",
+  "browser.shortcutInvalidUrl": "Nhập địa chỉ http:// hoặc https:// hợp lệ.",
   "browser.loading": "Đang tải…",
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "Thoát VelaTerm?", // Quit VelaTerm?

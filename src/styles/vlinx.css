@@ -167,11 +167,10 @@ button { font-family: inherit; color: inherit; background: none; border: none; c
 .tb-pair { display: flex; gap: 0; }
 .tb-btn:hover { background: var(--bg-hover); color: var(--tb-icon-hover, var(--text)); }
 .tb-btn.on { color: var(--accent); }
-/* While remote access runs, light the globe with the same accent glow as the panel's running indicator.
-   A linked account lights the account icon the same way. */
-.tb-btn.remote-on, .tb-btn.account-on { color: var(--accent); }
-.tb-btn.remote-on:hover, .tb-btn.account-on:hover { color: var(--accent); background: var(--bg-hover); }
-.tb-btn.remote-on svg, .tb-btn.account-on svg { filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent) 60%, transparent)); }
+/* While remote access runs, light the globe with the same accent glow as the panel's running indicator. */
+.tb-btn.remote-on { color: var(--accent); }
+.tb-btn.remote-on:hover { color: var(--accent); background: var(--bg-hover); }
+.tb-btn.remote-on svg { filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent) 60%, transparent)); }
 .tb-seg { display: flex; border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
 .tb-seg button { padding: 0 9px; height: 24px; color: var(--text-dim); }
 .tb-seg button.on { background: var(--accent-soft); color: var(--accent); }

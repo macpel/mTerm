@@ -438,7 +438,6 @@ const ko: typeof en = {
   "titlebar.themeDark": "다크", // Dark
   "titlebar.themeClassicDark": "클래식 다크", // Classic Dark
   "titlebar.themeLight": "라이트", // Light
-  "titlebar.gameCenter": "게임 센터",
   "titlebar.browser": "내장 브라우저", // Built-in Browser
   "titlebar.remoteAccess": "원격 접속 (브라우저)", // Remote Access (Browser)
   "titlebar.connectRemote": "원격 서버에 연결", // Connect to Remote Server
@@ -451,15 +450,12 @@ const ko: typeof en = {
   "titlebar.clientsTitle": "연결된 클라이언트", // Attached clients
   "titlebar.clientUnnamed": "이름 없는 클라이언트", // Unnamed client
   "titlebar.clientSince": (time: string) => `${time}부터`, // since {time}
-  "titlebar.feedback": "피드백", // Feedback
-  "titlebar.share": "공유", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "파일", // File
   "menubar.terminal": "터미널", // Terminal
   "menubar.help": "도움말", // Help
   "menubar.newTerminal": "새 터미널", // New Terminal
   "menubar.visitWebsite": "웹사이트 방문", // Visit Website
-  "menubar.sendFeedback": "피드백 보내기", // Send Feedback
   "menubar.clearBadges": "알림 배지 지우기", // Clear Notification Badges
   "share.title": "VelaTerm 공유", // Share VelaTerm
   "share.subtitle":
@@ -1379,6 +1375,15 @@ const ko: typeof en = {
   "browser.openExternal": "시스템 브라우저에서 열기", // Open in system browser
   "browser.addressPlaceholder": "URL 또는 검색어 입력", // Enter URL or search terms
   "browser.quickAccess": "빠른 실행", // Quick access
+  "browser.shortcutAdd": "바로 가기 추가", // Add shortcut
+  "browser.shortcutAddCurrent": "현재 페이지 추가", // Add current page
+  "browser.shortcutRename": "바로 가기 이름 바꾸기", // Rename shortcut
+  "browser.shortcutEdit": "바로 가기 편집", // Edit shortcut
+  "browser.shortcutDelete": "바로 가기 삭제", // Delete shortcut
+  "browser.shortcutReset": "기본 바로 가기로 재설정", // Reset to default shortcuts
+  "browser.shortcutName": "이름", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "올바른 http:// 또는 https:// 주소를 입력하세요.", // Enter a valid http:// or https:// address.
   "browser.loading": "로드 중…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "VelaTerm을 종료할까요?", // Quit VelaTerm?

@@ -756,19 +756,11 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .item(&split_right_item)
                     .item(&split_down_item)
                     .build()?;
-                // Omit redundant View/Window menus; title-bar controls remain. Help items open the website,
-                // feedback page, or emit the shared frontend share action.
+                // Omit redundant View/Window menus; title-bar controls remain. Help opens the website.
                 let visit_website_item =
                     MenuItemBuilder::with_id("visit-website", "Visit Website").build(app)?;
-                let send_feedback_item =
-                    MenuItemBuilder::with_id("send-feedback", "Send Feedback…").build(app)?;
-                let share_item =
-                    MenuItemBuilder::with_id("share", "❤️ Share us…").build(app)?;
                 let help_menu = SubmenuBuilder::new(app, "Help")
                     .item(&visit_website_item)
-                    .item(&send_feedback_item)
-                    .separator()
-                    .item(&share_item)
                     .build()?;
                 let menu = MenuBuilder::new(app)
                     .items(&[&app_menu, &edit_menu, &terminal_menu, &help_menu])
@@ -782,7 +774,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                         // Forward custom application and terminal commands to the frontend.
                         "settings"
                         | "check-update"
-                        | "share"
                         | "clear-badges"
                         | "split-right"
                         | "split-down" => {
@@ -858,11 +849,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                             let _ = app_handle
                                 .opener()
                                 .open_url("https://velaterm.com", None::<&str>);
-                        }
-                        "send-feedback" => {
-                            let _ = app_handle
-                                .opener()
-                                .open_url("https://velaterm.com/feedback", None::<&str>);
                         }
                         _ => {}
                     }

@@ -438,7 +438,6 @@ const ja: typeof en = {
   "titlebar.themeDark": "ダーク", // Dark
   "titlebar.themeClassicDark": "クラシックダーク", // Classic Dark
   "titlebar.themeLight": "ライト", // Light
-  "titlebar.gameCenter": "ゲームセンター",
   "titlebar.browser": "内蔵ブラウザ", // Built-in Browser
   "titlebar.remoteAccess": "リモートアクセス（ブラウザ）", // Remote Access (Browser)
   "titlebar.connectRemote": "リモートサーバーに接続", // Connect to Remote Server
@@ -451,15 +450,12 @@ const ja: typeof en = {
   "titlebar.clientsTitle": "接続中のクライアント", // Attached clients
   "titlebar.clientUnnamed": "名前のないクライアント", // Unnamed client
   "titlebar.clientSince": (time: string) => `${time} から`, // since {time}
-  "titlebar.feedback": "フィードバック", // Feedback
-  "titlebar.share": "共有", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "ファイル", // File
   "menubar.terminal": "ターミナル", // Terminal
   "menubar.help": "ヘルプ", // Help
   "menubar.newTerminal": "新しいターミナル", // New Terminal
   "menubar.visitWebsite": "ウェブサイトを開く", // Visit Website
-  "menubar.sendFeedback": "フィードバックを送信", // Send Feedback
   "menubar.clearBadges": "通知バッジを消去", // Clear Notification Badges
   "share.title": "VelaTerm を共有", // Share VelaTerm
   "share.subtitle":
@@ -1387,6 +1383,15 @@ const ja: typeof en = {
   "browser.openExternal": "システムのブラウザで開く", // Open in system browser
   "browser.addressPlaceholder": "URL または検索語を入力", // Enter URL or search terms
   "browser.quickAccess": "クイックアクセス", // Quick access
+  "browser.shortcutAdd": "ショートカットを追加", // Add shortcut
+  "browser.shortcutAddCurrent": "現在のページを追加", // Add current page
+  "browser.shortcutRename": "ショートカットの名前を変更", // Rename shortcut
+  "browser.shortcutEdit": "ショートカットを編集", // Edit shortcut
+  "browser.shortcutDelete": "ショートカットを削除", // Delete shortcut
+  "browser.shortcutReset": "既定のショートカットに戻す", // Reset to default shortcuts
+  "browser.shortcutName": "名前", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "有効な http:// または https:// のアドレスを入力してください。", // Enter a valid http:// or https:// address.
   "browser.loading": "読み込み中…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
   "quit.title": "VelaTerm を終了しますか？", // Quit VelaTerm?

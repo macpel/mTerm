@@ -8,7 +8,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ContextMenu, type MenuItem } from "../../components/ContextMenu";
 import Icons from "../../components/Icons";
-import { GameCenterLink } from "../../components/GameCenterLink";
 import { StatusIndicator } from "../../components/StatusIndicator";
 import { useT } from "../../i18n";
 import { DOC_EXPORT_PDF_EVENT } from "../../hooks/useKeyboardShortcuts";
@@ -554,7 +553,6 @@ export function TabBar() {
             <Icons.compass size={14} />
           </button>
         )}
-        <GameCenterLink />
       </div>}
       {tip && (
         // Early tooltip uses fixed positioning, ignores pointer events, and uses theme raised-panel color.

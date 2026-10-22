@@ -36,7 +36,6 @@ const r = React.createElement;
 const projectMarker = r("rect", { key: 4, x: 10, y: 9, width: 5, height: 5, rx: 1, stroke: "var(--blue)" });
 
 const Icons: Record<string, IconComponent> = {
-  gamepad: I([r("path", { key: 1, d: "M5 4.5h6a2.5 2.5 0 012.4 1.9l1 4.4a1.5 1.5 0 01-2.5 1.4L9.8 10H6.2l-2.1 2.2a1.5 1.5 0 01-2.5-1.4l1-4.4A2.5 2.5 0 015 4.5z" }), r("path", { key: 2, d: "M5 6v3M3.5 7.5h3M10 7h.01M12 8.5h.01" })]),
   chevR: I(r("path", { key: 1, d: "M6 4l4 4-4 4" })),
   chevD: I(r("path", { key: 1, d: "M4 6l4 4 4-4" })),
   folder: I(r("path", { key: 1, d: "M2 5.5A1.5 1.5 0 013.5 4h2.8l1.2 1.4h5A1.5 1.5 0 0114 6.9V11A1.5 1.5 0 0112.5 12.5h-9A1.5 1.5 0 012 11z" })),
@@ -70,8 +69,6 @@ const Icons: Record<string, IconComponent> = {
   sliders: I([r("path", { key: 1, d: "M3 5h7M3 11h3" }), r("circle", { key: 2, cx: 12, cy: 5, r: 1.6 }), r("circle", { key: 3, cx: 8, cy: 11, r: 1.6 })]),
   gear: I([r("circle", { key: 1, cx: 8, cy: 8, r: 4.3 }), r("circle", { key: 2, cx: 8, cy: 8, r: 1.7 }), r("path", { key: 3, d: "M8 1.6v2.1M8 12.3v2.1M1.6 8h2.1M12.3 8h2.1M3.47 3.47L5 5M11 11l1.53 1.53M12.53 3.47L11 5M5 11l-1.53 1.53" })]),
   share: I([r("circle", { key: 1, cx: 11.5, cy: 4, r: 1.9 }), r("circle", { key: 2, cx: 4.5, cy: 8, r: 1.9 }), r("circle", { key: 3, cx: 11.5, cy: 12, r: 1.9 }), r("path", { key: 4, d: "M6.15 7.05l3.7-2.1M6.15 8.95l3.7 2.1" })]),
-  // Feedback: a speech bubble with an exclamation mark, distinct from the plain information icon.
-  feedback: I([r("path", { key: 1, d: "M4.2 2.5h7.6a1.7 1.7 0 0 1 1.7 1.7v4.6a1.7 1.7 0 0 1-1.7 1.7H7.6l-3 2.6v-2.6h-.4a1.7 1.7 0 0 1-1.7-1.7V4.2a1.7 1.7 0 0 1 1.7-1.7z" }), r("path", { key: 2, d: "M8 4.7v2.4" }), r("path", { key: 3, d: "M8 8.8h.01" })]),
   // Account entry: a person bust, the standard account glyph, and distinct from the remote-connect arrow.
   account: I([r("circle", { key: 1, cx: 8, cy: 5.4, r: 2.5 }), r("path", { key: 2, d: "M3.6 13.3v-.4a4.4 4.4 0 0 1 4.4-4.4 4.4 4.4 0 0 1 4.4 4.4v.4" })]),
   panel: I([r("rect", { key: 1, x: 2.5, y: 3, width: 11, height: 10, rx: 1.5 }), r("path", { key: 2, d: "M10 3v10" })]),
