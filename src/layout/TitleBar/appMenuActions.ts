@@ -5,7 +5,6 @@
 //! handlers in one place stops the two paths from drifting apart.
 
 import type { MenuAction } from "../../ipc/events";
-import { checkForUpdates } from "../../ipc/updater";
 import { useTermStore } from "../../store/termStore";
 
 /** Run one application-menu command, whichever menu raised it. */
@@ -14,9 +13,6 @@ export function runMenuAction(action: MenuAction): void {
   switch (action) {
     case "settings":
       s.setSettingsOpen(true);
-      break;
-    case "check-update":
-      void checkForUpdates({ manual: true });
       break;
     case "share":
       s.setShareOpen(true);

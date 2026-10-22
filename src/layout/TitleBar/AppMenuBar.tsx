@@ -64,10 +64,6 @@ export function AppMenuBar() {
             label: `${t("settings.title")}…`,
             run: () => runMenuAction("settings"),
           },
-          {
-            label: `${t("updater.title")}…`,
-            run: () => runMenuAction("check-update"),
-          },
           "separator",
           {
             label: t("menubar.clearBadges"),

@@ -695,8 +695,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .version(Some(app.package_info().version.to_string()))
                     .copyright(Some("A product by VLINX"))
                     .build();
-                let check_update_item =
-                    MenuItemBuilder::with_id("check-update", "Check for Updates…").build(app)?;
                 let settings_item = MenuItemBuilder::with_id("settings", "Settings…")
                     .accelerator("CmdOrCtrl+,")
                     .build(app)?;
@@ -722,7 +720,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .build(app)?;
                 let app_menu = SubmenuBuilder::new(app, &app_name)
                     .about(Some(about_meta))
-                    .item(&check_update_item)
                     .separator()
                     .item(&settings_item)
                     .item(&clear_badges_item)
@@ -778,7 +775,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     match id {
                         // Forward custom application and terminal commands to the frontend.
                         "settings"
-                        | "check-update"
                         | "clear-badges"
                         | "split-right"
                         | "split-down" => {

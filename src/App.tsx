@@ -40,7 +40,6 @@ import { useSharedSessionNavigation } from "./sharing/useSharedSessionNavigation
 import { useHistorySessionNavigation } from "./layout/CenterPane/session/useHistorySessionNavigation";
 import { ExportProgressDialog } from "./ExportProgressDialog";
 import { wsClient } from "./ipc/wsClient";
-import { startUpdateSchedule } from "./ipc/updater";
 import { env, platform } from "./platform";
 import { ConnectionBanner } from "./remote/ConnectionBanner";
 import { CloneProjectModal } from "./remote/CloneProjectModal";
@@ -194,9 +193,6 @@ function App() {
     // before dispatching keydown. The handlers are shared with the Alt-triggered menu bar drawn on
     // Windows and Linux, so both menus raise exactly the same commands.
     const unlistenMenu = onMenuAction((action) => runMenuAction(action));
-    // Silently check for desktop updates shortly after startup and periodically thereafter. New versions
-    // light the status bar; no-update and error results remain quiet.
-    const stopUpdateSchedule = startUpdateSchedule();
     // Mirror mode: follow and publish the shared layout so a remote browser renders this same arrangement.
     // Phones opt out inside startMirrorSync; when mirror mode is off it only listens for the switch.
     const stopMirrorSync = startMirrorSync();
@@ -223,7 +219,6 @@ function App() {
       void unlistenPresets.then((fn) => fn());
       void unlistenSessionState.then((fn) => fn());
       void unlistenMenu.then((fn) => fn());
-      stopUpdateSchedule();
       stopMirrorSync();
       stopSettingsWatch();
       stopUsageSync();
