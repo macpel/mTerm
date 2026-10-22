@@ -1041,13 +1041,31 @@ const ko: typeof en = {
   "board.priority.high": "높음", // High
   "board.priority.urgent": "긴급", // Urgent
   "board.search": "카드 검색", // Search cards
-  "board.review": "리뷰 열", // Review column
-  "board.addCard": "카드", // Card
   "board.empty": "아직 카드가 없습니다. 카드를 추가하거나 vboard로 Claude에게 작업 계획을 맡기세요.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
   "board.byYou": "나", // You
   "board.takenBy": (name: string) => `${name} 담당`, // Taken by {}
   "board.cardMenu": "카드 작업", // Card actions
-  "board.newCard": "새 카드", // New card
+  "board.fieldColour": "색상", // Colour
+  "board.colour.none": "색상 없음", // No colour
+  "board.colour.red": "빨강", // Red
+  "board.colour.orange": "주황", // Orange
+  "board.colour.yellow": "노랑", // Yellow
+  "board.colour.green": "초록", // Green
+  "board.colour.blue": "파랑", // Blue
+  "board.colour.purple": "보라", // Purple
+  "board.colour.pink": "분홍", // Pink
+  "board.add": "추가", // Add
+  "board.addColumn": "열 추가", // Add column
+  "board.customColumn": "사용자 지정 열…", // Custom column…
+  "board.columnName": "열 이름", // Column name
+  "board.renameColumn": "이름 바꾸기", // Rename
+  "board.deleteColumn": "열 삭제", // Delete column
+  "board.addCardHere": "카드", // Card
+  "board.addCardMenu": "카드 추가", // Add card
+  "board.noCards": "카드 없음", // No cards
+  "board.nothingQueued": "대기 항목 없음", // Nothing queued
+  "board.dragColumn": "드래그하여 순서 변경", // Drag to reorder
+  "board.columnMenu": "열 작업", // Column actions
   "board.fieldTitle": "제목", // Title
   "board.fieldType": "유형", // Type
   "board.fieldPriority": "우선순위", // Priority

@@ -7,8 +7,6 @@
 .board-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; background: none; color: var(--text-mid); font: inherit; font-size: 11px; cursor: pointer; }
 .board-chip:hover { background: var(--bg-hover); }
 .board-chip[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
-.board-review { display: inline-flex; align-items: center; gap: 5px; color: var(--text-mid); cursor: pointer; }
-.board-add { display: inline-flex; align-items: center; gap: 4px; }
 .board-error { margin: 8px 12px 0; color: var(--status-error); white-space: pre-wrap; }
 .board-empty { margin: 8px 12px 0; color: var(--text-dim); }
 .board-cols { flex: 1; min-height: 0; display: flex; gap: 10px; padding: 12px; overflow-x: auto; }
@@ -54,3 +52,41 @@
 .board-note-text { margin-top: 3px; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
 .board-history li { color: var(--text-mid); font-size: 11px; }
 .board-send { align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; }
+/* Card colours: one fixed value per name, readable on light and dark backgrounds. */
+.board-card[data-color] { border-left: 4px solid var(--card-color); }
+[data-color="red"], .board-swatch-red { --card-color: #e5484d; }
+[data-color="orange"], .board-swatch-orange { --card-color: #f76b15; }
+[data-color="yellow"], .board-swatch-yellow { --card-color: #e2b400; }
+[data-color="green"], .board-swatch-green { --card-color: #30a46c; }
+[data-color="blue"], .board-swatch-blue { --card-color: #3e63dd; }
+[data-color="purple"], .board-swatch-purple { --card-color: #8e4ec6; }
+[data-color="pink"], .board-swatch-pink { --card-color: #d6409f; }
+.board-swatches { display: flex; gap: 8px; align-items: center; }
+.board-swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; background: var(--card-color); cursor: pointer; padding: 0; outline-offset: 2px; }
+.board-swatch-none { position: relative; border-radius: var(--r-sm); background: var(--bg-2); border-color: var(--border-strong); }
+.board-swatch-none::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; border: 1.5px solid var(--text-dim); background: linear-gradient(45deg, transparent 45%, var(--text-dim) 45%, var(--text-dim) 55%, transparent 55%); }
+.board-swatch[aria-checked="true"] { outline: 2px solid var(--text); }
+/* Column header: drag handle, role dot, name, count, menu. */
+.board-col-head { gap: 6px; justify-content: flex-start; }
+.board-col-head .board-count { margin-left: auto; color: var(--accent); }
+.board-col-handle { display: grid; place-items: center; color: var(--text-faint); cursor: grab; }
+.board-col-name { cursor: grab; text-transform: uppercase; letter-spacing: .4px; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-col-dot { width: 7px; height: 7px; border-radius: 2px; flex: none; background: var(--yellow); }
+.board-col-dot-done { background: var(--green); }
+.board-col-dot-custom { background: var(--blue); }
+.board-col-rename { flex: 1; min-width: 0; padding: 2px 6px; border: 1px solid var(--accent-line); border-radius: var(--r-sm); background: var(--bg-2); color: var(--text); font: inherit; font-size: 11px; }
+.board-col-empty { padding: 18px 8px; border: 1px dashed var(--border-strong); border-radius: var(--r-sm); color: var(--text-dim); text-align: center; }
+.board-col-add { display: flex; align-items: center; gap: 5px; margin: 0 8px 8px; padding: 6px 8px; border: 1px dashed transparent; border-radius: var(--r-sm); background: none; color: var(--text-dim); font: inherit; cursor: pointer; }
+.board-col-add:hover { border-color: var(--border-strong); background: var(--bg-hover); color: var(--text); }
+.board-col-new { flex: 0 0 200px; }
+.board-col-new-btn { width: 100%; display: flex; align-items: center; gap: 6px; padding: 9px 10px; border: 1px dashed var(--border-strong); border-radius: var(--r-md); background: none; color: var(--text-mid); font: inherit; cursor: pointer; }
+.board-col-new-btn:hover { background: var(--bg-hover); color: var(--text); }
+.board-col-new input { width: 100%; padding: 8px 10px; border: 1px solid var(--accent-line); border-radius: var(--r-md); background: var(--bg-2); color: var(--text); font: inherit; }
+/* Add card dialog. */
+.board-dialog { width: min(460px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); display: flex; flex-direction: column; background: var(--bg-1); border: 1px solid var(--border-strong); border-radius: var(--r-lg); box-shadow: var(--shadow); font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+.board-dialog-head { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
+.board-dialog-sub { color: var(--text-dim); font-size: 11px; }
+.board-dialog-body { padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.board-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px 14px; border-top: 1px solid var(--border); }
+.board-dialog input, .board-dialog select, .board-dialog textarea { padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg-2); color: var(--text); font: inherit; font-size: 12px; resize: vertical; }
+.board-dialog .board-tag { border: none; cursor: pointer; font-family: inherit; }

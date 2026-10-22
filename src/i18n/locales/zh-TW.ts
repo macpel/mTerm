@@ -1029,13 +1029,31 @@ const zhTW: typeof en = {
   "board.priority.high": "高", // High
   "board.priority.urgent": "緊急", // Urgent
   "board.search": "搜尋卡片", // Search cards
-  "board.review": "審查欄", // Review column
-  "board.addCard": "卡片", // Card
   "board.empty": "還沒有卡片。新增一張，或讓 Claude 用 vboard 規劃工作。", // No cards yet. Add one, or ask Claude to plan the work with vboard.
   "board.byYou": "你", // You
   "board.takenBy": (name: string) => `由 ${name} 認領`, // Taken by {}
   "board.cardMenu": "卡片操作", // Card actions
-  "board.newCard": "新卡片", // New card
+  "board.fieldColour": "顏色", // Colour
+  "board.colour.none": "無顏色", // No colour
+  "board.colour.red": "紅", // Red
+  "board.colour.orange": "橙", // Orange
+  "board.colour.yellow": "黃", // Yellow
+  "board.colour.green": "綠", // Green
+  "board.colour.blue": "藍", // Blue
+  "board.colour.purple": "紫", // Purple
+  "board.colour.pink": "粉紅", // Pink
+  "board.add": "新增", // Add
+  "board.addColumn": "新增欄", // Add column
+  "board.customColumn": "自訂欄…", // Custom column…
+  "board.columnName": "欄名稱", // Column name
+  "board.renameColumn": "重新命名", // Rename
+  "board.deleteColumn": "刪除欄", // Delete column
+  "board.addCardHere": "卡片", // Card
+  "board.addCardMenu": "新增卡片", // Add card
+  "board.noCards": "沒有卡片", // No cards
+  "board.nothingQueued": "尚無排隊", // Nothing queued
+  "board.dragColumn": "拖曳以排序", // Drag to reorder
+  "board.columnMenu": "欄操作", // Column actions
   "board.fieldTitle": "標題", // Title
   "board.fieldType": "類型", // Type
   "board.fieldPriority": "優先順序", // Priority

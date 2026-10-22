@@ -1045,13 +1045,31 @@ const ja: typeof en = {
   "board.priority.high": "高", // High
   "board.priority.urgent": "緊急", // Urgent
   "board.search": "カードを検索", // Search cards
-  "board.review": "レビュー列", // Review column
-  "board.addCard": "カード", // Card
   "board.empty": "カードはまだありません。追加するか、vboard で Claude に作業を計画させてください。", // No cards yet. Add one, or ask Claude to plan the work with vboard.
   "board.byYou": "あなた", // You
   "board.takenBy": (name: string) => `${name} が担当中`, // Taken by {}
   "board.cardMenu": "カードの操作", // Card actions
-  "board.newCard": "新しいカード", // New card
+  "board.fieldColour": "色", // Colour
+  "board.colour.none": "色なし", // No colour
+  "board.colour.red": "赤", // Red
+  "board.colour.orange": "オレンジ", // Orange
+  "board.colour.yellow": "黄", // Yellow
+  "board.colour.green": "緑", // Green
+  "board.colour.blue": "青", // Blue
+  "board.colour.purple": "紫", // Purple
+  "board.colour.pink": "ピンク", // Pink
+  "board.add": "追加", // Add
+  "board.addColumn": "列を追加", // Add column
+  "board.customColumn": "カスタム列…", // Custom column…
+  "board.columnName": "列の名前", // Column name
+  "board.renameColumn": "名前を変更", // Rename
+  "board.deleteColumn": "列を削除", // Delete column
+  "board.addCardHere": "カード", // Card
+  "board.addCardMenu": "カードを追加", // Add card
+  "board.noCards": "カードなし", // No cards
+  "board.nothingQueued": "待機中なし", // Nothing queued
+  "board.dragColumn": "ドラッグで並べ替え", // Drag to reorder
+  "board.columnMenu": "列の操作", // Column actions
   "board.fieldTitle": "タイトル", // Title
   "board.fieldType": "種類", // Type
   "board.fieldPriority": "優先度", // Priority

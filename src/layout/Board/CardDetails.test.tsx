@@ -9,6 +9,7 @@ vi.mock("../../i18n", () => ({
 }));
 const h = vi.hoisted(() => ({ changed: null as null | (() => void) }));
 
+vi.mock("../../hooks/nativeViewSuspend", () => ({ useSuspendNativeViews: () => {}, useNativeViewSuspended: () => false }));
 vi.mock("../../ipc/board", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../ipc/board")>()),
   boardCardDetail: vi.fn(),
@@ -22,7 +23,7 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
   }),
 }));
 
-import { boardCardCreate, boardCardDetail, boardNoteAdd } from "../../ipc/board";
+import { boardCardDetail, boardCardUpdate, boardNoteAdd } from "../../ipc/board";
 import { CardDetails } from "./CardDetails";
 
 const detail: CardDetail = {
@@ -35,6 +36,7 @@ const detail: CardDetail = {
   description: "Empty password",
   priority: "high",
   tags: ["auth"],
+  color: null,
   claimedBy: null,
   claimedByName: null,
   updatedAt: 0,
@@ -52,42 +54,32 @@ beforeEach(() => {
 });
 
 describe("CardDetails", () => {
-  it("creates a card with type, priority and tags", async () => {
-    const onClose = vi.fn();
-    render(<CardDetails projectId="p1" onClose={onClose} />);
-    fireEvent.change(screen.getByLabelText("board.fieldTitle"), { target: { value: "Add dark mode" } });
-    fireEvent.change(screen.getByLabelText("board.fieldType"), { target: { value: "feature" } });
-    fireEvent.change(screen.getByLabelText("board.fieldPriority"), { target: { value: "urgent" } });
-    const tags = screen.getByLabelText("board.fieldTags");
-    fireEvent.change(tags, { target: { value: "UI " } });
-    fireEvent.keyDown(tags, { key: "Enter" });
-    fireEvent.change(tags, { target: { value: "theme" } });
-    fireEvent.keyDown(tags, { key: "Enter" });
+  it("saves edits including a colour, and none clears it", async () => {
+    render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
+    await screen.findByText("Reproduced it");
+    fireEvent.click(screen.getByRole("radio", { name: "board.colour.purple" }));
     fireEvent.click(screen.getByRole("button", { name: "board.save" }));
     await waitFor(() =>
-      expect(boardCardCreate).toHaveBeenCalledWith("p1", {
-        title: "Add dark mode",
-        type: "feature",
-        priority: "urgent",
-        description: "",
-        tags: ["ui", "theme"],
-      }),
+      expect(boardCardUpdate).toHaveBeenCalledWith("p1", 7, expect.objectContaining({ title: "Login crash", color: "purple" })),
     );
-    await waitFor(() => expect(onClose).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole("radio", { name: "board.colour.none" }));
+    fireEvent.click(screen.getByRole("button", { name: "board.save" }));
+    await waitFor(() => expect(boardCardUpdate).toHaveBeenLastCalledWith("p1", 7, expect.objectContaining({ color: null })));
   });
 
-  it("save disabled without title", () => {
-    render(<CardDetails projectId="p1" onClose={() => {}} />);
+  it("save disabled when the title is cleared", async () => {
+    render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
+    await screen.findByText("Reproduced it");
     const save = screen.getByRole("button", { name: "board.save" }) as HTMLButtonElement;
-    expect(save.disabled).toBe(true);
+    expect(save.disabled).toBe(false);
     fireEvent.change(screen.getByLabelText("board.fieldTitle"), { target: { value: "   " } });
     expect(save.disabled).toBe(true);
   });
 
   it("shows backend error inline", async () => {
-    vi.mocked(boardCardCreate).mockRejectedValueOnce("A card can have at most 10 tags.");
-    render(<CardDetails projectId="p1" onClose={() => {}} />);
-    fireEvent.change(screen.getByLabelText("board.fieldTitle"), { target: { value: "x" } });
+    vi.mocked(boardCardUpdate).mockRejectedValueOnce("A card can have at most 10 tags.");
+    render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
+    await screen.findByText("Reproduced it");
     fireEvent.click(screen.getByRole("button", { name: "board.save" }));
     expect((await screen.findByRole("alert")).textContent).toBe("A card can have at most 10 tags.");
   });

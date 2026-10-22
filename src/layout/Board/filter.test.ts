@@ -13,6 +13,7 @@ function card(number: number, over: Partial<BoardCard> = {}): BoardCard {
     description: "",
     priority: "medium",
     tags: [],
+    color: null,
     claimedBy: null,
     claimedByName: null,
     updatedAt: 0,

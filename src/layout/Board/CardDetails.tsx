@@ -1,47 +1,45 @@
-//! Side panel of the board: the new-card form, or one card's fields, notes thread and history.
+//! Side panel of the board for one card: its fields, notes thread, history and "Send to Claude".
+//! New cards are added through `AddCardDialog`.
 import { useCallback, useEffect, useState } from "react";
 import { ContextMenu, type MenuItem } from "../../components/ContextMenu";
 import Icons from "../../components/Icons";
 import { useT } from "../../i18n";
 import {
-  CARD_TYPES,
-  PRIORITIES,
-  boardCardCreate,
   boardCardDelete,
   boardCardDetail,
   boardCardUpdate,
   boardNoteAdd,
   onBoardChanged,
   type BoardCard,
-  type BoardColumn,
-  type CardAction,
+  type BoardColumnInfo,
   type CardDetail,
   type CardFields,
 } from "../../ipc/board";
 import type { Session } from "../../types";
 import { ago } from "./BoardCard";
-
-const EMPTY: CardFields = { title: "", type: "task", priority: "medium", description: "", tags: [] };
+import { CardFieldsForm, EMPTY_FIELDS } from "./CardFieldsForm";
+import { columnLabelById } from "./columns";
 
 export function CardDetails({
   projectId,
   number,
   onClose,
+  columns = [],
   claudeSessions = [],
   onSend,
 }: {
   projectId: string;
-  /** Card to show; omitted for the new-card form. */
-  number?: number;
+  number: number;
   onClose: () => void;
+  /** The board's columns, to name the ones in the history. */
+  columns?: BoardColumnInfo[];
   /** The project's Claude sessions offered by "Send to Claude". */
   claudeSessions?: Session[];
   onSend?: (card: BoardCard, target: "new" | Session) => Promise<void> | void;
 }) {
   const t = useT();
   const [card, setCard] = useState<CardDetail | null>(null);
-  const [fields, setFields] = useState<CardFields>(EMPTY);
-  const [tagDraft, setTagDraft] = useState("");
+  const [fields, setFields] = useState<CardFields>(EMPTY_FIELDS);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -51,18 +49,18 @@ export function CardDetails({
   /** Refresh the card. The form is reset only on first load and after a save, so a change made elsewhere on
    * the board (often by a Claude session) never overwrites what the user is typing. */
   const load = useCallback((resetFields: boolean) => {
-    if (number === undefined) return;
     boardCardDetail(projectId, number)
       .then((d) => {
         setCard(d);
-        if (resetFields) setFields({ title: d.title, type: d.type, priority: d.priority, description: d.description, tags: d.tags });
+        if (resetFields) {
+          setFields({ title: d.title, type: d.type, priority: d.priority, description: d.description, tags: d.tags, color: d.color });
+        }
       })
       .catch((e) => setError(String(e)));
   }, [projectId, number]);
 
   useEffect(() => {
     load(true);
-    if (number === undefined) return;
     let stop: (() => void) | undefined;
     let active = true;
     void onBoardChanged(projectId, () => load(false)).then((off) => {
@@ -73,14 +71,8 @@ export function CardDetails({
       active = false;
       stop?.();
     };
-  }, [projectId, number, load]);
+  }, [projectId, load]);
 
-  const set = <K extends keyof CardFields>(key: K, value: CardFields[K]) => setFields((f) => ({ ...f, [key]: value }));
-  const addTag = () => {
-    const tag = tagDraft.trim().toLowerCase();
-    if (tag && !fields.tags.includes(tag)) set("tags", [...fields.tags, tag]);
-    setTagDraft("");
-  };
   const run = async (action: () => Promise<unknown>, after?: () => void) => {
     setBusy(true);
     setError("");
@@ -94,18 +86,13 @@ export function CardDetails({
     }
   };
 
-  const save = () =>
-    number === undefined
-      ? run(() => boardCardCreate(projectId, { ...fields, title: fields.title.trim() }), onClose)
-      : run(() => boardCardUpdate(projectId, number, { ...fields, title: fields.title.trim() }), () => load(true));
+  const save = () => run(() => boardCardUpdate(projectId, number, { ...fields, title: fields.title.trim() }), () => load(true));
   const who = (kind: "user" | "agent", name: string | null) => (kind === "user" ? t("board.byYou") : name ?? "Claude");
-  const actionDetail = (action: CardAction, detail: string) =>
-    action === "moved" && detail ? t(`board.column.${detail as BoardColumn}`) : detail;
 
   return (
-    <aside className="board-details" aria-label={number === undefined ? t("board.newCard") : `#${number}`}>
+    <aside className="board-details" aria-label={`#${number}`}>
       <header className="board-details-head">
-        <strong>{number === undefined ? t("board.newCard") : `#${number}`}</strong>
+        <strong>#{number}</strong>
         <button type="button" className="board-card-menu" aria-label={t("common.close")} onClick={onClose}>
           <Icons.x size={13} />
         </button>
@@ -113,77 +100,22 @@ export function CardDetails({
       <div className="board-details-body">
         <label className="board-field">
           <span>{t("board.fieldTitle")}</span>
-          <input aria-label={t("board.fieldTitle")} value={fields.title} autoFocus onChange={(e) => set("title", e.target.value)} />
+          <input aria-label={t("board.fieldTitle")} value={fields.title} onChange={(e) => setFields((f) => ({ ...f, title: e.target.value }))} />
         </label>
-        <div className="board-field-row">
-          <label className="board-field">
-            <span>{t("board.fieldType")}</span>
-            <select aria-label={t("board.fieldType")} value={fields.type} onChange={(e) => set("type", e.target.value as CardFields["type"])}>
-              {CARD_TYPES.map((type) => (
-                <option key={type} value={type}>{t(`board.type.${type}`)}</option>
-              ))}
-            </select>
-          </label>
-          <label className="board-field">
-            <span>{t("board.fieldPriority")}</span>
-            <select
-              aria-label={t("board.fieldPriority")}
-              value={fields.priority}
-              onChange={(e) => set("priority", e.target.value as CardFields["priority"])}
-            >
-              {PRIORITIES.map((p) => (
-                <option key={p} value={p}>{t(`board.priority.${p}`)}</option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <label className="board-field">
-          <span>{t("board.fieldDescription")}</span>
-          <textarea
-            aria-label={t("board.fieldDescription")}
-            rows={5}
-            value={fields.description}
-            onChange={(e) => set("description", e.target.value)}
-          />
-        </label>
-        <div className="board-field">
-          <span>{t("board.fieldTags")}</span>
-          <div className="board-tags">
-            {fields.tags.map((tag) => (
-              <button key={tag} type="button" className="board-tag" onClick={() => set("tags", fields.tags.filter((x) => x !== tag))}>
-                #{tag} ×
-              </button>
-            ))}
-          </div>
-          <input
-            aria-label={t("board.fieldTags")}
-            value={tagDraft}
-            placeholder={t("board.tagHint")}
-            onChange={(e) => setTagDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === ",") {
-                e.preventDefault();
-                addTag();
-              }
-            }}
-            onBlur={addTag}
-          />
-        </div>
+        <CardFieldsForm fields={fields} onChange={(key, value) => setFields((f) => ({ ...f, [key]: value }))} />
         {error && <div className="board-error" role="alert">{error}</div>}
         <div className="board-details-actions">
           <button type="button" className="vlx-btn vlx-btn-primary" disabled={busy || !fields.title.trim()} onClick={() => void save()}>
             {t("board.save")}
           </button>
-          {number !== undefined && (
-            <button
-              type="button"
-              className="vlx-btn board-delete"
-              disabled={busy}
-              onClick={() => (confirmDelete ? void run(() => boardCardDelete(projectId, number), onClose) : setConfirmDelete(true))}
-            >
-              {confirmDelete ? t("board.deleteConfirm") : t("board.delete")}
-            </button>
-          )}
+          <button
+            type="button"
+            className="vlx-btn board-delete"
+            disabled={busy}
+            onClick={() => (confirmDelete ? void run(() => boardCardDelete(projectId, number), onClose) : setConfirmDelete(true))}
+          >
+            {confirmDelete ? t("board.deleteConfirm") : t("board.delete")}
+          </button>
         </div>
         {card && onSend && (
           <button
@@ -232,12 +164,15 @@ export function CardDetails({
             </button>
             <h4>{t("board.history")}</h4>
             <ul className="board-history" aria-label={t("board.history")}>
-              {card.history.map((h) => (
-                <li key={h.id}>
-                  {who(h.actorKind, h.actorName)} {t(`board.action.${h.action}`)} {actionDetail(h.action, h.detail)}
-                  <span className="board-when"> · {ago(h.createdAt)}</span>
-                </li>
-              ))}
+              {card.history.map((h) => {
+                const detail = h.action === "moved" && h.detail ? columnLabelById(t, columns, h.detail) : h.detail;
+                return (
+                  <li key={h.id}>
+                    {[who(h.actorKind, h.actorName), t(`board.action.${h.action}`), detail].filter(Boolean).join(" ")}
+                    <span className="board-when"> · {ago(h.createdAt)}</span>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

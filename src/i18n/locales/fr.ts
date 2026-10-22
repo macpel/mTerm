@@ -1048,13 +1048,31 @@ const fr: typeof en = {
   "board.priority.high": "Haute", // High
   "board.priority.urgent": "Urgente", // Urgent
   "board.search": "Rechercher des cartes", // Search cards
-  "board.review": "Colonne de revue", // Review column
-  "board.addCard": "Carte", // Card
   "board.empty": "Aucune carte pour l’instant. Ajoutez-en une ou demandez à Claude de planifier le travail avec vboard.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
   "board.byYou": "Vous", // You
   "board.takenBy": (name: string) => `Prise par ${name}`, // Taken by {}
   "board.cardMenu": "Actions de la carte", // Card actions
-  "board.newCard": "Nouvelle carte", // New card
+  "board.fieldColour": "Couleur", // Colour
+  "board.colour.none": "Aucune couleur", // No colour
+  "board.colour.red": "Rouge", // Red
+  "board.colour.orange": "Orange", // Orange
+  "board.colour.yellow": "Jaune", // Yellow
+  "board.colour.green": "Vert", // Green
+  "board.colour.blue": "Bleu", // Blue
+  "board.colour.purple": "Violet", // Purple
+  "board.colour.pink": "Rose", // Pink
+  "board.add": "Ajouter", // Add
+  "board.addColumn": "Ajouter une colonne", // Add column
+  "board.customColumn": "Colonne personnalisée…", // Custom column…
+  "board.columnName": "Nom de la colonne", // Column name
+  "board.renameColumn": "Renommer", // Rename
+  "board.deleteColumn": "Supprimer la colonne", // Delete column
+  "board.addCardHere": "Carte", // Card
+  "board.addCardMenu": "Ajouter une carte", // Add card
+  "board.noCards": "Aucune carte", // No cards
+  "board.nothingQueued": "Rien en attente", // Nothing queued
+  "board.dragColumn": "Glisser pour réordonner", // Drag to reorder
+  "board.columnMenu": "Actions de la colonne", // Column actions
   "board.fieldTitle": "Titre", // Title
   "board.fieldType": "Type", // Type
   "board.fieldPriority": "Priorité", // Priority

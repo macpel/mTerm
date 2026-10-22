@@ -53,6 +53,7 @@ const card: BoardCard = {
   description: "Crashes on an empty password.",
   priority: "high",
   tags: [],
+  color: null,
   claimedBy: null,
   claimedByName: null,
   updatedAt: 0,

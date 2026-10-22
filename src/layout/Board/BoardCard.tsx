@@ -42,6 +42,7 @@ export function BoardCard({
   return (
     <div
       className="board-card"
+      data-color={card.color ?? undefined}
       draggable
       onClick={onOpen}
       onContextMenu={(e) => {

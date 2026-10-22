@@ -1055,13 +1055,31 @@ const ru: typeof en = {
   "board.priority.high": "Высокий", // High
   "board.priority.urgent": "Срочный", // Urgent
   "board.search": "Поиск карточек", // Search cards
-  "board.review": "Колонка ревью", // Review column
-  "board.addCard": "Карточка", // Card
   "board.empty": "Карточек пока нет. Добавьте карточку или попросите Claude спланировать работу через vboard.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
   "board.byYou": "Вы", // You
   "board.takenBy": (name: string) => `Взял ${name}`, // Taken by {}
   "board.cardMenu": "Действия с карточкой", // Card actions
-  "board.newCard": "Новая карточка", // New card
+  "board.fieldColour": "Цвет", // Colour
+  "board.colour.none": "Без цвета", // No colour
+  "board.colour.red": "Красный", // Red
+  "board.colour.orange": "Оранжевый", // Orange
+  "board.colour.yellow": "Жёлтый", // Yellow
+  "board.colour.green": "Зелёный", // Green
+  "board.colour.blue": "Синий", // Blue
+  "board.colour.purple": "Фиолетовый", // Purple
+  "board.colour.pink": "Розовый", // Pink
+  "board.add": "Добавить", // Add
+  "board.addColumn": "Добавить колонку", // Add column
+  "board.customColumn": "Своя колонка…", // Custom column…
+  "board.columnName": "Название колонки", // Column name
+  "board.renameColumn": "Переименовать", // Rename
+  "board.deleteColumn": "Удалить колонку", // Delete column
+  "board.addCardHere": "Карточка", // Card
+  "board.addCardMenu": "Добавить карточку", // Add card
+  "board.noCards": "Нет карточек", // No cards
+  "board.nothingQueued": "Очередь пуста", // Nothing queued
+  "board.dragColumn": "Перетащите для сортировки", // Drag to reorder
+  "board.columnMenu": "Действия с колонкой", // Column actions
   "board.fieldTitle": "Название", // Title
   "board.fieldType": "Тип", // Type
   "board.fieldPriority": "Приоритет", // Priority
