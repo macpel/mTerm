@@ -292,9 +292,11 @@ async function installWindowsUpdate(rid: number, onEvent?: (event: UpdateDownloa
   await invoke("updater_install_windows", { rid, onEvent: channel });
 }
 
-/** Updater plugin on the desktop; browsers and remote windows do not self-update. */
+/** Updater plugin on the desktop; browsers and remote windows do not self-update.
+ * This fork ships through its own GitHub releases, so checks against the official update service stay off:
+ * installing an official update would replace the fork's build. */
 const updater: UpdaterCapability = {
-  supported: env.isTauri,
+  supported: false,
   async check(headers) {
     const { check } = await import("@tauri-apps/plugin-updater");
     const update = await check(headers ? { headers } : undefined);
