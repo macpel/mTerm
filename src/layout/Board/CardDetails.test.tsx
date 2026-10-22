@@ -7,6 +7,8 @@ vi.mock("../../i18n", () => ({
   useT: () => (key: string, ...args: unknown[]) => (args.length ? `${key}:${args.join(",")}` : key),
   getLocale: () => "en",
 }));
+const h = vi.hoisted(() => ({ changed: null as null | (() => void) }));
+
 vi.mock("../../ipc/board", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../ipc/board")>()),
   boardCardDetail: vi.fn(),
@@ -14,7 +16,10 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
   boardCardUpdate: vi.fn(() => Promise.resolve({})),
   boardNoteAdd: vi.fn(() => Promise.resolve({})),
   boardCardDelete: vi.fn(() => Promise.resolve()),
-  onBoardChanged: vi.fn(() => Promise.resolve(() => {})),
+  onBoardChanged: vi.fn((_projectId: string, cb: () => void) => {
+    h.changed = cb;
+    return Promise.resolve(() => {});
+  }),
 }));
 
 import { boardCardCreate, boardCardDetail, boardNoteAdd } from "../../ipc/board";
@@ -113,5 +118,19 @@ describe("CardDetails", () => {
     expect(await screen.findByRole("menuitem", { name: "Session One" })).toBeTruthy();
     fireEvent.click(screen.getByRole("menuitem", { name: "board.newSession" }));
     expect(onSend).toHaveBeenCalledWith(expect.objectContaining({ number: 7 }), "new");
+  });
+
+  it("keeps unsaved edits when the board changes elsewhere", async () => {
+    render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
+    await screen.findByText("Reproduced it");
+    const description = screen.getByLabelText("board.fieldDescription") as HTMLTextAreaElement;
+    fireEvent.change(description, { target: { value: "Typed but not saved" } });
+    vi.mocked(boardCardDetail).mockResolvedValue({
+      ...detail,
+      notes: [...detail.notes, { id: "n2", authorKind: "agent", authorName: "Session One", text: "Claude was here", createdAt: 1 }],
+    });
+    h.changed?.();
+    expect(await screen.findByText("Claude was here")).toBeTruthy();
+    expect(description.value).toBe("Typed but not saved");
   });
 });

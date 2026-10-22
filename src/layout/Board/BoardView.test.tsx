@@ -23,9 +23,9 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
 }));
 
 vi.mock("../../store/termStore", () => ({
-  useTermStore: (select: (state: { sessions: unknown[] }) => unknown) => select({ sessions: [] }),
+  useTermStore: (select: (state: { sessions: unknown[]; runtimes: object }) => unknown) => select({ sessions: [], runtimes: {} }),
 }));
-vi.mock("./sendToClaude", () => ({ sendCardToClaude: vi.fn() }));
+vi.mock("./sendToClaude", () => ({ sendCardToClaude: vi.fn(), sendTargets: () => [] }));
 
 import { boardCardMove, boardGet, boardSetReview } from "../../ipc/board";
 import { BoardView } from "./BoardView";
@@ -123,5 +123,16 @@ describe("BoardView", () => {
     expect(toggle.checked).toBe(true);
     expect(screen.getByRole("region", { name: "board.column.review" })).toBeTruthy();
     expect(boardSetReview).toHaveBeenCalledWith("p1", true);
+  });
+
+  it("drops a selected tag filter when no card has that tag any more", async () => {
+    render(<BoardView projectId="p1" hidden={false} />);
+    await screen.findByText("Login crash");
+    fireEvent.click(screen.getByRole("button", { name: "#docs" }));
+    expect(screen.queryByText("Login crash")).toBeNull();
+    h.data = { reviewEnabled: false, cards: h.data!.cards.map((c) => ({ ...c, tags: c.tags.filter((t) => t !== "docs") })) };
+    h.changed?.();
+    expect(await screen.findByText("Login crash")).toBeTruthy();
+    expect(screen.getByText("Release notes")).toBeTruthy();
   });
 });

@@ -48,22 +48,24 @@ export function CardDetails({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [sendMenu, setSendMenu] = useState<{ x: number; y: number } | null>(null);
 
-  const load = useCallback(() => {
+  /** Refresh the card. The form is reset only on first load and after a save, so a change made elsewhere on
+   * the board (often by a Claude session) never overwrites what the user is typing. */
+  const load = useCallback((resetFields: boolean) => {
     if (number === undefined) return;
     boardCardDetail(projectId, number)
       .then((d) => {
         setCard(d);
-        setFields({ title: d.title, type: d.type, priority: d.priority, description: d.description, tags: d.tags });
+        if (resetFields) setFields({ title: d.title, type: d.type, priority: d.priority, description: d.description, tags: d.tags });
       })
       .catch((e) => setError(String(e)));
   }, [projectId, number]);
 
   useEffect(() => {
-    load();
+    load(true);
     if (number === undefined) return;
     let stop: (() => void) | undefined;
     let active = true;
-    void onBoardChanged(projectId, load).then((off) => {
+    void onBoardChanged(projectId, () => load(false)).then((off) => {
       if (active) stop = off;
       else off();
     });
@@ -95,7 +97,7 @@ export function CardDetails({
   const save = () =>
     number === undefined
       ? run(() => boardCardCreate(projectId, { ...fields, title: fields.title.trim() }), onClose)
-      : run(() => boardCardUpdate(projectId, number, { ...fields, title: fields.title.trim() }), load);
+      : run(() => boardCardUpdate(projectId, number, { ...fields, title: fields.title.trim() }), () => load(true));
   const who = (kind: "user" | "agent", name: string | null) => (kind === "user" ? t("board.byYou") : name ?? "Claude");
   const actionDetail = (action: CardAction, detail: string) =>
     action === "moved" && detail ? t(`board.column.${detail as BoardColumn}`) : detail;
@@ -224,7 +226,7 @@ export function CardDetails({
               type="button"
               className="vlx-btn"
               disabled={busy || !note.trim()}
-              onClick={() => void run(() => boardNoteAdd(projectId, card.number, note.trim()), () => { setNote(""); load(); })}
+              onClick={() => void run(() => boardNoteAdd(projectId, card.number, note.trim()), () => { setNote(""); load(false); })}
             >
               {t("board.addNoteButton")}
             </button>

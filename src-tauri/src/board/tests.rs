@@ -298,3 +298,15 @@ fn execute_tag_merges_with_existing_tags() {
     assert_eq!(card["updatedBy"]["kind"], "agent");
     assert!(changed);
 }
+
+#[test]
+fn agent_cannot_add_straight_to_done_while_review_on() {
+    let conn = db();
+    store::set_review(&conn, PROJECT, true).unwrap();
+    let card = |column: &str| NewCard { title: "Fixed it".into(), column: Some(column.into()), ..Default::default() };
+    let err = store::create_card(&conn, PROJECT, card("done"), &Actor::Agent(S1.into())).unwrap_err();
+    assert_eq!(err, "Review is on: use vboard done; a person moves cards to Done.");
+    assert_eq!(store::create_card(&conn, PROJECT, card("done"), &Actor::User).unwrap()["column"], "done");
+    store::set_review(&conn, PROJECT, false).unwrap();
+    assert_eq!(store::create_card(&conn, PROJECT, card("done"), &Actor::Agent(S1.into())).unwrap()["column"], "done");
+}

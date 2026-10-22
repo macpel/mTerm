@@ -159,6 +159,14 @@ fn review_enabled(conn: &Connection, project: &str) -> Result<bool> {
         .map_err(db)
 }
 
+/// With Review on, only a person puts cards in Done; agents finish through Review.
+fn check_review_gate(conn: &Connection, project: &str, column: &str, actor: &Actor) -> Result<()> {
+    if matches!(actor, Actor::Agent(_)) && column == "done" && review_enabled(conn, project)? {
+        return Err("Review is on: use vboard done; a person moves cards to Done.".into());
+    }
+    Ok(())
+}
+
 fn card_id(conn: &Connection, project: &str, number: i64) -> Result<String> {
     conn.query_row("SELECT id FROM board_cards WHERE project_id=?1 AND number=?2", params![project, number], |r| r.get(0))
         .optional()
@@ -284,6 +292,7 @@ pub fn create_card(conn: &Connection, project: &str, card: NewCard, actor: &Acto
     let column = one_of(card.column.as_deref().unwrap_or("todo"), &COLUMNS, "column")?;
     let description = clean_description(&card.description)?;
     let tags = clean_tags(&card.tags)?;
+    check_review_gate(conn, project, &column, actor)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
     ensure_board(&tx, project)?;
     let number: i64 =
@@ -342,9 +351,7 @@ pub fn update_card(conn: &Connection, project: &str, number: i64, patch: CardPat
 pub fn move_card(conn: &Connection, project: &str, number: i64, column: &str, before: Option<i64>, actor: &Actor) -> Result<Value> {
     let column = one_of(column, &COLUMNS, "column")?;
     let id = card_id(conn, project, number)?;
-    if matches!(actor, Actor::Agent(_)) && column == "done" && review_enabled(conn, project)? {
-        return Err("Review is on: use vboard done; a person moves cards to Done.".into());
-    }
+    check_review_gate(conn, project, &column, actor)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
     place(&tx, project, &id, &column, before)?;
     if column == "backlog" || column == "todo" {

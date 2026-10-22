@@ -10,6 +10,7 @@ const h = vi.hoisted(() => ({
     setPendingPrompt: vi.fn(),
   },
   calls: [] as string[],
+  receipt: "sent" as string | undefined,
 }));
 
 vi.mock("../../store/termStore", () => ({ useTermStore: { getState: () => h.store } }));
@@ -19,10 +20,14 @@ vi.mock("../../ipc/board", () => ({
     return Promise.resolve({});
   }),
 }));
-vi.mock("../../ipc/chat", () => ({
-  chatSend: vi.fn((..._args: unknown[]) => {
-    h.calls.push("chatSend");
-    return Promise.resolve("sent");
+vi.mock("../../ipc/chat", () => ({ chatStart: vi.fn(() => Promise.resolve()) }));
+vi.mock("../CenterPane/session/outbox", () => ({
+  createSubmission: vi.fn((_session: string, text: string) => ({ id: "msg-1", text })),
+  // Like the real outbox: failures are recorded on the message and no receipt comes back.
+  deliverSubmission: vi.fn(async (_session: string, _item: unknown, start?: () => Promise<void>) => {
+    await start?.();
+    h.calls.push("deliver");
+    return h.receipt;
   }),
 }));
 vi.mock("../../ipc/commands", () => ({
@@ -33,9 +38,10 @@ vi.mock("../../ipc/commands", () => ({
 }));
 
 import { boardClaim } from "../../ipc/board";
-import { chatSend } from "../../ipc/chat";
+import { chatStart } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
-import { cardPrompt, sendCardToClaude } from "./sendToClaude";
+import { createSubmission } from "../CenterPane/session/outbox";
+import { cardPrompt, sendCardToClaude, sendTargets } from "./sendToClaude";
 
 const card: BoardCard = {
   id: "c7",
@@ -60,6 +66,7 @@ function session(id: string, engine: "chat" | "tui"): Session {
 beforeEach(() => {
   vi.clearAllMocks();
   h.calls = [];
+  h.receipt = "sent";
   h.store.agentDefaults = {};
 });
 
@@ -79,28 +86,54 @@ describe("sendCardToClaude", () => {
     expect(h.store.addSession).toHaveBeenCalledWith(
       expect.objectContaining({ projectId: "p1", kind: "claude", name: "#7 Login crash", engine: "tui" }),
     );
-    expect(boardClaim).toHaveBeenCalledWith("p1", 7, "s9");
     expect(h.store.setPendingPrompt).toHaveBeenCalledWith("s9", cardPrompt(card));
     expect(h.store.openSession).toHaveBeenCalledWith("s9");
-    expect(chatSend).not.toHaveBeenCalled();
+    expect(boardClaim).toHaveBeenCalledWith("p1", 7, "s9");
   });
 
-  it("new chat session gets the prompt via chatSend queue", async () => {
+  it("new chat session starts its agent through the outbox, then takes the card", async () => {
     h.store.addSession.mockResolvedValue(session("s10", "chat"));
     await sendCardToClaude("p1", card, "new");
-    expect(h.store.addSession).toHaveBeenCalledWith(expect.objectContaining({ engine: "chat" }));
     expect(h.store.openSession).toHaveBeenCalledWith("s10");
-    expect(chatSend).toHaveBeenCalledWith("s10", cardPrompt(card), "queue");
-    expect(h.store.setPendingPrompt).not.toHaveBeenCalled();
+    expect(createSubmission).toHaveBeenCalledWith("s10", cardPrompt(card), [], "queue");
+    expect(chatStart).toHaveBeenCalledWith("s10");
+    expect(h.calls).toEqual(["deliver", "claim"]);
   });
 
-  it("existing session is claimed before sending", async () => {
-    await sendCardToClaude("p1", card, session("s1", "tui"));
-    expect(h.calls).toEqual(["claim", "ptyWrite"]);
-    expect(ptyWrite).toHaveBeenCalledWith("s1", cardPrompt(card) + "\r");
+  it("does not take the card when the chat message is not delivered", async () => {
+    h.receipt = undefined;
+    await expect(sendCardToClaude("p1", card, session("s2", "chat"))).rejects.toThrow();
+    expect(boardClaim).not.toHaveBeenCalled();
+  });
+
+  it("terminal session gets a bracketed paste without control characters, then Enter, then the card", async () => {
+    await sendCardToClaude("p1", { ...card, description: "Line one\nLine two\x1b[31m\x07" }, session("s1", "tui"));
+    const pasted = vi.mocked(ptyWrite).mock.calls[0][1];
+    expect(pasted.startsWith("\x1b[200~")).toBe(true);
+    expect(pasted.endsWith("\x1b[201~")).toBe(true);
+    expect(pasted).toContain("Line one\nLine two[31m");
+    expect(pasted.slice(6, -6)).not.toMatch(/[\x00-\x08\x0b-\x1f\x7f]/);
+    expect(vi.mocked(ptyWrite).mock.calls[1]).toEqual(["s1", "\r"]);
+    expect(h.calls).toEqual(["ptyWrite", "ptyWrite", "claim"]);
     expect(h.store.openSession).toHaveBeenCalledWith("s1");
-    h.calls = [];
-    await sendCardToClaude("p1", card, session("s2", "chat"));
-    expect(h.calls).toEqual(["claim", "chatSend"]);
+  });
+
+  it("does not take the card when writing to the terminal fails", async () => {
+    vi.mocked(ptyWrite).mockRejectedValueOnce(new Error("no running process"));
+    await expect(sendCardToClaude("p1", card, session("s1", "tui"))).rejects.toThrow();
+    expect(boardClaim).not.toHaveBeenCalled();
+  });
+
+  it("offers chat sessions and only running terminal sessions of the project", () => {
+    const sessions = [
+      session("chat", "chat"),
+      session("tui-running", "tui"),
+      session("tui-stopped", "tui"),
+      { ...session("other-project", "chat"), projectId: "p2" },
+      { ...session("archived", "chat"), archivedAt: 1 },
+      { ...session("shell", "tui"), kind: "terminal" } as Session,
+    ];
+    const runtimes = { "tui-running": { status: "running" }, "tui-stopped": { status: "exited" }, shell: { status: "running" } };
+    expect(sendTargets(sessions, runtimes, "p1").map((s) => s.id)).toEqual(["chat", "tui-running"]);
   });
 });

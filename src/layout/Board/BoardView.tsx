@@ -20,7 +20,7 @@ import { BoardColumn } from "./BoardColumn";
 import { TYPE_ICON } from "./BoardCard";
 import { useTermStore } from "../../store/termStore";
 import { CardDetails } from "./CardDetails";
-import { sendCardToClaude } from "./sendToClaude";
+import { sendCardToClaude, sendTargets } from "./sendToClaude";
 import { allTags, filterCards } from "./filter";
 import "./board.css";
 
@@ -35,10 +35,8 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
   /** Card number open in the details panel, or "new" for the new-card form. */
   const [open, setOpen] = useState<number | "new" | null>(null);
   const allSessions = useTermStore((st) => st.sessions);
-  const claudeSessions = useMemo(
-    () => allSessions.filter((st) => st.projectId === projectId && st.kind === "claude" && !st.archivedAt),
-    [allSessions, projectId],
-  );
+  const runtimes = useTermStore((st) => st.runtimes);
+  const claudeSessions = useMemo(() => sendTargets(allSessions, runtimes, projectId), [allSessions, runtimes, projectId]);
 
   const load = useCallback(() => {
     boardGet(projectId)
@@ -63,8 +61,13 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
     };
   }, [projectId, load]);
 
-  const cards = useMemo(() => filterCards(data?.cards ?? [], { query, types, tags }), [data, query, types, tags]);
   const tagOptions = useMemo(() => allTags(data?.cards ?? []), [data]);
+  // A selected tag that no card carries any more (removed here or by Claude) has no chip left to clear it,
+  // so it stops filtering instead of hiding every card.
+  const cards = useMemo(
+    () => filterCards(data?.cards ?? [], { query, types, tags: tags.filter((t) => tagOptions.includes(t)) }),
+    [data, query, types, tags, tagOptions],
+  );
   // Review shows when switched on, and also while cards still sit in it so none disappear.
   const columns = BOARD_COLUMNS.filter(
     (c) => c !== "review" || data?.reviewEnabled || data?.cards.some((card) => card.column === "review"),
