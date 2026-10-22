@@ -1925,6 +1925,7 @@ const zhCN: typeof en = {
   "skills.vstat": "查看哪些会话正在工作或等待输入。",
   "skills.vtell": "向其他会话发送消息。",
   "skills.vkb": "查询项目的 CodeGraph 和知识库。",
+  "skills.vboard": "在项目的看板上规划和跟踪工作。",
   "skills.settingsHint": "之后也可以在「设置 > 高级」中安装。",
   "skills.installFailed": (err) => `安装失败：${err}`,
   "skills.dontRemind": "不再提醒",

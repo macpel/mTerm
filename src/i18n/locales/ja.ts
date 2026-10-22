@@ -1975,6 +1975,7 @@ const ja: typeof en = {
   "skills.vstat": "作業中または入力待ちのセッションを確認します。",
   "skills.vtell": "ほかのセッションにメッセージを送信します。",
   "skills.vkb": "プロジェクトの CodeGraph とナレッジベースを照会します。",
+  "skills.vboard": "プロジェクトのカンバンボードで作業を計画・追跡します。",
   "skills.settingsHint": "後から「設定 > 詳細設定」でもインストールできます。",
   "skills.installFailed": (err) => `インストールに失敗しました: ${err}`,
   "skills.dontRemind": "今後表示しない",

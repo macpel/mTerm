@@ -1983,6 +1983,7 @@ const ptBR: typeof en = {
   "skills.vstat": "Mostra quais sessões estão trabalhando ou aguardando uma entrada.",
   "skills.vtell": "Envia uma mensagem para outra sessão.",
   "skills.vkb": "Consulta o CodeGraph e a base de conhecimento do projeto.",
+  "skills.vboard": "Planeje e acompanhe o trabalho no quadro Kanban do projeto.",
   "skills.settingsHint": "Você também pode instalá-las depois em Configurações > Avançado.",
   "skills.installFailed": (err) => `Falha na instalação: ${err}`,
   "skills.dontRemind": "Não lembrar novamente",

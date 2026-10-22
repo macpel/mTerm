@@ -1989,6 +1989,7 @@ const fr: typeof en = {
   "skills.vstat": "Indique quelles sessions travaillent ou attendent une saisie.",
   "skills.vtell": "Envoie un message à une autre session.",
   "skills.vkb": "Interroge CodeGraph et la base de connaissances du projet.",
+  "skills.vboard": "Planifier et suivre le travail sur le tableau Kanban du projet.",
   "skills.settingsHint": "Vous pourrez aussi les installer plus tard dans Paramètres > Avancé.",
   "skills.installFailed": (err) => `Échec de l’installation : ${err}`,
   "skills.dontRemind": "Ne plus me le rappeler",

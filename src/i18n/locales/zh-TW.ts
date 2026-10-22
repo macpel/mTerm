@@ -1926,6 +1926,7 @@ const zhTW: typeof en = {
   "skills.vstat": "查看哪些會話正在工作或等待輸入。",
   "skills.vtell": "傳送訊息給其他會話。",
   "skills.vkb": "查詢專案的 CodeGraph 和知識庫。",
+  "skills.vboard": "在專案的看板上規劃和追蹤工作。",
   "skills.settingsHint": "之後也可以在「設定 > 進階」中安裝。",
   "skills.installFailed": (err) => `安裝失敗：${err}`,
   "skills.dontRemind": "不再提醒",

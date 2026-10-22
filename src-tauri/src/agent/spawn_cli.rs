@@ -73,6 +73,7 @@ const SKILLS: &[(&str, &str)] = &[
     ("vflow", include_str!("../../../skills/vflow/SKILL.md")),
     ("vtell", include_str!("../../../skills/vtell/SKILL.md")),
     ("vkb", include_str!("../../../skills/vkb/SKILL.md")),
+    ("vboard", include_str!("../../../skills/vboard/SKILL.md")),
 ];
 
 /// Bin directory prepended to session PATH: `<data_dir>/bin`.

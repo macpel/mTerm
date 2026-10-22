@@ -1958,6 +1958,7 @@ const ko: typeof en = {
   "skills.vstat": "작업 중이거나 입력을 기다리는 세션을 확인합니다.",
   "skills.vtell": "다른 세션에 메시지를 보냅니다.",
   "skills.vkb": "프로젝트의 CodeGraph와 지식 베이스를 조회합니다.",
+  "skills.vboard": "프로젝트의 칸반 보드에서 작업을 계획하고 추적합니다.",
   "skills.settingsHint": "나중에 설정 > 고급에서도 설치할 수 있습니다.",
   "skills.installFailed": (err) => `설치하지 못했습니다: ${err}`,
   "skills.dontRemind": "다시 알리지 않음",

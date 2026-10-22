@@ -1980,6 +1980,7 @@ const en = {
   "skills.vstat": "See which sessions are working or waiting for input.",
   "skills.vtell": "Send a message to another session.",
   "skills.vkb": "Query the project's CodeGraph and knowledge base.",
+  "skills.vboard": "Plan and track work on the project's Kanban board.",
   "skills.settingsHint": "You can also install them later in Settings > Advanced.",
   "skills.installFailed": (err: string) => `Installation failed: ${err}`,
   "skills.dontRemind": "Don't remind me again",

@@ -1934,6 +1934,7 @@ const vi: typeof en = {
   "skills.vstat": "Xem phiên nào đang làm việc hoặc đang chờ nhập liệu.",
   "skills.vtell": "Gửi tin nhắn đến phiên khác.",
   "skills.vkb": "Truy vấn CodeGraph và cơ sở tri thức của dự án.",
+  "skills.vboard": "Lập kế hoạch và theo dõi công việc trên bảng Kanban của dự án.",
   "skills.settingsHint": "Bạn cũng có thể cài đặt sau trong Cài đặt > Nâng cao.",
   "skills.installFailed": (err) => `Cài đặt thất bại: ${err}`,
   "skills.dontRemind": "Không nhắc lại",
