@@ -1049,6 +1049,8 @@ const zhTW: typeof en = {
   "board.addNote": "新增備註", // Add a note
   "board.addNoteButton": "新增備註", // Add note
   "board.history": "歷程", // History
+  "board.sendToClaude": "傳送給 Claude", // Send to Claude
+  "board.newSession": "新的 Claude 工作階段", // New Claude session
   "board.action.created": "建立了", // created
   "board.action.moved": "移到", // moved to
   "board.action.edited": "編輯了", // edited

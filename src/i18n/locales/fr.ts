@@ -1068,6 +1068,8 @@ const fr: typeof en = {
   "board.addNote": "Ajouter une note", // Add a note
   "board.addNoteButton": "Ajouter la note", // Add note
   "board.history": "Historique", // History
+  "board.sendToClaude": "Envoyer à Claude", // Send to Claude
+  "board.newSession": "Nouvelle session Claude", // New Claude session
   "board.action.created": "a créé", // created
   "board.action.moved": "a déplacé vers", // moved to
   "board.action.edited": "a modifié", // edited

@@ -18,7 +18,9 @@ import {
 } from "../../ipc/board";
 import { BoardColumn } from "./BoardColumn";
 import { TYPE_ICON } from "./BoardCard";
+import { useTermStore } from "../../store/termStore";
 import { CardDetails } from "./CardDetails";
+import { sendCardToClaude } from "./sendToClaude";
 import { allTags, filterCards } from "./filter";
 import "./board.css";
 
@@ -32,6 +34,11 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
   const [menu, setMenu] = useState<{ card: BoardCard; x: number; y: number } | null>(null);
   /** Card number open in the details panel, or "new" for the new-card form. */
   const [open, setOpen] = useState<number | "new" | null>(null);
+  const allSessions = useTermStore((st) => st.sessions);
+  const claudeSessions = useMemo(
+    () => allSessions.filter((st) => st.projectId === projectId && st.kind === "claude" && !st.archivedAt),
+    [allSessions, projectId],
+  );
 
   const load = useCallback(() => {
     boardGet(projectId)
@@ -145,6 +152,8 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
           projectId={projectId}
           number={open === "new" ? undefined : open}
           onClose={() => setOpen(null)}
+          claudeSessions={claudeSessions}
+          onSend={(card, target) => sendCardToClaude(projectId, card, target)}
         />
       )}
       </div>

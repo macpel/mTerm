@@ -1066,6 +1066,8 @@ const ptBR: typeof en = {
   "board.addNote": "Adicionar uma nota", // Add a note
   "board.addNoteButton": "Adicionar nota", // Add note
   "board.history": "Histórico", // History
+  "board.sendToClaude": "Enviar ao Claude", // Send to Claude
+  "board.newSession": "Nova sessão do Claude", // New Claude session
   "board.action.created": "criou", // created
   "board.action.moved": "moveu para", // moved to
   "board.action.edited": "editou", // edited

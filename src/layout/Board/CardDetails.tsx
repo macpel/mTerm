@@ -1,5 +1,6 @@
 //! Side panel of the board: the new-card form, or one card's fields, notes thread and history.
 import { useCallback, useEffect, useState } from "react";
+import { ContextMenu, type MenuItem } from "../../components/ContextMenu";
 import Icons from "../../components/Icons";
 import { useT } from "../../i18n";
 import {
@@ -11,11 +12,13 @@ import {
   boardCardUpdate,
   boardNoteAdd,
   onBoardChanged,
+  type BoardCard,
   type BoardColumn,
   type CardAction,
   type CardDetail,
   type CardFields,
 } from "../../ipc/board";
+import type { Session } from "../../types";
 import { ago } from "./BoardCard";
 
 const EMPTY: CardFields = { title: "", type: "task", priority: "medium", description: "", tags: [] };
@@ -24,14 +27,16 @@ export function CardDetails({
   projectId,
   number,
   onClose,
-  children,
+  claudeSessions = [],
+  onSend,
 }: {
   projectId: string;
   /** Card to show; omitted for the new-card form. */
   number?: number;
   onClose: () => void;
-  /** Extra actions shown under the fields of an existing card. */
-  children?: React.ReactNode;
+  /** The project's Claude sessions offered by "Send to Claude". */
+  claudeSessions?: Session[];
+  onSend?: (card: BoardCard, target: "new" | Session) => Promise<void> | void;
 }) {
   const t = useT();
   const [card, setCard] = useState<CardDetail | null>(null);
@@ -41,6 +46,7 @@ export function CardDetails({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [sendMenu, setSendMenu] = useState<{ x: number; y: number } | null>(null);
 
   const load = useCallback(() => {
     if (number === undefined) return;
@@ -177,7 +183,31 @@ export function CardDetails({
             </button>
           )}
         </div>
-        {number !== undefined && children}
+        {card && onSend && (
+          <button
+            type="button"
+            className="vlx-btn board-send"
+            disabled={busy}
+            onClick={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              setSendMenu({ x: r.left, y: r.bottom });
+            }}
+          >
+            <Icons.bot size={12} /> {t("board.sendToClaude")}
+          </button>
+        )}
+        {sendMenu && card && onSend && (
+          <ContextMenu
+            x={sendMenu.x}
+            y={sendMenu.y}
+            onClose={() => setSendMenu(null)}
+            items={[
+              { label: t("board.newSession"), onClick: () => void run(async () => onSend(card, "new")) },
+              ...(claudeSessions.length ? [{ label: "", separator: true } as MenuItem] : []),
+              ...claudeSessions.map((session) => ({ label: session.name, onClick: () => void run(async () => onSend(card, session)) })),
+            ]}
+          />
+        )}
         {card && (
           <>
             <h4>{t("board.notes")}</h4>

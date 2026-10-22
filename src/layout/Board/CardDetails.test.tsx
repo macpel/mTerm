@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { CardDetail } from "../../ipc/board";
+import type { Session } from "../../types";
 
 vi.mock("../../i18n", () => ({
   useT: () => (key: string, ...args: unknown[]) => (args.length ? `${key}:${args.join(",")}` : key),
@@ -101,5 +102,16 @@ describe("CardDetails", () => {
     expect(items[0]).toContain("board.action.moved");
     expect(items[0]).toContain("board.column.in_progress");
     expect(items[1]).toContain("board.action.created");
+  });
+
+  it("Send to Claude offers a new session and the project's Claude sessions", async () => {
+    const onSend = vi.fn();
+    const sessions = [{ id: "s1", name: "Session One" }] as Session[];
+    render(<CardDetails projectId="p1" number={7} onClose={() => {}} claudeSessions={sessions} onSend={onSend} />);
+    await screen.findByText("Reproduced it");
+    fireEvent.click(screen.getByRole("button", { name: "board.sendToClaude" }));
+    expect(await screen.findByRole("menuitem", { name: "Session One" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("menuitem", { name: "board.newSession" }));
+    expect(onSend).toHaveBeenCalledWith(expect.objectContaining({ number: 7 }), "new");
   });
 });

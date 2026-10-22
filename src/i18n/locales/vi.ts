@@ -1055,6 +1055,8 @@ const vi: typeof en = {
   "board.addNote": "Thêm ghi chú",
   "board.addNoteButton": "Thêm ghi chú",
   "board.history": "Lịch sử",
+  "board.sendToClaude": "Gửi cho Claude",
+  "board.newSession": "Phiên Claude mới",
   "board.action.created": "đã tạo",
   "board.action.moved": "đã chuyển sang",
   "board.action.edited": "đã sửa",

@@ -1065,6 +1065,8 @@ const ja: typeof en = {
   "board.addNote": "メモを追加", // Add a note
   "board.addNoteButton": "メモを追加", // Add note
   "board.history": "履歴", // History
+  "board.sendToClaude": "Claude に送る", // Send to Claude
+  "board.newSession": "新しい Claude セッション", // New Claude session
   "board.action.created": "作成", // created
   "board.action.moved": "移動先:", // moved to
   "board.action.edited": "編集", // edited

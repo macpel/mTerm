@@ -1065,6 +1065,8 @@ const en = {
   "board.addNote": "Add a note",
   "board.addNoteButton": "Add note",
   "board.history": "History",
+  "board.sendToClaude": "Send to Claude",
+  "board.newSession": "New Claude session",
   "board.action.created": "created",
   "board.action.moved": "moved to",
   "board.action.edited": "edited",

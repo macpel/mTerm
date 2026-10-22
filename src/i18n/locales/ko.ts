@@ -1061,6 +1061,8 @@ const ko: typeof en = {
   "board.addNote": "메모 추가", // Add a note
   "board.addNoteButton": "메모 추가", // Add note
   "board.history": "기록", // History
+  "board.sendToClaude": "Claude에게 보내기", // Send to Claude
+  "board.newSession": "새 Claude 세션", // New Claude session
   "board.action.created": "생성", // created
   "board.action.moved": "이동:", // moved to
   "board.action.edited": "편집", // edited

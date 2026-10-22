@@ -1075,6 +1075,8 @@ const ru: typeof en = {
   "board.addNote": "Добавить заметку", // Add a note
   "board.addNoteButton": "Добавить заметку", // Add note
   "board.history": "История", // History
+  "board.sendToClaude": "Отправить Claude", // Send to Claude
+  "board.newSession": "Новая сессия Claude", // New Claude session
   "board.action.created": "создал(а)", // created
   "board.action.moved": "переместил(а) в", // moved to
   "board.action.edited": "изменил(а)", // edited

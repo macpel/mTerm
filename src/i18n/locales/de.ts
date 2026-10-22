@@ -1065,6 +1065,8 @@ const de: typeof en = {
   "board.addNote": "Notiz hinzufügen", // Add a note
   "board.addNoteButton": "Notiz hinzufügen", // Add note
   "board.history": "Verlauf", // History
+  "board.sendToClaude": "An Claude senden", // Send to Claude
+  "board.newSession": "Neue Claude-Sitzung", // New Claude session
   "board.action.created": "erstellt", // created
   "board.action.moved": "verschoben nach", // moved to
   "board.action.edited": "bearbeitet", // edited

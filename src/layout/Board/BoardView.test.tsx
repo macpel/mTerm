@@ -22,6 +22,11 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
   }),
 }));
 
+vi.mock("../../store/termStore", () => ({
+  useTermStore: (select: (state: { sessions: unknown[] }) => unknown) => select({ sessions: [] }),
+}));
+vi.mock("./sendToClaude", () => ({ sendCardToClaude: vi.fn() }));
+
 import { boardCardMove, boardGet } from "../../ipc/board";
 import { BoardView } from "./BoardView";
 

@@ -1048,6 +1048,8 @@ const zhCN: typeof en = {
   "board.addNote": "添加备注",
   "board.addNoteButton": "添加备注",
   "board.history": "历史",
+  "board.sendToClaude": "发送给 Claude",
+  "board.newSession": "新的 Claude 会话",
   "board.action.created": "创建了",
   "board.action.moved": "移动到",
   "board.action.edited": "编辑了",

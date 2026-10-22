@@ -1235,6 +1235,8 @@ interface TermStore {
   executeSpawn: (req: SpawnRequest) => Promise<void>;
   /** Consumes a session's pending initial spawn prompt after PTY startup. */
   takePendingPrompt: (id: SessionId) => string | undefined;
+  /** Queue the first message a session's terminal view passes to the agent when it first starts. */
+  setPendingPrompt: (id: SessionId, text: string) => void;
   /** Archives a chat and retargets its existing pane to the returned fresh session. */
   clearChatSession: (id: SessionId, model?: string, effort?: string) => Promise<Session>;
   /** Consumes model/effort transferred by `clearChatSession`. */
@@ -2466,6 +2468,8 @@ export const useTermStore = create<TermStore>((set, get) => ({
   executeSpawn: async (req) => {
     await get().confirmSpawn(req);
   },
+
+  setPendingPrompt: (id, text) => set((s) => ({ pendingPrompts: { ...s.pendingPrompts, [id]: text } })),
 
   takePendingPrompt: (id) => {
     const p = get().pendingPrompts[id];

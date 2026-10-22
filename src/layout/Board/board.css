@@ -53,3 +53,4 @@
 .board-notes li { padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--bg-2); }
 .board-note-text { margin-top: 3px; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
 .board-history li { color: var(--text-mid); font-size: 11px; }
+.board-send { align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; }
