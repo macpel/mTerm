@@ -1032,6 +1032,26 @@ const ptBR: typeof en = {
   "tree.newGroup": "Novo grupo", // New Group
   "tree.openBoard": "Quadro", // Board
   "board.title": "Quadro", // Board
+  "board.column.backlog": "Backlog", // Backlog
+  "board.column.todo": "A fazer", // To Do
+  "board.column.in_progress": "Em andamento", // In Progress
+  "board.column.review": "Revisão", // Review
+  "board.column.done": "Concluído", // Done
+  "board.type.task": "Tarefa", // Task
+  "board.type.bug": "Bug", // Bug
+  "board.type.feature": "Recurso", // Feature
+  "board.type.epic": "Épico", // Epic
+  "board.priority.low": "Baixa", // Low
+  "board.priority.medium": "Média", // Medium
+  "board.priority.high": "Alta", // High
+  "board.priority.urgent": "Urgente", // Urgent
+  "board.search": "Pesquisar cartões", // Search cards
+  "board.review": "Coluna de revisão", // Review column
+  "board.addCard": "Cartão", // Card
+  "board.empty": "Nenhum cartão ainda. Adicione um ou peça ao Claude para planejar o trabalho com vboard.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "Você", // You
+  "board.takenBy": (name: string) => `Assumido por ${name}`, // Taken by {}
+  "board.cardMenu": "Ações do cartão", // Card actions
   "tree.newSubgroup": "Novo subgrupo", // New Subgroup
   "tree.newChildSession": "Nova sessão filha", // New Child Session
   "tree.openSelected": "Abrir sessões selecionadas", // Open Selected Sessions

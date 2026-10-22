@@ -1034,6 +1034,26 @@ const fr: typeof en = {
   "tree.newGroup": "Nouveau groupe", // New Group
   "tree.openBoard": "Tableau", // Board
   "board.title": "Tableau", // Board
+  "board.column.backlog": "Backlog", // Backlog
+  "board.column.todo": "À faire", // To Do
+  "board.column.in_progress": "En cours", // In Progress
+  "board.column.review": "Revue", // Review
+  "board.column.done": "Terminé", // Done
+  "board.type.task": "Tâche", // Task
+  "board.type.bug": "Bogue", // Bug
+  "board.type.feature": "Fonctionnalité", // Feature
+  "board.type.epic": "Épopée", // Epic
+  "board.priority.low": "Basse", // Low
+  "board.priority.medium": "Moyenne", // Medium
+  "board.priority.high": "Haute", // High
+  "board.priority.urgent": "Urgente", // Urgent
+  "board.search": "Rechercher des cartes", // Search cards
+  "board.review": "Colonne de revue", // Review column
+  "board.addCard": "Carte", // Card
+  "board.empty": "Aucune carte pour l’instant. Ajoutez-en une ou demandez à Claude de planifier le travail avec vboard.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "Vous", // You
+  "board.takenBy": (name: string) => `Prise par ${name}`, // Taken by {}
+  "board.cardMenu": "Actions de la carte", // Card actions
   "tree.newSubgroup": "Nouveau sous-groupe", // New Subgroup
   "tree.newChildSession": "Nouvelle session enfant", // New Child Session
   "tree.openSelected": "Ouvrir les sessions sélectionnées", // Open Selected Sessions

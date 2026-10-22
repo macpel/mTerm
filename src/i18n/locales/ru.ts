@@ -1041,6 +1041,26 @@ const ru: typeof en = {
   "tree.newGroup": "Новая группа", // New Group
   "tree.openBoard": "Доска", // Board
   "board.title": "Доска", // Board
+  "board.column.backlog": "Бэклог", // Backlog
+  "board.column.todo": "К выполнению", // To Do
+  "board.column.in_progress": "В работе", // In Progress
+  "board.column.review": "Ревью", // Review
+  "board.column.done": "Готово", // Done
+  "board.type.task": "Задача", // Task
+  "board.type.bug": "Ошибка", // Bug
+  "board.type.feature": "Функция", // Feature
+  "board.type.epic": "Эпик", // Epic
+  "board.priority.low": "Низкий", // Low
+  "board.priority.medium": "Средний", // Medium
+  "board.priority.high": "Высокий", // High
+  "board.priority.urgent": "Срочный", // Urgent
+  "board.search": "Поиск карточек", // Search cards
+  "board.review": "Колонка ревью", // Review column
+  "board.addCard": "Карточка", // Card
+  "board.empty": "Карточек пока нет. Добавьте карточку или попросите Claude спланировать работу через vboard.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "Вы", // You
+  "board.takenBy": (name: string) => `Взял ${name}`, // Taken by {}
+  "board.cardMenu": "Действия с карточкой", // Card actions
   "tree.newSubgroup": "Новая подгруппа", // New Subgroup
   "tree.newChildSession": "Новая дочерняя сессия", // New Child Session
   "tree.openSelected": "Открыть выбранные сессии", // Open Selected Sessions

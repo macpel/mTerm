@@ -1031,6 +1031,26 @@ const ja: typeof en = {
   "tree.newGroup": "新規グループ", // New Group
   "tree.openBoard": "ボード", // Board
   "board.title": "ボード", // Board
+  "board.column.backlog": "バックログ", // Backlog
+  "board.column.todo": "未着手", // To Do
+  "board.column.in_progress": "進行中", // In Progress
+  "board.column.review": "レビュー", // Review
+  "board.column.done": "完了", // Done
+  "board.type.task": "タスク", // Task
+  "board.type.bug": "バグ", // Bug
+  "board.type.feature": "機能", // Feature
+  "board.type.epic": "エピック", // Epic
+  "board.priority.low": "低", // Low
+  "board.priority.medium": "中", // Medium
+  "board.priority.high": "高", // High
+  "board.priority.urgent": "緊急", // Urgent
+  "board.search": "カードを検索", // Search cards
+  "board.review": "レビュー列", // Review column
+  "board.addCard": "カード", // Card
+  "board.empty": "カードはまだありません。追加するか、vboard で Claude に作業を計画させてください。", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "あなた", // You
+  "board.takenBy": (name: string) => `${name} が担当中`, // Taken by {}
+  "board.cardMenu": "カードの操作", // Card actions
   "tree.newSubgroup": "新規サブグループ", // New Subgroup
   "tree.newChildSession": "新規子セッション", // New Child Session
   "tree.openSelected": "選択したセッションを開く", // Open Selected Sessions

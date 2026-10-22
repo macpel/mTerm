@@ -1015,6 +1015,26 @@ const zhTW: typeof en = {
   "tree.newGroup": "新增群組", // New Group
   "tree.openBoard": "看板", // Board
   "board.title": "看板", // Board
+  "board.column.backlog": "待辦池", // Backlog
+  "board.column.todo": "待辦", // To Do
+  "board.column.in_progress": "進行中", // In Progress
+  "board.column.review": "審查", // Review
+  "board.column.done": "已完成", // Done
+  "board.type.task": "任務", // Task
+  "board.type.bug": "缺陷", // Bug
+  "board.type.feature": "功能", // Feature
+  "board.type.epic": "史詩", // Epic
+  "board.priority.low": "低", // Low
+  "board.priority.medium": "中", // Medium
+  "board.priority.high": "高", // High
+  "board.priority.urgent": "緊急", // Urgent
+  "board.search": "搜尋卡片", // Search cards
+  "board.review": "審查欄", // Review column
+  "board.addCard": "卡片", // Card
+  "board.empty": "還沒有卡片。新增一張，或讓 Claude 用 vboard 規劃工作。", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "你", // You
+  "board.takenBy": (name: string) => `由 ${name} 認領`, // Taken by {}
+  "board.cardMenu": "卡片操作", // Card actions
   "tree.newSubgroup": "新增子群組", // New Subgroup
   "tree.newChildSession": "新增子會話", // New Child Session
   "tree.openSelected": "開啟選取的會話", // Open Selected Sessions

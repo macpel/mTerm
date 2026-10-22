@@ -1027,6 +1027,26 @@ const ko: typeof en = {
   "tree.newGroup": "새 그룹", // New Group
   "tree.openBoard": "보드", // Board
   "board.title": "보드", // Board
+  "board.column.backlog": "백로그", // Backlog
+  "board.column.todo": "할 일", // To Do
+  "board.column.in_progress": "진행 중", // In Progress
+  "board.column.review": "리뷰", // Review
+  "board.column.done": "완료", // Done
+  "board.type.task": "작업", // Task
+  "board.type.bug": "버그", // Bug
+  "board.type.feature": "기능", // Feature
+  "board.type.epic": "에픽", // Epic
+  "board.priority.low": "낮음", // Low
+  "board.priority.medium": "보통", // Medium
+  "board.priority.high": "높음", // High
+  "board.priority.urgent": "긴급", // Urgent
+  "board.search": "카드 검색", // Search cards
+  "board.review": "리뷰 열", // Review column
+  "board.addCard": "카드", // Card
+  "board.empty": "아직 카드가 없습니다. 카드를 추가하거나 vboard로 Claude에게 작업 계획을 맡기세요.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "나", // You
+  "board.takenBy": (name: string) => `${name} 담당`, // Taken by {}
+  "board.cardMenu": "카드 작업", // Card actions
   "tree.newSubgroup": "새 하위 그룹", // New Subgroup
   "tree.newChildSession": "새 하위 세션", // New Child Session
   "tree.openSelected": "선택한 세션 열기", // Open Selected Sessions
