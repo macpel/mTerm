@@ -228,6 +228,9 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
         crate::kb::guard_paths(app,cmd,args,|path|guard_remote_path(app,origin,path))?;
         return crate::kb::dispatch(app,cmd,args);
     }
+    if cmd.starts_with("board_") {
+        return crate::board::dispatch(app, cmd, args);
+    }
     if cmd.starts_with("knowledge_") {
         crate::knowledge::guard_paths(app,cmd,args,|path|guard_remote_path(app,origin,path))?;
         return crate::knowledge::dispatch(app, cmd, args);

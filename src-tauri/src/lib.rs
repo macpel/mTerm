@@ -31,6 +31,7 @@ mod models;
 mod memory;
 mod kb;
 mod knowledge;
+mod board;
 // GUI-only: remote windows download files through the local host, with a save dialog and progress.
 #[cfg(feature = "gui")]
 mod local_download;

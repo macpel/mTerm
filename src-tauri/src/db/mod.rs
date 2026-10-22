@@ -54,6 +54,7 @@ impl Db {
         crate::memory::init(&conn)?;
         crate::kb::init(&conn)?;
         crate::knowledge::init(&conn)?;
+        crate::board::init(&conn)?;
         crate::security::init(&conn)?;
         Ok(Self {
             conn: Mutex::new(conn),
