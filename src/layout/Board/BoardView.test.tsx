@@ -27,7 +27,7 @@ vi.mock("../../store/termStore", () => ({
 }));
 vi.mock("./sendToClaude", () => ({ sendCardToClaude: vi.fn() }));
 
-import { boardCardMove, boardGet } from "../../ipc/board";
+import { boardCardMove, boardGet, boardSetReview } from "../../ipc/board";
 import { BoardView } from "./BoardView";
 
 function card(number: number, over: Partial<BoardCard> = {}): BoardCard {
@@ -113,5 +113,15 @@ describe("BoardView", () => {
     h.changed?.();
     expect(await screen.findByText("Added by Claude")).toBeTruthy();
     await waitFor(() => expect(boardGet).toHaveBeenCalledTimes(2));
+  });
+
+  it("review switch changes at once and saves", async () => {
+    render(<BoardView projectId="p1" hidden={false} />);
+    await screen.findByText("Login crash");
+    const toggle = screen.getByRole("checkbox", { name: "board.review" }) as HTMLInputElement;
+    fireEvent.click(toggle);
+    expect(toggle.checked).toBe(true);
+    expect(screen.getByRole("region", { name: "board.column.review" })).toBeTruthy();
+    expect(boardSetReview).toHaveBeenCalledWith("p1", true);
   });
 });

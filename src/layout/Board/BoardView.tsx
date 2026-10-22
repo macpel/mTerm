@@ -73,6 +73,14 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
   const move = (number: number, column: Column, beforeNumber?: number) => {
     boardCardMove(projectId, number, column, beforeNumber).catch((e) => setError(String(e)));
   };
+  // Show the switch's new state at once; the change event that follows confirms it, a failure restores it.
+  const setReview = (enabled: boolean) => {
+    setData((d) => (d ? { ...d, reviewEnabled: enabled } : d));
+    boardSetReview(projectId, enabled).catch((err) => {
+      setError(String(err));
+      load();
+    });
+  };
   const toggle = <T,>(list: T[], value: T) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
   const menuItems = (card: BoardCard): MenuItem[] =>
@@ -123,7 +131,7 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
           <input
             type="checkbox"
             checked={data?.reviewEnabled ?? false}
-            onChange={(e) => boardSetReview(projectId, e.target.checked).catch((err) => setError(String(err)))}
+            onChange={(e) => setReview(e.target.checked)}
           />
           {t("board.review")}
         </label>
