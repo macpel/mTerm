@@ -216,13 +216,12 @@ export function TitleBar() {
           className="logo"
           // CSS content on `.brand .logo` follows data-theme so system-mode changes do not require a
           // TitleBar rerender. This light src is only a fallback when CSS content is unavailable.
-          src={apiUrl("/velaterm-light.svg")}
-          style={{"--brand-logo-light":`url("${apiUrl("/velaterm-light.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/velaterm-dark.svg")}")`} as CSSProperties}
-          alt="VelaTerm"
+          src={apiUrl("/mterm.svg")}
+          style={{"--brand-logo-light":`url("${apiUrl("/mterm.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/mterm.svg")}")`} as CSSProperties}
+          alt="mTerm"
           draggable={false}
         />
-        <span className="v">Vela</span>
-        <span className="sub">terminal · agents</span>
+        <span className="v">mTerm</span>
         {env.isDev || __DEV_BUILD__ ? (
           <span
             // Vite development for Tauri/browser shows HMR time. Electron loads packaged assets without

@@ -1,17 +1,17 @@
 ---
 name: vtell
 description: >-
-  Send a message to another VelaTerm session when the user asks you to tell, notify, or send instructions
+  Send a message to another mTerm session when the user asks you to tell, notify, or send instructions
   to that session. Messages appear in the recipient's chat with the sender's agent icon and session name.
   Use --report when an assigned planning/execution workflow requires submitting an executor's result
-  for review. Available only inside VelaTerm-hosted local sessions.
+  for review. Available only inside mTerm-hosted local sessions.
 argument-hint: "[session] [--steer] [--report --round N] [--message-id msg-UUID] <message>"
 allowed-tools: Bash(vtell:*)
 ---
 
 # vtell
 
-Use the injected `vtell` command to send the requested content to an existing VelaTerm conversation.
+Use the injected `vtell` command to send the requested content to an existing mTerm conversation.
 Sending starts a new turn when the recipient is idle, or queues the message when it is busy. It can
 resume a stopped native chat process in the same conversation. This is an action, not a read-only lookup:
 send only when requested by the user or required by an already assigned workflow.
@@ -100,5 +100,5 @@ inspect the recipient with `vrefer` and workflow receipts with `vflow status` wh
 poll continuously or repeatedly send the same instructions.
 
 The receiving chat and archived transcript retain the verified sender identity. This requires a
-VelaTerm build with the `vtell` backend and command shim; installing the skill alone cannot add that
+mTerm build with the `vtell` backend and command shim; installing the skill alone cannot add that
 capability to an older running application.

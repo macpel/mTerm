@@ -181,7 +181,7 @@ fn session_env() -> Result<(String, String, String), String> {
 fn require_env(name: &str) -> Result<String, String> {
     match std::env::var(name) {
         Ok(v) if !v.is_empty() => Ok(v),
-        _ => Err(format!("not inside a VelaTerm session (missing {name})")),
+        _ => Err(format!("not inside an mTerm session (missing {name})")),
     }
 }
 
@@ -696,7 +696,7 @@ pub fn run_stat(args: &[String]) -> ! {
         if all_idle(&value) {
             let summary = render_stat_summary(&value);
             println!("\n{summary}");
-            print!("{}", osc_notification("VelaTerm", &summary));
+            print!("{}", osc_notification("mTerm", &summary));
             let _ = std::io::stdout().flush();
             std::process::exit(0);
         }
@@ -1644,7 +1644,7 @@ fn post_reference_stream(url:&str,body:&str,json:bool,writer:&mut impl std::io::
     if response.status()!=200 {
         let mut payload=String::new();response.into_reader().take(512*1024+1).read_to_string(&mut payload).map_err(|e|e.to_string())?;
         let value=serde_json::from_str::<serde_json::Value>(&payload).unwrap_or_default();
-        return Err(value["error"].as_str().unwrap_or("VelaTerm could not read the requested conversation").into());
+        return Err(value["error"].as_str().unwrap_or("mTerm could not read the requested conversation").into());
     }
     let content_type=response.header("Content-Type").unwrap_or_default().split(';').next().unwrap_or_default().trim().to_owned();
     if (json && content_type=="application/json") || (!json && content_type=="text/plain") {
@@ -1652,9 +1652,9 @@ fn post_reference_stream(url:&str,body:&str,json:bool,writer:&mut impl std::io::
     } else if content_type=="application/json" {
         // Older servers ignore the stream negotiation and answer a text request with JSON.
         let mut bytes=Vec::new();response.into_reader().read_to_end(&mut bytes).map_err(|e|e.to_string())?;
-        let value:serde_json::Value=serde_json::from_slice(&bytes).map_err(|_|"VelaTerm returned an invalid reference response")?;
+        let value:serde_json::Value=serde_json::from_slice(&bytes).map_err(|_|"mTerm returned an invalid reference response")?;
         writer.write_all(if value.get("answer").is_some() {render_answer(&value)} else {render_refer(&value)}.as_bytes()).map_err(|e|e.to_string())?;
-    } else {return Err("VelaTerm returned an unsupported reference response type".into());}
+    } else {return Err("mTerm returned an unsupported reference response type".into());}
     writer.write_all(b"\n").map_err(|e|e.to_string())?;Ok(())
 }
 
@@ -2413,8 +2413,8 @@ mod tests {
         );
         // OSC 777 fields are semicolon-separated, so text may not carry one through.
         assert_eq!(
-            osc_notification("VelaTerm", "t: all 2 agents; done"),
-            "\x1b]777;notify;VelaTerm;t: all 2 agents, done\x07"
+            osc_notification("mTerm", "t: all 2 agents; done"),
+            "\x1b]777;notify;mTerm;t: all 2 agents, done\x07"
         );
     }
 

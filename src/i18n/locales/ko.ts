@@ -503,7 +503,7 @@ const ko: typeof en = {
   "settings.cliUninstall": "‘vela’ 명령 제거",
   "settings.cliInstalledAt": (path: string) => `${path}에 설치됨`,
   "settings.cliConflict": (path: string) =>
-    `${path}에 다른 ‘vela’ 명령이 있습니다. VelaTerm은 덮어쓰지 않습니다.`,
+    `${path}에 다른 ‘vela’ 명령이 있습니다. mTerm은 덮어쓰지 않습니다.`,
   "settings.cliHint":
     "VS Code의 `code`처럼 `vela <project-path>`를 PATH에 추가합니다.",
   "settings.agentArgsHint":
@@ -852,7 +852,7 @@ const ko: typeof en = {
   "settings.sound": "알림음", // Notification sound
   "settings.language": "언어", // Language
   "settings.langAuto": "자동 (시스템)", // Auto (system)
-  "settings.skillLabel": "Vela Skills",
+  "settings.skillLabel": "mTerm Skills",
   "settings.skillInstall": "Install", // Install
   "settings.skillInstalled": "Reinstall", // Reinstall
   "settings.skillInvokeHint":
@@ -862,14 +862,14 @@ const ko: typeof en = {
   "settings.notifyGranted": "Enabled", // TODO translate
   "settings.notifyAllow": "Allow notifications", // TODO translate
   "settings.notifyOffHint":
-    "Allow VelaTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
+    "Allow mTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
   "settings.notifyDeniedHint": "Notifications are blocked. To turn them on:", // TODO translate
   "settings.notifyStepsMac":
-    "open System Settings ▸ Notifications ▸ VelaTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
+    "open System Settings ▸ Notifications ▸ mTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
   "settings.notifyStepsWin":
-    "open Settings ▸ System ▸ Notifications, enable VelaTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
+    "open Settings ▸ System ▸ Notifications, enable mTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
   "settings.notifyStepsLinux":
-    "open your desktop's Settings ▸ Notifications and allow VelaTerm.", // TODO translate
+    "open your desktop's Settings ▸ Notifications and allow mTerm.", // TODO translate
   "settings.notifyStepsBrowser":
     "click the site-permission icon in the address bar and set Notifications to Allow.", // TODO translate
   "settings.notifyUnsupported":
@@ -895,7 +895,7 @@ const ko: typeof en = {
   "settings.scScreenshot": "스크린샷 찍기",
   "settings.scOff": "끔",
   "settings.scScreenshotHint":
-    "VelaTerm이 백그라운드에 있어도 모든 앱에서 사용할 수 있습니다. 끄려면 단축키를 클릭한 다음 Delete 키를 누르세요.",
+    "mTerm이 백그라운드에 있어도 모든 앱에서 사용할 수 있습니다. 끄려면 단축키를 클릭한 다음 Delete 키를 누르세요.",
   "settings.scConflictTabs": "이미 탭 전환에 사용 중",
   "settings.scInUse": "다른 앱에서 이미 사용 중인 단축키입니다",
   "settings.scReset": "기본값 복원", // Restore defaults
@@ -976,14 +976,14 @@ const ko: typeof en = {
   "connect.wslDistribution": "Linux 배포판",
   "connect.wslSelect": "배포판 선택",
   "connect.wslMissing": "이 배포판은 더 이상 사용할 수 없습니다. 다른 배포판을 선택하세요.",
-  "connect.wslSetup": "연결 시 필요한 경우 해당 버전의 VelaTerm 서버를 WSL에 다운로드하고 시작합니다. SSH 설정은 필요하지 않습니다.",
+  "connect.wslSetup": "연결 시 필요한 경우 해당 버전의 mTerm 서버를 WSL에 다운로드하고 시작합니다. SSH 설정은 필요하지 않습니다.",
   "conn.wslReconnecting": "WSL 작업 공간에 다시 연결하는 중…",
   "conn.wslDown": "WSL 작업 공간을 사용할 수 없습니다. ‘지금 다시 연결’을 선택하여 다시 시도하세요.",
   "connect.title": "원격 서버에 연결", // Connect to Remote Server
   "connect.pairingPlaceholder": "페어링 링크 붙여넣기", // Paste pairing link
   "connect.confirmConnect": "지문 확인 후 연결", // Fingerprint matches, connect
   "connect.desc":
-    "원격 VelaTerm의 주소와 비밀번호를 입력하면 새 창에서 연결·조작합니다.", // Enter the address and password…
+    "원격 mTerm의 주소와 비밀번호를 입력하면 새 창에서 연결·조작합니다.", // Enter the address and password…
   "connect.addressPlaceholder": "IP 주소 (예: 192.168.1.100)", // IP address, e.g. 192.168.1.100
   "connect.portPlaceholder": "포트", // Port
   "connect.connecting": "연결 중…", // Connecting…
@@ -1386,7 +1386,7 @@ const ko: typeof en = {
   "browser.shortcutInvalidUrl": "올바른 http:// 또는 https:// 주소를 입력하세요.", // Enter a valid http:// or https:// address.
   "browser.loading": "로드 중…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "VelaTerm을 종료할까요?", // Quit VelaTerm?
+  "quit.title": "mTerm을 종료할까요?", // Quit mTerm?
   "quit.body": "실행 중인 터미널과 에이전트 세션이 모두 중지됩니다.", // Any running terminal and agent sessions will be stopped.
   "quit.remoteWindows": "열려 있는 원격 창도 함께 닫힙니다.", // Open remote windows will also be closed.
   "quit.saveWorkspace": "작업 공간 저장", // Save workspace
@@ -1440,7 +1440,7 @@ const ko: typeof en = {
   "agentVersion.checkFailed": "업데이트를 확인할 수 없습니다.",
   "agentInstall.title": (label) => `${label}이(가) 설치되어 있지 않습니다`, // {label} is not installed
   "agentInstall.desc": (label) =>
-    `VelaTerm이 PATH에서 ${label}을(를) 찾지 못했습니다. 설치하면 이 세션을 시작할 수 있습니다.`, // couldn't find {label} on PATH
+    `mTerm이 PATH에서 ${label}을(를) 찾지 못했습니다. 설치하면 이 세션을 시작할 수 있습니다.`, // couldn't find {label} on PATH
   "agentInstall.install": "지금 설치", // Install now
   "agentInstall.retry": "다시 시작", // Retry launch
   "agentInstall.dismiss": "직접 설치", // I'll do it myself
@@ -1781,7 +1781,7 @@ const ko: typeof en = {
   "mobile.scopeProject": "프로젝트",
   "mobile.scopeSession": "세션",
   "mobile.sharingNotReady": "공유 콘텐츠가 아직 준비되지 않았습니다. 해당 기기의 공유 설정을 확인하세요.",
-  "mobile.deviceOffline": "기기가 오프라인입니다. 해당 기기에서 VelaTerm을 열고 네트워크 연결을 유지하세요.",
+  "mobile.deviceOffline": "기기가 오프라인입니다. 해당 기기에서 mTerm을 열고 네트워크 연결을 유지하세요.",
   "mobile.viewShared": "공유 콘텐츠 보기 →",
   "mobile.devicesUnavailable": "기기 목록을 불러오지 못했습니다. 다시 시도하세요.",
   "mobile.accountUnavailable": "계정 상태를 불러오지 못했습니다. 네트워크 연결을 확인한 후 다시 시도하세요.",
@@ -1832,11 +1832,11 @@ const ko: typeof en = {
   "mobile.keepPassphrase": "비워 두면 현재 키 암호 유지",
   "mobile.sshSecretSavedHint": "SSH 인증 정보는 휴대폰의 보안 저장소에 보관됩니다. 편집할 때 입력란을 비워 두면 저장된 정보가 유지됩니다.",
   "mobile.remoteService": "원격 서비스",
-  "mobile.serviceAuto": "VelaTerm 서비스 자동 검색",
+  "mobile.serviceAuto": "mTerm 서비스 자동 검색",
   "mobile.serviceManual": "기존 서비스 포트 사용",
   "mobile.remotePort": "원격 호스트의 루프백 HTTP 포트",
   "mobile.webPasswordAutoHint": "접근 비밀번호가 저장되어 있으며 다시 연결할 때 자동으로 사용됩니다.",
-  "mobile.prepareService": "사용 가능한 서비스가 없으면 VelaTerm 서비스 다운로드 및 시작",
+  "mobile.prepareService": "사용 가능한 서비스가 없으면 mTerm 서비스 다운로드 및 시작",
   "mobile.prepareServiceHint": "자동 준비는 서명이 검증된 실행 파일, 설정 및 로그를 원격 호스트의 ~/.velaterm/에 저장하고 서비스를 계속 실행합니다. Python 3과 Ed25519를 지원하는 OpenSSL이 필요합니다. 기존 서비스를 재사용하거나 해당 포트를 지정하는 경우에는 이 도구들이 필요하지 않습니다.",
   "mobile.saveConnection": "연결 저장",
   "mobile.saveAndConnect": "저장 후 연결",
@@ -1936,21 +1936,21 @@ const ko: typeof en = {
   "updater.downloadManually": "Download manually", // TODO translate
   "updater.downloadManuallyHint": "Open the download page in your browser.", // TODO translate
   "updater.windowsNotice":
-    "VelaTerm will close while the installer runs, then reopen on its own.", // TODO translate
+    "mTerm will close while the installer runs, then reopen on its own.", // TODO translate
   "updater.installingWindows":
-    "Installing… VelaTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
+    "Installing… mTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
   "statusbar.updateAvailable": (version) => `Update ${version}`, // TODO translate
   "statusbar.updateDownloading": (pct) => `Updating… ${pct}%`, // TODO translate
   "statusbar.updateInstalling": "Installing…", // TODO translate
   "statusbar.updateReady": "Restart to update", // TODO translate
   "statusbar.updateFailed": "Update failed", // TODO translate
   "statusbar.updateTooltip": "Click for details", // TODO translate
-  "statusbar.skillsAvailable": "Vela Skills 설치",
-  "skills.title": "Vela Skills 설치",
-  "skills.subtitle": "설치하면 Claude Code와 Codex의 대화에서 다음 VelaTerm 기능을 사용할 수 있습니다. Claude Code에서는 /vspawn, Codex에서는 $vspawn처럼 입력합니다.",
+  "statusbar.skillsAvailable": "mTerm Skills 설치",
+  "skills.title": "mTerm Skills 설치",
+  "skills.subtitle": "설치하면 Claude Code와 Codex의 대화에서 다음 mTerm 기능을 사용할 수 있습니다. Claude Code에서는 /vspawn, Codex에서는 $vspawn처럼 입력합니다.",
   "skills.vspawn": "하위 세션을 만들어 작업을 맡깁니다.",
   "skills.vspawnTree": "독립된 워크트리를 사용하는 하위 세션을 만듭니다.",
-  "skills.vopen": "파일이나 웹 페이지를 VelaTerm에서 엽니다.",
+  "skills.vopen": "파일이나 웹 페이지를 mTerm에서 엽니다.",
   "skills.vartifact": "시각적인 결과물을 세션 옆에 실시간 HTML 페이지로 보여 줍니다.", // Show visual work as a live HTML page beside the conversation.
   "skills.vrefer": "다른 세션의 대화 내용을 읽습니다.",
   "skills.vask": "다른 세션에 관해 질문하고 간결한 답변을 받습니다.",
@@ -2244,7 +2244,7 @@ const ko: typeof en = {
   "chat.mcp.codexScope": "Codex 사용자 설정이 변경되며, 이 설정을 사용하는 다른 대화에도 영향을 줍니다. 계속하시겠습니까?",
   "chat.mcp.tooltip": "MCP 서버",
   "chat.mcp.loading": "서버 목록을 읽는 중…",
-  "chat.mcp.backendUnsupported": "현재 연결된 VelaTerm 백엔드는 MCP 관리를 지원하지 않습니다. 해당 백엔드를 업데이트하고 다시 시작한 후 재시도하세요.",
+  "chat.mcp.backendUnsupported": "현재 연결된 mTerm 백엔드는 MCP 관리를 지원하지 않습니다. 해당 백엔드를 업데이트하고 다시 시작한 후 재시도하세요.",
   "chat.mcp.none": "구성된 MCP 서버가 없습니다",
   "chat.mcp.tools": (n: number) => `도구 ${n}개`,
   "chat.mcp.reconnect": "다시 연결",
@@ -2336,7 +2336,7 @@ const ko: typeof en = {
   "mobile.native.scanUnavailable": "스캔 화면을 열 수 없습니다. 연결 목록으로 돌아간 후 다시 시도하세요.",
   "mobile.native.scannerNotReady": "스캐너가 아직 준비되지 않았습니다.",
   "mobile.native.scanCancelled": "스캔이 취소되었습니다.",
-  "mobile.native.cameraPermissionDenied": "카메라 접근이 허용되지 않았습니다. 시스템 설정에서 VelaTerm의 카메라 사용을 허용하세요.",
+  "mobile.native.cameraPermissionDenied": "카메라 접근이 허용되지 않았습니다. 시스템 설정에서 mTerm의 카메라 사용을 허용하세요.",
   "mobile.native.cameraUnavailable": "카메라를 사용할 수 없습니다. 기기와 카메라 접근 권한을 확인하세요.",
   "mobile.native.cameraBusy": "카메라를 사용할 수 없습니다. 카메라를 사용하는 다른 앱을 닫은 후 다시 시도하세요.",
   "mobile.native.qrOutputUnavailable": "이 기기는 QR 코드를 읽을 수 없습니다.",
@@ -2391,8 +2391,8 @@ const ko: typeof en = {
   "mobile.native.healthCheckFailed": "원격 서비스 상태 확인에 실패했습니다.",
   "mobile.native.connectionClosed": "연결이 닫혔습니다.",
   "mobile.native.responseTooLarge": "원격 응답이 너무 큽니다.",
-  "mobile.native.cameraUsageDescription": "VelaTerm은 서비스 주소의 QR 코드를 스캔하기 위해 카메라를 사용합니다.",
-  "mobile.native.localNetworkUsageDescription": "VelaTerm은 로컬 네트워크의 VelaTerm 서비스 및 SSH 호스트에 연결합니다.",
+  "mobile.native.cameraUsageDescription": "mTerm은 서비스 주소의 QR 코드를 스캔하기 위해 카메라를 사용합니다.",
+  "mobile.native.localNetworkUsageDescription": "mTerm은 로컬 네트워크의 mTerm 서비스 및 SSH 호스트에 연결합니다.",
 
 
   "term.runs.label": "백그라운드 명령",

@@ -502,7 +502,7 @@ const en = {
   "settings.cliUninstall": "Uninstall 'vela' command",
   "settings.cliInstalledAt": (path: string) => `Installed at ${path}`,
   "settings.cliConflict": (path: string) =>
-    `A different 'vela' command already exists at ${path}. VelaTerm will not overwrite it.`,
+    `A different 'vela' command already exists at ${path}. mTerm will not overwrite it.`,
   "settings.cliHint":
     "Adds `vela <project-path>` to your PATH, like VS Code's `code` command.",
   "settings.agentArgsHint":
@@ -853,7 +853,7 @@ const en = {
   "settings.sound": "Notification sound",
   "settings.language": "Language",
   "settings.langAuto": "Auto (system)",
-  "settings.skillLabel": "Vela Skills",
+  "settings.skillLabel": "mTerm Skills",
   "settings.skillInstall": "Install",
   "settings.skillInstalled": "Reinstall",
   "settings.skillInvokeHint":
@@ -863,14 +863,14 @@ const en = {
   "settings.notifyGranted": "Enabled",
   "settings.notifyAllow": "Allow notifications",
   "settings.notifyOffHint":
-    "Allow VelaTerm to alert you when an agent needs your input or finishes a task.",
+    "Allow mTerm to alert you when an agent needs your input or finishes a task.",
   "settings.notifyDeniedHint": "Notifications are blocked. To turn them on:",
   "settings.notifyStepsMac":
-    "open System Settings ▸ Notifications ▸ VelaTerm and turn on Allow Notifications (Banners or Alerts recommended).",
+    "open System Settings ▸ Notifications ▸ mTerm and turn on Allow Notifications (Banners or Alerts recommended).",
   "settings.notifyStepsWin":
-    "open Settings ▸ System ▸ Notifications, enable VelaTerm, and make sure Focus assist / Do not disturb isn't blocking it.",
+    "open Settings ▸ System ▸ Notifications, enable mTerm, and make sure Focus assist / Do not disturb isn't blocking it.",
   "settings.notifyStepsLinux":
-    "open your desktop's Settings ▸ Notifications and allow VelaTerm.",
+    "open your desktop's Settings ▸ Notifications and allow mTerm.",
   "settings.notifyStepsBrowser":
     "click the site-permission icon in the address bar and set Notifications to Allow.",
   "settings.notifyUnsupported":
@@ -897,7 +897,7 @@ const en = {
   "settings.scScreenshot": "Take screenshot",
   "settings.scOff": "Off",
   "settings.scScreenshotHint":
-    "Works in any app, even when VelaTerm is in the background. To turn it off, click it and press Delete.",
+    "Works in any app, even when mTerm is in the background. To turn it off, click it and press Delete.",
   "settings.scConflictTabs": "Already used for switching tabs",
   "settings.scInUse": "Another app is already using this shortcut",
   "settings.scReset": "Restore defaults",
@@ -979,14 +979,14 @@ const en = {
   "connect.wslDistribution": "Linux distribution",
   "connect.wslSelect": "Select a distribution",
   "connect.wslMissing": "This distribution is no longer available. Select another one.",
-  "connect.wslSetup": "Connecting downloads and starts the matching VelaTerm server in WSL when needed. No SSH setup is required.",
+  "connect.wslSetup": "Connecting downloads and starts the matching mTerm server in WSL when needed. No SSH setup is required.",
   "conn.wslReconnecting": "Reconnecting to the WSL workspace…",
   "conn.wslDown": "The WSL workspace is unavailable. Select Reconnect now to try again.",
   "connect.title": "Connect to Remote Server",
   "connect.pairingPlaceholder": "Paste pairing link",
   "connect.confirmConnect": "Fingerprint matches, connect",
   "connect.desc":
-    "Enter the address and password of a remote VelaTerm to connect and control it in a new window.",
+    "Enter the address and password of a remote mTerm to connect and control it in a new window.",
   "connect.addressPlaceholder": "IP address, e.g. 192.168.1.100",
   "connect.portPlaceholder": "Port",
   "connect.connecting": "Connecting…",
@@ -1399,7 +1399,7 @@ const en = {
   "browser.shortcutInvalidUrl": "Enter a valid http:// or https:// address.",
   "browser.loading": "Loading…",
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "Quit VelaTerm?",
+  "quit.title": "Quit mTerm?",
   "quit.body": "Any running terminal and agent sessions will be stopped.",
   "quit.remoteWindows": "Open remote windows will also be closed.",
   "quit.saveWorkspace": "Save workspace",
@@ -1455,7 +1455,7 @@ const en = {
   "agentVersion.checkFailed": "Unable to check for updates.",
   "agentInstall.title": (label: string) => `${label} is not installed`,
   "agentInstall.desc": (label: string) =>
-    `VelaTerm couldn't find ${label} on your PATH. Install it to launch this session.`,
+    `mTerm couldn't find ${label} on your PATH. Install it to launch this session.`,
   "agentInstall.install": "Install now",
   "agentInstall.retry": "Retry launch",
   "agentInstall.dismiss": "I'll do it myself",
@@ -1821,7 +1821,7 @@ const en = {
   "mobile.scopeProject": "Project",
   "mobile.scopeSession": "Session",
   "mobile.sharingNotReady": "Shared content is not ready yet. Check the sharing settings on that device.",
-  "mobile.deviceOffline": "The device is offline. Open VelaTerm on that device and keep it connected to the network.",
+  "mobile.deviceOffline": "The device is offline. Open mTerm on that device and keep it connected to the network.",
   "mobile.viewShared": "View shared content →",
   "mobile.devicesUnavailable": "Could not load the device list. Please try again.",
   "mobile.accountUnavailable": "Could not load the account status. Check your network connection and try again.",
@@ -1872,11 +1872,11 @@ const en = {
   "mobile.keepPassphrase": "Leave empty to keep the current passphrase",
   "mobile.sshSecretSavedHint": "SSH credentials are kept in the phone’s secure storage. Leave the fields empty while editing to keep them.",
   "mobile.remoteService": "Remote service",
-  "mobile.serviceAuto": "Find the VelaTerm service automatically",
+  "mobile.serviceAuto": "Find the mTerm service automatically",
   "mobile.serviceManual": "Use an existing service port",
   "mobile.remotePort": "Remote loopback HTTP port",
   "mobile.webPasswordAutoHint": "The access password is saved and used automatically when you reconnect.",
-  "mobile.prepareService": "Download and start the VelaTerm service when none is available",
+  "mobile.prepareService": "Download and start the mTerm service when none is available",
   "mobile.prepareServiceHint": "Automatic preparation writes a signature-verified binary, configuration, and logs to ~/.velaterm/ on the remote host and keeps the service running. It requires Python 3 and OpenSSL with Ed25519 support; reusing an existing service or specifying its port does not require these tools.",
   "mobile.saveConnection": "Save connection",
   "mobile.saveAndConnect": "Save and connect",
@@ -1957,9 +1957,9 @@ const en = {
   "updater.downloadManually": "Download manually",
   "updater.downloadManuallyHint": "Open the download page in your browser.",
   "updater.windowsNotice":
-    "VelaTerm will close while the installer runs, then reopen on its own.",
+    "mTerm will close while the installer runs, then reopen on its own.",
   "updater.installingWindows":
-    "Installing… VelaTerm is about to close. The installer will finish the update and reopen it.",
+    "Installing… mTerm is about to close. The installer will finish the update and reopen it.",
   // The status-bar new-version segment belongs to automatic updates and stays here for centralized editing.
   "statusbar.updateAvailable": (version: string) => `Update ${version}`,
   "statusbar.updateDownloading": (pct: number) => `Updating… ${pct}%`,
@@ -1967,12 +1967,12 @@ const en = {
   "statusbar.updateReady": "Restart to update",
   "statusbar.updateFailed": "Update failed",
   "statusbar.updateTooltip": "Click for details",
-  "statusbar.skillsAvailable": "Install Vela Skills",
-  "skills.title": "Install Vela Skills",
-  "skills.subtitle": "After installation, Claude Code and Codex can use the following VelaTerm features in a conversation, for example /vspawn in Claude Code or $vspawn in Codex.",
+  "statusbar.skillsAvailable": "Install mTerm Skills",
+  "skills.title": "Install mTerm Skills",
+  "skills.subtitle": "After installation, Claude Code and Codex can use the following mTerm features in a conversation, for example /vspawn in Claude Code or $vspawn in Codex.",
   "skills.vspawn": "Create a child session to work on a task.",
   "skills.vspawnTree": "Create a child session with its own worktree.",
-  "skills.vopen": "Open a file or web page in VelaTerm.",
+  "skills.vopen": "Open a file or web page in mTerm.",
   "skills.vartifact": "Show visual work as a live HTML page beside the conversation.",
   "skills.vrefer": "Read the conversation of another session.",
   "skills.vask": "Ask a question about another session and get a concise answer.",
@@ -2271,7 +2271,7 @@ const en = {
   "chat.mcp.codexScope": "This changes your Codex user configuration and affects other conversations using it. Continue?",
   "chat.mcp.tooltip": "MCP servers",
   "chat.mcp.loading": "Reading the server list…",
-  "chat.mcp.backendUnsupported": "The connected VelaTerm backend does not support MCP controls. Update and restart that backend, then retry.",
+  "chat.mcp.backendUnsupported": "The connected mTerm backend does not support MCP controls. Update and restart that backend, then retry.",
   "chat.mcp.none": "No MCP servers configured",
   "chat.mcp.tools": (n: number) => (n === 1 ? "1 tool" : `${n} tools`),
   "chat.mcp.reconnect": "Reconnect",
@@ -2364,7 +2364,7 @@ const en = {
   "mobile.native.scanUnavailable": "The scanner could not be opened. Return to the connections page and try again.",
   "mobile.native.scannerNotReady": "The scanner is not ready yet.",
   "mobile.native.scanCancelled": "Scan cancelled.",
-  "mobile.native.cameraPermissionDenied": "Camera access is not allowed. Allow VelaTerm to use the camera in system settings.",
+  "mobile.native.cameraPermissionDenied": "Camera access is not allowed. Allow mTerm to use the camera in system settings.",
   "mobile.native.cameraUnavailable": "The camera cannot be used. Check the device and its camera permission.",
   "mobile.native.cameraBusy": "The camera is unavailable. Close other apps that use the camera and try again.",
   "mobile.native.qrOutputUnavailable": "This device cannot read QR codes.",
@@ -2419,8 +2419,8 @@ const en = {
   "mobile.native.healthCheckFailed": "The remote service failed its health check.",
   "mobile.native.connectionClosed": "The connection has been closed.",
   "mobile.native.responseTooLarge": "The remote response is too large.",
-  "mobile.native.cameraUsageDescription": "VelaTerm uses the camera to scan QR codes for service addresses.",
-  "mobile.native.localNetworkUsageDescription": "VelaTerm connects to VelaTerm services and SSH hosts on your local network.",
+  "mobile.native.cameraUsageDescription": "mTerm uses the camera to scan QR codes for service addresses.",
+  "mobile.native.localNetworkUsageDescription": "mTerm connects to mTerm services and SSH hosts on your local network.",
 
 
   // Commands a terminal session started with vrun, listed above the terminal while they run.

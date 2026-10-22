@@ -88,7 +88,7 @@ reasoning effort ("think harder / low effort", or a leading `--effort`) → add 
 ## Step 3: Run the command (always opens a worktree)
 
 Choose the repository before spawning. If the task or conversation identifies one unambiguous repository
-directory, add `--cwd <absolute-path>` so VelaTerm creates the worktree from the intended repository. Otherwise
+directory, add `--cwd <absolute-path>` so mTerm creates the worktree from the intended repository. Otherwise
 omit it and use the command's current directory. Do not guess between multiple plausible repositories.
 
 Pass the prompt you expanded in Step 1 **as a single argument** (escaping any quotes inside it correctly), and run

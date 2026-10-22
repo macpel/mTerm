@@ -32,7 +32,7 @@ it("offers the install hand-off and documentation for a recipe-backed agent", as
   render(<AgentMissingNotice session={session} onInstall={onInstall} onDismiss={vi.fn()} />);
 
   await screen.findByText("Codex is not installed");
-  expect(screen.getByText(/VelaTerm couldn't find Codex/)).toBeTruthy();
+  expect(screen.getByText(/mTerm couldn't find Codex/)).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Install now" }));
   expect(onInstall).toHaveBeenCalledOnce();
 });

@@ -78,5 +78,5 @@ That is the intended next step — search for the overview, then `vrefer` the se
 - What you find comes from **other sessions**, not this one's history. When you use it, say where it came
   from.
 - Must run inside a **vlx-term-hosted local session**: it relies on the injected `VLX_*` environment
-  variables and `vsearch` on PATH. If it reports "not inside a VelaTerm session", the command is simply
+  variables and `vsearch` on PATH. If it reports "not inside an mTerm session", the command is simply
   unavailable here — say so instead of looking for another way in.

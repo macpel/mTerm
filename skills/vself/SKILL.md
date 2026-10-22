@@ -1,7 +1,7 @@
 ---
 name: vself
 description: >-
-  Read a VelaTerm session's saved properties and parent-child relationships. Use for ordinary or
+  Read an mTerm session's saved properties and parent-child relationships. Use for ordinary or
   agent sessions when the user asks who spawned a session, which child sessions it has, or what
   configuration is saved on it. Can inspect the current session or another session by ID or name.
   Read-only: does not open, launch, message or interrupt any session.
@@ -41,9 +41,9 @@ effective default. Lookup does not run the agent or sample its native configurat
 `redactedFields` identifies masked launch input, environment values and URL credentials/query/fragment;
 environment variable names remain visible. Do not interpret masked values as missing configuration.
 Use `vflow list <session>` for related plan-execute tasks and current workflow states, or
-`vrefer <session>` for its conversation. A native `agentSessionId` is different from the VelaTerm ID:
-use `id`/`sessionId` in VelaTerm commands.
+`vrefer <session>` for its conversation. A native `agentSessionId` is different from the mTerm ID:
+use `id`/`sessionId` in mTerm commands.
 
-Run inside a VelaTerm-hosted session so the injected `VLX_*` environment points at the right backend.
+Run inside an mTerm-hosted session so the injected `VLX_*` environment points at the right backend.
 Queries read only that connected instance. If the command rejects a target argument, the running
 backend predates this query form; report the version mismatch instead of guessing or modifying SQLite.

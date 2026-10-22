@@ -504,7 +504,7 @@ const ptBR: typeof en = {
   "settings.cliUninstall": "Desinstalar o comando ‘vela’",
   "settings.cliInstalledAt": (path: string) => `Instalado em ${path}`,
   "settings.cliConflict": (path: string) =>
-    `Já existe outro comando ‘vela’ em ${path}. O VelaTerm não irá sobrescrevê-lo.`,
+    `Já existe outro comando ‘vela’ em ${path}. O mTerm não irá sobrescrevê-lo.`,
   "settings.cliHint":
     "Adiciona `vela <caminho-do-projeto>` ao PATH, como o comando `code` do VS Code.",
   "settings.agentArgsHint":
@@ -854,7 +854,7 @@ const ptBR: typeof en = {
   "settings.sound": "Som de notificação", // Notification sound
   "settings.language": "Idioma", // Language
   "settings.langAuto": "Auto (sistema)", // Auto (system)
-  "settings.skillLabel": "Vela Skills",
+  "settings.skillLabel": "mTerm Skills",
   "settings.skillInstall": "Install", // Install
   "settings.skillInstalled": "Reinstall", // Reinstall
   "settings.skillInvokeHint":
@@ -864,14 +864,14 @@ const ptBR: typeof en = {
   "settings.notifyGranted": "Enabled", // TODO translate
   "settings.notifyAllow": "Allow notifications", // TODO translate
   "settings.notifyOffHint":
-    "Allow VelaTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
+    "Allow mTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
   "settings.notifyDeniedHint": "Notifications are blocked. To turn them on:", // TODO translate
   "settings.notifyStepsMac":
-    "open System Settings ▸ Notifications ▸ VelaTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
+    "open System Settings ▸ Notifications ▸ mTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
   "settings.notifyStepsWin":
-    "open Settings ▸ System ▸ Notifications, enable VelaTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
+    "open Settings ▸ System ▸ Notifications, enable mTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
   "settings.notifyStepsLinux":
-    "open your desktop's Settings ▸ Notifications and allow VelaTerm.", // TODO translate
+    "open your desktop's Settings ▸ Notifications and allow mTerm.", // TODO translate
   "settings.notifyStepsBrowser":
     "click the site-permission icon in the address bar and set Notifications to Allow.", // TODO translate
   "settings.notifyUnsupported":
@@ -898,7 +898,7 @@ const ptBR: typeof en = {
   "settings.scScreenshot": "Capturar a tela",
   "settings.scOff": "Desativado",
   "settings.scScreenshotHint":
-    "Funciona em qualquer app, mesmo com o VelaTerm em segundo plano. Para desativar, clique no atalho e pressione Delete.",
+    "Funciona em qualquer app, mesmo com o mTerm em segundo plano. Para desativar, clique no atalho e pressione Delete.",
   "settings.scConflictTabs": "Já usado para alternar entre abas",
   "settings.scInUse": "Outro app já está usando este atalho",
   "settings.scReset": "Restaurar padrões", // Restore defaults
@@ -980,14 +980,14 @@ const ptBR: typeof en = {
   "connect.wslDistribution": "Distribuição Linux",
   "connect.wslSelect": "Selecionar uma distribuição",
   "connect.wslMissing": "Esta distribuição não está mais disponível. Selecione outra.",
-  "connect.wslSetup": "Ao conectar, a versão correspondente do servidor VelaTerm é baixada e iniciada no WSL, se necessário. Não é preciso configurar o SSH.",
+  "connect.wslSetup": "Ao conectar, a versão correspondente do servidor mTerm é baixada e iniciada no WSL, se necessário. Não é preciso configurar o SSH.",
   "conn.wslReconnecting": "Reconectando ao espaço de trabalho WSL…",
   "conn.wslDown": "O espaço de trabalho WSL está indisponível. Selecione “Reconectar agora” para tentar novamente.",
   "connect.title": "Conectar a servidor remoto", // Connect to Remote Server
   "connect.pairingPlaceholder": "Cole o link de emparelhamento", // Paste pairing link
   "connect.confirmConnect": "Impressão correta, conectar", // Fingerprint matches, connect
   "connect.desc":
-    "Digite o endereço e a senha de um VelaTerm remoto para conectar e controlá-lo em uma nova janela.", // Enter the address and password…
+    "Digite o endereço e a senha de um mTerm remoto para conectar e controlá-lo em uma nova janela.", // Enter the address and password…
   "connect.addressPlaceholder": "Endereço IP, ex.: 192.168.1.100", // IP address, e.g. 192.168.1.100
   "connect.portPlaceholder": "Porta", // Port
   "connect.connecting": "Conectando…", // Connecting…
@@ -1404,7 +1404,7 @@ const ptBR: typeof en = {
   "browser.shortcutInvalidUrl": "Digite um endereço http:// ou https:// válido.", // Enter a valid http:// or https:// address.
   "browser.loading": "Carregando…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "Sair do VelaTerm?", // Quit VelaTerm?
+  "quit.title": "Sair do mTerm?", // Quit mTerm?
   "quit.body":
     "Todas as sessões de terminal e de agente em execução serão encerradas.", // Any running terminal and agent sessions will be stopped.
   "quit.remoteWindows": "As janelas remotas abertas também serão fechadas.", // Open remote windows will also be closed.
@@ -1460,7 +1460,7 @@ const ptBR: typeof en = {
   "agentVersion.checkFailed": "Não foi possível verificar as atualizações.",
   "agentInstall.title": (label) => `${label} não está instalado`, // {label} is not installed
   "agentInstall.desc": (label) =>
-    `O VelaTerm não encontrou ${label} no seu PATH. Instale-o para iniciar esta sessão.`, // couldn't find {label} on PATH
+    `O mTerm não encontrou ${label} no seu PATH. Instale-o para iniciar esta sessão.`, // couldn't find {label} on PATH
   "agentInstall.install": "Instalar agora", // Install now
   "agentInstall.retry": "Tentar novamente", // Retry launch
   "agentInstall.dismiss": "Faço eu mesmo", // I'll do it myself
@@ -1806,7 +1806,7 @@ const ptBR: typeof en = {
   "mobile.scopeProject": "Projeto",
   "mobile.scopeSession": "Sessão",
   "mobile.sharingNotReady": "O conteúdo compartilhado ainda não está disponível. Verifique as configurações de compartilhamento nesse dispositivo.",
-  "mobile.deviceOffline": "O dispositivo está off-line. Abra o VelaTerm nesse dispositivo e mantenha-o conectado à rede.",
+  "mobile.deviceOffline": "O dispositivo está off-line. Abra o mTerm nesse dispositivo e mantenha-o conectado à rede.",
   "mobile.viewShared": "Ver conteúdo compartilhado →",
   "mobile.devicesUnavailable": "Não foi possível carregar a lista de dispositivos. Tente novamente.",
   "mobile.accountUnavailable": "Não foi possível carregar o status da conta. Verifique sua conexão de rede e tente novamente.",
@@ -1857,11 +1857,11 @@ const ptBR: typeof en = {
   "mobile.keepPassphrase": "Deixe em branco para manter a frase secreta atual",
   "mobile.sshSecretSavedHint": "As credenciais SSH ficam no armazenamento seguro do celular. Deixe os campos em branco ao editar para mantê-las.",
   "mobile.remoteService": "Serviço remoto",
-  "mobile.serviceAuto": "Localizar o serviço VelaTerm automaticamente",
+  "mobile.serviceAuto": "Localizar o serviço mTerm automaticamente",
   "mobile.serviceManual": "Usar a porta de um serviço existente",
   "mobile.remotePort": "Porta HTTP de loopback do host remoto",
   "mobile.webPasswordAutoHint": "A senha de acesso está salva e é usada automaticamente ao reconectar.",
-  "mobile.prepareService": "Baixar e iniciar o serviço VelaTerm quando nenhum estiver disponível",
+  "mobile.prepareService": "Baixar e iniciar o serviço mTerm quando nenhum estiver disponível",
   "mobile.prepareServiceHint": "A preparação automática grava um executável com assinatura verificada, configurações e logs em ~/.velaterm/ no host remoto e mantém o serviço em execução. Ela requer Python 3 e OpenSSL com suporte a Ed25519; reutilizar um serviço existente ou especificar sua porta não requer essas ferramentas.",
   "mobile.saveConnection": "Salvar conexão",
   "mobile.saveAndConnect": "Salvar e conectar",
@@ -1961,21 +1961,21 @@ const ptBR: typeof en = {
   "updater.downloadManually": "Download manually", // TODO translate
   "updater.downloadManuallyHint": "Open the download page in your browser.", // TODO translate
   "updater.windowsNotice":
-    "VelaTerm will close while the installer runs, then reopen on its own.", // TODO translate
+    "mTerm will close while the installer runs, then reopen on its own.", // TODO translate
   "updater.installingWindows":
-    "Installing… VelaTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
+    "Installing… mTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
   "statusbar.updateAvailable": (version) => `Update ${version}`, // TODO translate
   "statusbar.updateDownloading": (pct) => `Updating… ${pct}%`, // TODO translate
   "statusbar.updateInstalling": "Installing…", // TODO translate
   "statusbar.updateReady": "Restart to update", // TODO translate
   "statusbar.updateFailed": "Update failed", // TODO translate
   "statusbar.updateTooltip": "Click for details", // TODO translate
-  "statusbar.skillsAvailable": "Instalar Vela Skills",
-  "skills.title": "Instalar Vela Skills",
-  "skills.subtitle": "Após a instalação, o Claude Code e o Codex podem usar os seguintes recursos do VelaTerm em uma conversa, por exemplo /vspawn no Claude Code ou $vspawn no Codex.",
+  "statusbar.skillsAvailable": "Instalar mTerm Skills",
+  "skills.title": "Instalar mTerm Skills",
+  "skills.subtitle": "Após a instalação, o Claude Code e o Codex podem usar os seguintes recursos do mTerm em uma conversa, por exemplo /vspawn no Claude Code ou $vspawn no Codex.",
   "skills.vspawn": "Cria uma sessão filha para cuidar de uma tarefa.",
   "skills.vspawnTree": "Cria uma sessão filha com seu próprio worktree.",
-  "skills.vopen": "Abre um arquivo ou uma página web no VelaTerm.",
+  "skills.vopen": "Abre um arquivo ou uma página web no mTerm.",
   "skills.vartifact": "Mostra o trabalho visual como uma página HTML ao vivo ao lado da sessão.", // Show visual work as a live HTML page beside the conversation.
   "skills.vrefer": "Lê a conversa de outra sessão.",
   "skills.vask": "Faz uma pergunta sobre outra sessão e obtém uma resposta objetiva.",
@@ -2273,7 +2273,7 @@ const ptBR: typeof en = {
   "chat.mcp.codexScope": "Esta ação altera sua configuração de usuário do Codex e afeta outras conversas que a utilizam. Continuar?",
   "chat.mcp.tooltip": "Servidores MCP",
   "chat.mcp.loading": "Lendo a lista de servidores…",
-  "chat.mcp.backendUnsupported": "O servidor VelaTerm conectado não oferece suporte ao gerenciamento de MCP. Atualize e reinicie esse servidor e tente novamente.",
+  "chat.mcp.backendUnsupported": "O servidor mTerm conectado não oferece suporte ao gerenciamento de MCP. Atualize e reinicie esse servidor e tente novamente.",
   "chat.mcp.none": "Nenhum servidor MCP configurado",
   "chat.mcp.tools": (n: number) => (n === 1 ? "1 ferramenta" : `${n} ferramentas`),
   "chat.mcp.reconnect": "Reconectar",
@@ -2365,7 +2365,7 @@ const ptBR: typeof en = {
   "mobile.native.scanUnavailable": "Não foi possível abrir o leitor. Volte à página de conexões e tente novamente.",
   "mobile.native.scannerNotReady": "O leitor ainda não está pronto.",
   "mobile.native.scanCancelled": "Leitura cancelada.",
-  "mobile.native.cameraPermissionDenied": "O acesso à câmera não está permitido. Autorize o VelaTerm a usar a câmera nas configurações do sistema.",
+  "mobile.native.cameraPermissionDenied": "O acesso à câmera não está permitido. Autorize o mTerm a usar a câmera nas configurações do sistema.",
   "mobile.native.cameraUnavailable": "Não é possível usar a câmera. Verifique o dispositivo e a permissão de acesso à câmera.",
   "mobile.native.cameraBusy": "A câmera está indisponível. Feche outros aplicativos que estejam usando a câmera e tente novamente.",
   "mobile.native.qrOutputUnavailable": "Este dispositivo não consegue ler códigos QR.",
@@ -2420,8 +2420,8 @@ const ptBR: typeof en = {
   "mobile.native.healthCheckFailed": "O serviço remoto falhou na verificação de integridade.",
   "mobile.native.connectionClosed": "A conexão foi encerrada.",
   "mobile.native.responseTooLarge": "A resposta remota é muito grande.",
-  "mobile.native.cameraUsageDescription": "O VelaTerm usa a câmera para ler códigos QR com endereços de serviços.",
-  "mobile.native.localNetworkUsageDescription": "O VelaTerm se conecta a serviços VelaTerm e hosts SSH na sua rede local.",
+  "mobile.native.cameraUsageDescription": "O mTerm usa a câmera para ler códigos QR com endereços de serviços.",
+  "mobile.native.localNetworkUsageDescription": "O mTerm se conecta a serviços mTerm e hosts SSH na sua rede local.",
 
 
   "term.runs.label": "Comandos em segundo plano",

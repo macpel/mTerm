@@ -500,7 +500,7 @@ const zhCN: typeof en = {
   "settings.cliUninstall": "卸载 ‘vela’ 命令",
   "settings.cliInstalledAt": (path: string) => `已安装到 ${path}`,
   "settings.cliConflict": (path: string) =>
-    `${path} 已存在其他 ‘vela’ 命令，VelaTerm 不会覆盖它。`,
+    `${path} 已存在其他 ‘vela’ 命令，mTerm 不会覆盖它。`,
   "settings.cliHint":
     "像 VS Code 的 `code` 一样，把 `vela <项目路径>` 添加到 PATH。",
   "settings.agentArgsHint":
@@ -843,7 +843,7 @@ const zhCN: typeof en = {
   "settings.sound": "通知提示音",
   "settings.language": "语言",
   "settings.langAuto": "自动（跟随系统）",
-  "settings.skillLabel": "Vela 技能",
+  "settings.skillLabel": "mTerm 技能",
   "settings.skillInstall": "安装",
   "settings.skillInstalled": "重新安装",
   "settings.skillInvokeHint":
@@ -853,13 +853,13 @@ const zhCN: typeof en = {
   "settings.notifyGranted": "已开启",
   "settings.notifyAllow": "允许通知",
   "settings.notifyOffHint":
-    "允许 VelaTerm 在智能体需要你输入或任务完成时通知你。",
+    "允许 mTerm 在智能体需要你输入或任务完成时通知你。",
   "settings.notifyDeniedHint": "通知已被系统屏蔽。开启方法：",
   "settings.notifyStepsMac":
-    "打开「系统设置 ▸ 通知 ▸ VelaTerm」，开启「允许通知」（建议样式选横幅或提醒）。",
+    "打开「系统设置 ▸ 通知 ▸ mTerm」，开启「允许通知」（建议样式选横幅或提醒）。",
   "settings.notifyStepsWin":
-    "打开「设置 ▸ 系统 ▸ 通知」，启用 VelaTerm，并确认「专注助手 / 勿扰」没有屏蔽它。",
-  "settings.notifyStepsLinux": "在桌面环境的「设置 ▸ 通知」里允许 VelaTerm。",
+    "打开「设置 ▸ 系统 ▸ 通知」，启用 mTerm，并确认「专注助手 / 勿扰」没有屏蔽它。",
+  "settings.notifyStepsLinux": "在桌面环境的「设置 ▸ 通知」里允许 mTerm。",
   "settings.notifyStepsBrowser":
     "点击地址栏的站点权限图标，把通知设为「允许」。",
   "settings.notifyUnsupported": "当前环境不支持系统通知。",
@@ -884,7 +884,7 @@ const zhCN: typeof en = {
   "settings.scScreenshot": "截取屏幕",
   "settings.scOff": "已关闭",
   "settings.scScreenshotHint":
-    "在任何应用中都能使用，VelaTerm 在后台时同样有效。如需关闭，点一下快捷键后按 Delete 键。",
+    "在任何应用中都能使用，mTerm 在后台时同样有效。如需关闭，点一下快捷键后按 Delete 键。",
   "settings.scConflictTabs": "已用于切换标签页",
   "settings.scInUse": "该快捷键已被其他应用占用",
   "settings.scReset": "恢复默认",
@@ -965,13 +965,13 @@ const zhCN: typeof en = {
   "connect.wslDistribution": "Linux 发行版",
   "connect.wslSelect": "选择发行版",
   "connect.wslMissing": "此发行版已不可用，请选择其他发行版。",
-  "connect.wslSetup": "连接时会按需下载并启动匹配版本的 VelaTerm 服务端，无需配置 SSH。",
+  "connect.wslSetup": "连接时会按需下载并启动匹配版本的 mTerm 服务端，无需配置 SSH。",
   "conn.wslReconnecting": "正在重新连接 WSL 工作区…",
   "conn.wslDown": "WSL 工作区不可用，请点击「立即重连」重试。",
   "connect.title": "连接远程服务",
   "connect.pairingPlaceholder": "粘贴配对链接",
   "connect.confirmConnect": "指纹无误，连接",
-  "connect.desc": "输入远程 VelaTerm 的地址和密码，在新窗口中连接并操控。",
+  "connect.desc": "输入远程 mTerm 的地址和密码，在新窗口中连接并操控。",
   "connect.addressPlaceholder": "IP 地址，如 192.168.1.100",
   "connect.portPlaceholder": "端口",
   "connect.connecting": "连接中…",
@@ -1368,7 +1368,7 @@ const zhCN: typeof en = {
   "browser.shortcutInvalidUrl": "请输入有效的 http:// 或 https:// 地址。",
   "browser.loading": "加载中…",
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "退出 VelaTerm？", // Quit VelaTerm?
+  "quit.title": "退出 mTerm？", // Quit mTerm?
   "quit.body": "正在运行的终端会话与智能体会话都会被停止。", // Any running terminal and agent sessions will be stopped.
   "quit.remoteWindows": "已打开的远端窗口也会一并关闭。", // Open remote windows will also be closed.
   "quit.saveWorkspace": "保存工作空间", // Save workspace
@@ -1419,7 +1419,7 @@ const zhCN: typeof en = {
   "agentVersion.checkFailed": "无法检查更新。",
   "agentInstall.title": (label) => `${label} 未安装`,
   "agentInstall.desc": (label) =>
-    `VelaTerm 没有在 PATH 上找到 ${label}。安装后即可启动该会话。`,
+    `mTerm 没有在 PATH 上找到 ${label}。安装后即可启动该会话。`,
   "agentInstall.install": "一键安装",
   "agentInstall.retry": "重试启动",
   "agentInstall.dismiss": "我自己装",
@@ -1749,7 +1749,7 @@ const zhCN: typeof en = {
   "mobile.scopeProject": "项目",
   "mobile.scopeSession": "会话",
   "mobile.sharingNotReady": "共享内容尚未就绪，请在该设备上检查共享设置。",
-  "mobile.deviceOffline": "设备已离线，请在该设备上打开 VelaTerm 并保持网络连接。",
+  "mobile.deviceOffline": "设备已离线，请在该设备上打开 mTerm 并保持网络连接。",
   "mobile.viewShared": "查看共享内容 →",
   "mobile.devicesUnavailable": "无法获取设备列表，请重试。",
   "mobile.accountUnavailable": "无法获取账号状态，请检查网络连接后重试。",
@@ -1800,11 +1800,11 @@ const zhCN: typeof en = {
   "mobile.keepPassphrase": "留空保留当前口令",
   "mobile.sshSecretSavedHint": "SSH 凭据已保存在手机安全存储中，编辑时留空即可保留。",
   "mobile.remoteService": "远端服务",
-  "mobile.serviceAuto": "自动查找 VelaTerm 服务",
+  "mobile.serviceAuto": "自动查找 mTerm 服务",
   "mobile.serviceManual": "指定已有服务端口",
   "mobile.remotePort": "远端回环 HTTP 服务端口",
   "mobile.webPasswordAutoHint": "服务访问密码已保存，重新连接时会自动使用。",
-  "mobile.prepareService": "没有可用服务时，下载并启动 VelaTerm 服务",
+  "mobile.prepareService": "没有可用服务时，下载并启动 mTerm 服务",
   "mobile.prepareServiceHint": "自动准备会在远端主机的 ~/.velaterm/ 中写入经过签名校验的程序、配置和日志，并让服务持续运行。此过程需要 Python 3 和支持 Ed25519 的 OpenSSL；复用已有服务或指定其端口不需要这些工具。",
   "mobile.saveConnection": "保存连接",
   "mobile.saveAndConnect": "保存并连接",
@@ -1902,9 +1902,9 @@ const zhCN: typeof en = {
   "updater.hideHint": "在后台继续下载，进度会留在状态栏。",
   "updater.downloadManually": "手动下载",
   "updater.downloadManuallyHint": "在浏览器中打开下载页面。",
-  "updater.windowsNotice": "安装期间 VelaTerm 会关闭，安装完成后自动重新打开。",
+  "updater.windowsNotice": "安装期间 mTerm 会关闭，安装完成后自动重新打开。",
   "updater.installingWindows":
-    "正在安装… VelaTerm 即将关闭，安装程序会完成更新并重新打开它。",
+    "正在安装… mTerm 即将关闭，安装程序会完成更新并重新打开它。",
   // The status-bar new-version segment belongs to automatic updates and stays here for centralized editing.
   "statusbar.updateAvailable": (version) => `更新 ${version}`,
   "statusbar.updateDownloading": (pct) => `正在更新… ${pct}%`,
@@ -1912,12 +1912,12 @@ const zhCN: typeof en = {
   "statusbar.updateReady": "重启以完成更新",
   "statusbar.updateFailed": "更新失败",
   "statusbar.updateTooltip": "点击查看详情",
-  "statusbar.skillsAvailable": "安装 Vela 技能",
-  "skills.title": "安装 Vela 技能",
-  "skills.subtitle": "安装后，Claude Code 和 Codex 可以在对话中使用以下 VelaTerm 功能，例如在 Claude Code 中输入 /vspawn，在 Codex 中输入 $vspawn。",
+  "statusbar.skillsAvailable": "安装 mTerm 技能",
+  "skills.title": "安装 mTerm 技能",
+  "skills.subtitle": "安装后，Claude Code 和 Codex 可以在对话中使用以下 mTerm 功能，例如在 Claude Code 中输入 /vspawn，在 Codex 中输入 $vspawn。",
   "skills.vspawn": "新建子会话来处理任务。",
   "skills.vspawnTree": "新建使用独立工作树的子会话。",
-  "skills.vopen": "在 VelaTerm 中打开文件或网页。",
+  "skills.vopen": "在 mTerm 中打开文件或网页。",
   "skills.vartifact": "把可视化成果做成实时 HTML 页面，显示在会话旁边。",
   "skills.vrefer": "读取其他会话的对话内容。",
   "skills.vask": "就其他会话提问，并获得简要回答。",
@@ -2211,7 +2211,7 @@ const zhCN: typeof en = {
   "chat.mcp.codexScope": "此操作将修改 Codex 用户配置，影响使用该配置的其他会话。是否继续？",
   "chat.mcp.tooltip": "MCP 服务器",
   "chat.mcp.loading": "正在读取服务器列表…",
-  "chat.mcp.backendUnsupported": "当前连接的 VelaTerm 后端不支持 MCP 管理。请更新并重启该后端，然后重试。",
+  "chat.mcp.backendUnsupported": "当前连接的 mTerm 后端不支持 MCP 管理。请更新并重启该后端，然后重试。",
   "chat.mcp.none": "未配置 MCP 服务器",
   "chat.mcp.tools": (n: number) => `${n} 个工具`,
   "chat.mcp.reconnect": "重新连接",
@@ -2303,7 +2303,7 @@ const zhCN: typeof en = {
   "mobile.native.scanUnavailable": "无法打开扫码窗口，请返回连接列表后重试。",
   "mobile.native.scannerNotReady": "扫码功能尚未就绪。",
   "mobile.native.scanCancelled": "扫码已取消。",
-  "mobile.native.cameraPermissionDenied": "尚未允许访问相机。请在系统设置中允许 VelaTerm 使用相机。",
+  "mobile.native.cameraPermissionDenied": "尚未允许访问相机。请在系统设置中允许 mTerm 使用相机。",
   "mobile.native.cameraUnavailable": "无法使用相机，请检查设备和相机权限。",
   "mobile.native.cameraBusy": "相机不可用，请关闭其他使用相机的应用后重试。",
   "mobile.native.qrOutputUnavailable": "此设备无法识别二维码。",
@@ -2358,8 +2358,8 @@ const zhCN: typeof en = {
   "mobile.native.healthCheckFailed": "远端服务未通过健康检查。",
   "mobile.native.connectionClosed": "连接已关闭。",
   "mobile.native.responseTooLarge": "远端响应过大。",
-  "mobile.native.cameraUsageDescription": "VelaTerm 使用相机扫描服务地址二维码。",
-  "mobile.native.localNetworkUsageDescription": "VelaTerm 连接局域网中的 VelaTerm 服务和 SSH 主机。",
+  "mobile.native.cameraUsageDescription": "mTerm 使用相机扫描服务地址二维码。",
+  "mobile.native.localNetworkUsageDescription": "mTerm 连接局域网中的 mTerm 服务和 SSH 主机。",
 
 
   "term.runs.label": "后台命令",

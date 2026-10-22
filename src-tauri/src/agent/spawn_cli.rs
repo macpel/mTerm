@@ -139,7 +139,7 @@ pub fn install_user_cli() -> std::io::Result<UserCliStatus> {
     if cfg!(debug_assertions) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
-            "install the packaged VelaTerm app before adding its shell command to PATH",
+            "install the packaged mTerm app before adding its shell command to PATH",
         ));
     }
     let before = user_cli_status();

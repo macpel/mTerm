@@ -708,7 +708,7 @@ pub async fn open_remote_window(
 
     let layout = crate::window_layout::policy();
     let win = with_download_handler(tauri::WebviewWindowBuilder::new(&app, &label, tauri::WebviewUrl::External(parsed)))
-        .title(format!("VelaTerm · Remote: {display_addr}"))
+        .title(format!("mTerm · Remote: {display_addr}"))
         .inner_size(layout.fallback_width, layout.fallback_height)
         .min_inner_size(layout.min_width, layout.min_height)
         .visible(false)
@@ -838,7 +838,7 @@ fn build_account_remote_window(app: &AppHandle, url: url::Url) -> Result<tauri::
 })();"#;
     let layout = crate::window_layout::policy();
     let win = with_download_handler(tauri::WebviewWindowBuilder::new(app, &label, tauri::WebviewUrl::External(url)))
-        .title("VelaTerm · Remote")
+        .title("mTerm · Remote")
         .inner_size(layout.fallback_width, layout.fallback_height)
         .min_inner_size(layout.min_width, layout.min_height)
         .visible(false)

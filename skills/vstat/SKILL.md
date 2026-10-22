@@ -51,5 +51,5 @@ the session has not reported yet, which usually means it is still starting.
 ## Notes
 
 - Must run inside a **vlx-term-hosted session**: it relies on the injected `VLX_*` environment variables
-  and `vstat` on PATH; if missing it reports "not inside a VelaTerm session" and exits.
+  and `vstat` on PATH; if missing it reports "not inside an mTerm session" and exits.
 - `latest` and orchestration IDs refer to historical runs from the retired vorch command. New task-splitting workflows use `vflow status`; the unfiltered `vstat` listing still includes their active sessions.

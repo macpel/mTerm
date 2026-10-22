@@ -1,7 +1,7 @@
 ---
 name: vflow
 description: >-
-  Query VelaTerm plan-execute workflows by session: find planner, executor and optional reviewer IDs, tasks, states,
+  Query mTerm plan-execute workflows by session: find planner, executor and optional reviewer IDs, tasks, states,
   rounds, delivery receipts and saved session properties. Use when a workflow ID is unknown or the
   user asks which execute sessions belong to a plan session. Lookup is read-only; it does not dispatch,
   message, stop or accept work.
@@ -19,7 +19,7 @@ vflow list <plan-session>
 The first form queries the calling session. The second accepts a full session ID, an ID prefix of at
 least eight characters, an exact name, or a unique name substring. Quote names containing spaces. An
 ambiguous reference returns candidates; choose an exact ID. Lookup can inspect another session,
-including an archived session, in the same connected VelaTerm instance.
+including an archived session, in the same connected mTerm instance.
 
 Read the JSON result:
 
@@ -51,6 +51,6 @@ stop, block, accept and finish commands retain their role and round checks. Read
 those actions. For an already authorized planning/execution handoff, read
 `../vspawn/references/plan-execute.md` and follow that protocol.
 
-The commands require a VelaTerm-hosted session and its injected `VLX_*` environment. If `vflow list`
+The commands require an mTerm-hosted session and its injected `VLX_*` environment. If `vflow list`
 reports an unknown action, the running backend predates lookup support; report the version mismatch
 instead of treating it as an empty workflow or editing the database.

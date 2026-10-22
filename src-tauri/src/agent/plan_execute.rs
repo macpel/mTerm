@@ -977,7 +977,7 @@ pub fn run_cli(args: &[String]) -> ! {
             );
         }
         if rest[0] == "list" {
-            let caller = std::env::var("VLX_SESSION_ID").map_err(|_| "Run inside a VelaTerm session")?;
+            let caller = std::env::var("VLX_SESSION_ID").map_err(|_| "Run inside an mTerm session")?;
             let req = query::list_request(&caller, &rest[1..])?;
             return super::tell::post_local("plan-execute", &serde_json::to_value(req).unwrap());
         }
@@ -994,7 +994,7 @@ pub fn run_cli(args: &[String]) -> ! {
         }
         let mut req = Request {
             session_id: std::env::var("VLX_SESSION_ID")
-                .map_err(|_| "Run inside a VelaTerm session")?,
+                .map_err(|_| "Run inside an mTerm session")?,
             run_id: rest.get(1).ok_or("Missing workflow ID")?.clone(),
             action: rest[0].clone(),
             round: 0,

@@ -319,7 +319,7 @@ export function LoginGate({ children }: { children: ReactNode }) {
         {phase === "need-login" ? <>
           <div style={{display: "flex", alignItems: "center", gap: 10, marginBottom: 6}}>
             <span style={{width: 30, height: 30, borderRadius: 8, display: "grid", placeItems: "center", background: "var(--accent)", color: "var(--bg-0)", fontWeight: 800}}>V</span>
-            <div><div style={{fontWeight: 700, fontSize: 15, color: "var(--text)"}}>VelaTerm</div><div style={{fontSize: 11, color: "var(--text-dim)"}}>{t("login.remoteAccess")}</div></div>
+            <div><div style={{fontWeight: 700, fontSize: 15, color: "var(--text)"}}>mTerm</div><div style={{fontSize: 11, color: "var(--text-dim)"}}>{t("login.remoteAccess")}</div></div>
           </div>
           <div style={{fontSize: 12, color: "var(--text-dim)", marginBottom: 14}}>{t("login.desc")}</div>
           <input type="password" value={password} placeholder={t("login.passwordPlaceholder")} autoFocus autoComplete="current-password" onChange={e => setPassword(e.target.value)}
@@ -327,7 +327,7 @@ export function LoginGate({ children }: { children: ReactNode }) {
           <button type="submit" disabled={submitting || !password} style={{...actionStyle, marginTop: 0, opacity: submitting || !password ? .6 : 1}}>{submitting ? t("login.connecting") : t("login.connect")}</button>
           {error && <div style={{marginTop: 12, fontSize: 12, color: "var(--danger, #ff6b6b)", textAlign: "center"}}>{error}</div>}
         </> : <>
-          <div style={{fontWeight: 700, fontSize: 15, color: "var(--text)", marginBottom: 8}}>VelaTerm</div>
+          <div style={{fontWeight: 700, fontSize: 15, color: "var(--text)", marginBottom: 8}}>mTerm</div>
           <div style={{fontSize: 13, color: "var(--text-dim)", lineHeight: 1.6}}>{t(phase === "need-pairing" ? "login.pairingRequired" : "login.authFailed")}</div>
           {phase === "auth-failed" && <button type="button" style={actionStyle} onClick={() => {setError(""); setPhase("need-login");}}>{t("common.retry")}</button>}
         </>}
@@ -341,7 +341,7 @@ export function LoginGate({ children }: { children: ReactNode }) {
       </nav>}
       <main className="login-content">
         <section className="login-card" aria-label={t("login.remoteAccess")}>
-          <div className="login-brand"><span aria-hidden="true" className="login-mark">V</span><strong>VelaTerm</strong></div>
+          <div className="login-brand"><span aria-hidden="true" className="login-mark">m</span><strong>mTerm</strong></div>
           <h1>{t("login.remoteAccess")}</h1>
           <p className="login-host">{window.location.host}</p>
           {phase === "checking" ? <p role="status">{t("login.connecting")}</p> :

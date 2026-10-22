@@ -1407,7 +1407,7 @@ fn native_quit_confirmation(app: &tauri::AppHandle) {
     app.clone()
         .dialog()
         .message(message)
-        .title("Quit VelaTerm?")
+        .title("Quit mTerm?")
         .kind(MessageDialogKind::Info)
         .buttons(MessageDialogButtons::OkCancelCustom(
             "Quit".to_string(),

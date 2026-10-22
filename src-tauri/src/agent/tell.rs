@@ -332,7 +332,7 @@ pub fn run_cli(args: &[String]) -> ! {
             std::process::exit(0);
         };
         req.session_id =
-            std::env::var("VLX_SESSION_ID").map_err(|_| "Run inside a VelaTerm session")?;
+            std::env::var("VLX_SESSION_ID").map_err(|_| "Run inside an mTerm session")?;
         if req.text.is_empty() {
             if std::io::stdin().is_terminal() {
                 return Err("Provide message text as arguments or on stdin".into());
