@@ -1,22 +1,15 @@
-# VelaTerm
+# mTerm
 
 [English](README.md) | 简体中文
 
 **最好的 ADE。** 不只是终端，也不只是 IDE。
 
-像 Codex 一样管理智能体会话，像 iTerm2 一样分屏使用终端。VelaTerm 把两者放进同一个原生应用，还能在浏览器和手机上继续使用。
+像 Codex 一样管理智能体会话，像 iTerm2 一样分屏使用终端。mTerm（m terminal）把两者放进同一个原生应用，还能在浏览器和手机上继续使用。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Website](https://img.shields.io/badge/Website-velaterm.com-0b7285.svg)](https://velaterm.com/zh-CN)
-[![Bilibili](https://img.shields.io/badge/Bilibili-VelaTerm-00A1D6.svg)](https://www.bilibili.com/video/BV11oag6dEyt/)
-[![X](https://img.shields.io/badge/X-@vlinx__soft-000000.svg)](https://x.com/vlinx_soft)
-[![Discord](https://img.shields.io/badge/Discord-join-5865F2.svg)](https://discord.gg/gaD4NBzggU)
 
-<a href="https://www.bilibili.com/video/BV11oag6dEyt/"><img src="docs/assets/velaterm-intro-cover-3a-equation-zh.jpg" alt="Codex 会话管理加 iTerm2 终端分屏，等于智能体开发环境 VelaTerm。点击观看介绍视频。" width="100%"></a>
-
-**[观看介绍视频（2:55）](https://www.bilibili.com/video/BV11oag6dEyt/)** ·
-**[下载](https://velaterm.com/zh-CN/download)** ·
-**[用户手册](https://velaterm.com/zh-CN/docs)**
+**[下载](https://github.com/macpel/mTerm/releases)** ·
+**[用户手册](docs/manuals/manuals-overview_20260709_2041.md)**（英文）
 
 ## 工作空间
 
@@ -24,7 +17,7 @@
 
 支持 Claude Code、Codex、OpenCode、Copilot、Cursor、Antigravity、Cline、Pi 等编程智能体。每个智能体都在独立会话中运行，支持实时状态查看、会话恢复与自定义启动参数。
 
-<img src="docs/assets/readme/window.webp" alt="同一个 VelaTerm 窗口中并排运行 Claude Code、Codex、开发服务器和 Shell" width="100%">
+<img src="docs/assets/readme/window.webp" alt="同一个 mTerm 窗口中并排运行 Claude Code、Codex、开发服务器和 Shell" width="100%">
 
 ### 一套完整的智能体开发环境
 
@@ -114,12 +107,6 @@ Claude、Codex、OpenCode、Pi 等不同智能体的会话之间，可以互相�
 
 <img src="docs/assets/readme/editor-markdown.webp" alt="带文件树的 Markdown 所见即所得编辑器" width="100%">
 
-### 任务之间，轻松片刻
-
-从工作空间进入游戏中心，打开 Pixel Wing，用键盘、触控或手柄游玩。
-
-<p align="center"><img src="docs/assets/readme/game.webp" alt="游戏中心里的 Pixel Wing" width="520"></p>
-
 ### 其他功能
 
 - **代码审计。** 内置 Codex Security 工作流，使用本机已登录的 Codex 或 Claude Code 运行，报告附带源码证据与覆盖范围说明，可导出 Markdown 或 JSON。详见[代码审计指南](docs/manuals/code-audits_20260908.md)（英文）。
@@ -160,27 +147,19 @@ Claude、Codex、OpenCode、Pi 等不同智能体的会话之间，可以互相�
 | Windows | x64、arm64 | PowerShell、Git Bash、WSL |
 | Linux | x86_64、aarch64 | bash |
 
-<p><img src="docs/assets/readme/platform-macos.webp" alt="macOS 上的 VelaTerm" width="32%"> <img src="docs/assets/readme/platform-windows.webp" alt="Windows 上使用 Git Bash 的 VelaTerm" width="32%"> <img src="docs/assets/readme/platform-linux.webp" alt="Linux 上的 VelaTerm" width="32%"></p>
+<p><img src="docs/assets/readme/platform-macos.webp" alt="macOS 上的 mTerm" width="32%"> <img src="docs/assets/readme/platform-windows.webp" alt="Windows 上使用 Git Bash 的 mTerm" width="32%"> <img src="docs/assets/readme/platform-linux.webp" alt="Linux 上的 mTerm" width="32%"></p>
 
 ## 下载
 
-从敲下第一条命令，到完成最终验收。请前往 [velaterm.com/zh-CN/download](https://velaterm.com/zh-CN/download) 下载对应平台的安装包，再从[入门指南](https://velaterm.com/zh-CN/docs/getting-started)开始使用。
+从敲下第一条命令，到完成最终验收。请前往[发布页面](https://github.com/macpel/mTerm/releases)下载对应平台的安装包，再从[入门指南](docs/manuals/getting-started_20260709_2041.md)（英文）开始使用。
 
 ## 文档
 
-- [手册总览](https://velaterm.com/zh-CN/docs)：建议从这里开始
-- [入门指南](https://velaterm.com/zh-CN/docs/getting-started)
-- [AI 智能体会话](https://velaterm.com/zh-CN/docs/ai-agent-sessions)
-- [远程开发](https://velaterm.com/zh-CN/docs/remote-development)
-- [更新日志](https://velaterm.com/zh-CN/docs/changelog)
-
-## 社区
-
-- **[哔哩哔哩](https://www.bilibili.com/video/BV11oag6dEyt/)**：产品介绍与演示视频。
-- **[X](https://x.com/vlinx_soft)**：版本发布公告与简短演示。
-- **[YouTube](https://www.youtube.com/@vlinx_soft)**：演示视频与功能导览。
-- **[Discord](https://discord.gg/gaD4NBzggU)**：提问、反馈问题与日常交流。
-- **[velaterm.com](https://velaterm.com/zh-CN)**：下载、用户手册与更新日志。
+- [手册总览](docs/manuals/manuals-overview_20260709_2041.md)（英文）：建议从这里开始
+- [入门指南](docs/manuals/getting-started_20260709_2041.md)（英文）
+- [AI 智能体会话](docs/manuals/ai-agent-sessions_20260709_2041.md)（英文）
+- [远程开发](docs/manuals/remote-development-guide_20260709_2041.md)（英文）
+- [更新日志](docs/changelog.zh-CN.md)
 
 ## 开发
 
@@ -244,7 +223,7 @@ src-tauri/src/    Rust 后端
   web/            内嵌 Web 服务与命令分发
   git.rs          Git 状态探测
 electron/         Electron 外壳
-skills/           在 VelaTerm 会话中提供给智能体的技能
+skills/           在 mTerm 会话中提供给智能体的技能
 docs/manuals/     用户手册
 ```
 
@@ -262,4 +241,4 @@ docs/manuals/     用户手册
 
 Copyright (c) 2026 VLINX Software。以 [MIT 许可证](LICENSE)发布。
 
-只要随附版权声明和许可证全文，你可以出于任何目的使用、复制、修改、合并、发布、分发、再许可和出售 VelaTerm 的副本。
+只要随附版权声明和许可证全文，你可以出于任何目的使用、复制、修改、合并、发布、分发、再许可和出售 mTerm 的副本。
