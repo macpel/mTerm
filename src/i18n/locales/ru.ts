@@ -1039,6 +1039,8 @@ const ru: typeof en = {
   "tree.newAgentSessionCustom": "Создать с аргументами…", // New with launch args…
   "tree.resumeSession": "Возобновить сессию…", // Resume Session…
   "tree.newGroup": "Новая группа", // New Group
+  "tree.openBoard": "Доска", // Board
+  "board.title": "Доска", // Board
   "tree.newSubgroup": "Новая подгруппа", // New Subgroup
   "tree.newChildSession": "Новая дочерняя сессия", // New Child Session
   "tree.openSelected": "Открыть выбранные сессии", // Open Selected Sessions

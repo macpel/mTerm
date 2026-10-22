@@ -712,6 +712,12 @@ export function LeftSidebar() {
         }]),
         buildMarkItem("project", node.id),
         ...(moveToCollection ? [moveToCollection] : []),
+        // A collection only groups projects, so it has no board of its own.
+        ...(virtual ? [] : [{
+          label: t("tree.openBoard"),
+          icon: <Icons.board size={14} />,
+          onClick: () => useTermStore.getState().openBoardTab(node.projectId),
+        }]),
         {
           label: t("common.experimental"),
           submenu: [

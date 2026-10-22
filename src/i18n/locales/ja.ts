@@ -1029,6 +1029,8 @@ const ja: typeof en = {
   "tree.newAgentSessionCustom": "起動引数を指定して新規…", // New with launch args…
   "tree.resumeSession": "セッションを再開…", // Resume Session…
   "tree.newGroup": "新規グループ", // New Group
+  "tree.openBoard": "ボード", // Board
+  "board.title": "ボード", // Board
   "tree.newSubgroup": "新規サブグループ", // New Subgroup
   "tree.newChildSession": "新規子セッション", // New Child Session
   "tree.openSelected": "選択したセッションを開く", // Open Selected Sessions

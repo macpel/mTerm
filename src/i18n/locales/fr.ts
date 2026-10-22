@@ -1032,6 +1032,8 @@ const fr: typeof en = {
   "tree.newAgentSessionCustom": "Nouveau avec arguments…", // New with launch args…
   "tree.resumeSession": "Reprendre une session…", // Resume Session…
   "tree.newGroup": "Nouveau groupe", // New Group
+  "tree.openBoard": "Tableau", // Board
+  "board.title": "Tableau", // Board
   "tree.newSubgroup": "Nouveau sous-groupe", // New Subgroup
   "tree.newChildSession": "Nouvelle session enfant", // New Child Session
   "tree.openSelected": "Ouvrir les sessions sélectionnées", // Open Selected Sessions

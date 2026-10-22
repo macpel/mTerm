@@ -1030,6 +1030,8 @@ const ptBR: typeof en = {
   "tree.newAgentSessionCustom": "Novo com argumentos…", // New with launch args…
   "tree.resumeSession": "Retomar sessão…", // Resume Session…
   "tree.newGroup": "Novo grupo", // New Group
+  "tree.openBoard": "Quadro", // Board
+  "board.title": "Quadro", // Board
   "tree.newSubgroup": "Novo subgrupo", // New Subgroup
   "tree.newChildSession": "Nova sessão filha", // New Child Session
   "tree.openSelected": "Abrir sessões selecionadas", // Open Selected Sessions

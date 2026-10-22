@@ -1029,6 +1029,8 @@ const en = {
   "tree.newAgentSessionCustom": "New with launch args…",
   "tree.resumeSession": "Resume Session…",
   "tree.newGroup": "New Group",
+  "tree.openBoard": "Board",
+  "board.title": "Board",
   "tree.newSubgroup": "New Subgroup",
   "tree.newChildSession": "New Child Session",
   "tree.openSelected": "Open Selected Sessions",

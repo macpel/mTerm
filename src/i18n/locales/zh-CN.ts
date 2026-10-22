@@ -1012,6 +1012,8 @@ const zhCN: typeof en = {
   "tree.newAgentSessionCustom": "自定义参数新建…",
   "tree.resumeSession": "恢复会话…",
   "tree.newGroup": "新建分组",
+  "tree.openBoard": "看板",
+  "board.title": "看板",
   "tree.newSubgroup": "新建子分组",
   "tree.newChildSession": "新建子会话",
   "tree.openSelected": "打开选中会话",

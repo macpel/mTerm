@@ -99,6 +99,8 @@ const Icons: Record<string, IconComponent> = {
   eye: I([r("path", { key: 1, d: "M1.7 8S4.2 3.8 8 3.8 14.3 8 14.3 8 11.8 12.2 8 12.2 1.7 8 1.7 8z" }), r("circle", { key: 2, cx: 8, cy: 8, r: 1.9 })]),
   eyeOff: I([r("path", { key: 1, d: "M1.7 8S4.2 3.8 8 3.8 14.3 8 14.3 8 11.8 12.2 8 12.2 1.7 8 1.7 8z" }), r("circle", { key: 2, cx: 8, cy: 8, r: 1.9 }), r("path", { key: 3, d: "M3 3l10 10" })]),
   restart: I([r("path", { key: 1, d: "M12.5 8a4.5 4.5 0 10-1.3 3.2" }), r("path", { key: 2, d: "M12.5 4.5V8H9" })]),
+  // Kanban board: three columns of cards inside a frame.
+  board: I([r("rect", { key: 1, x: 2.5, y: 2.5, width: 11, height: 11, rx: 1.5 }), r("path", { key: 2, d: "M6.2 2.5v11M9.8 2.5v11M3.8 4.8h1.2M7.4 4.8h1.2M7.4 6.8h1.2M11 4.8h1.2" })]),
   globe: I([r("circle", { key: 1, cx: 8, cy: 8, r: 5.5 }), r("path", { key: 2, d: "M2.5 8h11M8 2.5c1.6 1.5 2.5 3.4 2.5 5.5S9.6 12.5 8 13.5C6.4 12 5.5 10.1 5.5 8S6.4 3.5 8 2.5z" })]),
   archive: I([r("rect", { key: 1, x: 2.5, y: 3, width: 11, height: 2.6, rx: 0.6 }), r("path", { key: 2, d: "M3.6 5.6h8.8V12a1 1 0 01-1 1H4.6a1 1 0 01-1-1z" }), r("path", { key: 3, d: "M6.5 8h3" })]),
   connect: I([r("path", { key: 1, d: "M2 8h5.5" }), r("path", { key: 2, d: "M5.5 5.5L8 8 5.5 10.5" }), r("rect", { key: 3, x: 10, y: 3, width: 4, height: 10, rx: 1 })]),

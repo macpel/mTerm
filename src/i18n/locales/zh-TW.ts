@@ -1013,6 +1013,8 @@ const zhTW: typeof en = {
   "tree.newAgentSessionCustom": "自訂參數新增…", // New with launch args…
   "tree.resumeSession": "恢復會話…", // Resume Session…
   "tree.newGroup": "新增群組", // New Group
+  "tree.openBoard": "看板", // Board
+  "board.title": "看板", // Board
   "tree.newSubgroup": "新增子群組", // New Subgroup
   "tree.newChildSession": "新增子會話", // New Child Session
   "tree.openSelected": "開啟選取的會話", // Open Selected Sessions

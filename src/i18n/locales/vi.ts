@@ -1019,6 +1019,8 @@ const vi: typeof en = {
   "tree.newAgentSessionCustom": "Tạo mới với đối số khởi chạy…",
   "tree.resumeSession": "Tiếp tục phiên…",
   "tree.newGroup": "Nhóm mới",
+  "tree.openBoard": "Bảng",
+  "board.title": "Bảng",
   "tree.newSubgroup": "Nhóm con mới",
   "tree.newChildSession": "Phiên con mới",
   "tree.openSelected": "Mở các phiên đã chọn",

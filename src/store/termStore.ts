@@ -681,6 +681,7 @@ function reconcileTabs(state: {
   docTabs: Record<string, DocTab>;
   browserTabs: Record<string, BrowserTab>;
   taskTabs: Record<string, TaskTab>;
+  boardTabs: Record<string, BoardTab>;
 }) {
   const valid = new Set([
     ...state.sessions.map((s) => s.id),
@@ -689,7 +690,7 @@ function reconcileTabs(state: {
   const paneTrees: Record<string, PaneNode> = {};
   const openTabs: string[] = [];
   for (const tabId of state.openTabs) {
-    if (state.docTabs[tabId] || state.browserTabs[tabId] || state.taskTabs[tabId]) {
+    if (state.docTabs[tabId] || state.browserTabs[tabId] || state.taskTabs[tabId] || state.boardTabs[tabId]) {
       // Preserve metadata-backed document/browser/task tabs without pane trees. A browser tab bound to a
       // tree node uses the node ID and closes when that node is deleted or archived.
       if (
@@ -722,12 +723,16 @@ function reconcileTabs(state: {
   for (const [id, task] of Object.entries(state.taskTabs)) {
     if (inOpen.has(id)) taskTabs[id] = task;
   }
+  const boardTabs: Record<string, BoardTab> = {};
+  for (const [id, board] of Object.entries(state.boardTabs)) {
+    if (inOpen.has(id)) boardTabs[id] = board;
+  }
   let { activeTabId, activeSessionId, focusedPaneId } = state;
   if (!activeTabId || !openTabs.includes(activeTabId)) {
     activeTabId = openTabs[0] ?? null;
   }
-  if (activeTabId && (docTabs[activeTabId] || browserTabs[activeTabId] || taskTabs[activeTabId])) {
-    // Document/browser/task tabs have no active session or focused pane.
+  if (activeTabId && (docTabs[activeTabId] || browserTabs[activeTabId] || taskTabs[activeTabId] || boardTabs[activeTabId])) {
+    // Document/browser/task/board tabs have no active session or focused pane.
     activeSessionId = null;
     focusedPaneId = null;
   } else {
@@ -762,6 +767,7 @@ function reconcileTabs(state: {
     docTabs,
     browserTabs,
     taskTabs,
+    boardTabs,
   };
 }
 
@@ -822,6 +828,13 @@ export interface BrowserTab {
  * restart (the process behind it is gone by then) nor published to mirror peers, who lack the conversation's
  * context. Live content stays in the mounted `TaskView`, which subscribes to the session's chat events itself.
  */
+/** Tab showing a project's Kanban board. Client-local like `TaskTab`: not persisted, never mirrored. */
+export interface BoardTab {
+  /** `"board-" + projectId`, used in `openTabs`; one tab per project. */
+  id: string;
+  projectId: string;
+}
+
 export interface TaskTab {
   /** `"task-" + genId()`, used in `openTabs`. */
   id: string;
@@ -949,6 +962,8 @@ interface TermStore {
   browserTabs: Record<string, BrowserTab>;
   /** Metadata for `task-` entries in `openTabs`. Client-local, see `TaskTab`. */
   taskTabs: Record<string, TaskTab>;
+  /** Metadata for `board-` entries in `openTabs`. Client-local, see `BoardTab`. */
+  boardTabs: Record<string, BoardTab>;
 
   // Mirror mode: one shared arrangement across every client of this service (see mirrorSync.ts).
   /**
@@ -1317,6 +1332,8 @@ interface TermStore {
    * Opens a tab for one of a conversation's background tasks, or focuses the tab already showing that task.
    */
   openTaskTab: (sessionId: string, task: ChatBackgroundTask) => void;
+  /** Open or focus the Kanban board tab of a project. */
+  openBoardTab: (projectId: string) => void;
   hydrateTaskTab: (sessionId: string, task: ChatBackgroundTask) => void;
   /** Applies Save As path/title/kind and converts a draft to normal read/write mode. */
   setDocTabPath: (id: string, path: string) => void;
@@ -2026,6 +2043,7 @@ export const useTermStore = create<TermStore>((set, get) => ({
   docTabs: {},
   browserTabs: {},
   taskTabs: {},
+  boardTabs: {},
 
   mirrorEnabled: false,
   remoteClients: 0,
@@ -2140,10 +2158,11 @@ export const useTermStore = create<TermStore>((set, get) => ({
               activeSessionId: saved.activeSessionId,
               focusedPaneId: saved.focusedPaneId,
               liveTabs: saved.liveTabs ?? [],
-              // Document, browser and task tabs are not persisted across restart.
+              // Document, browser, task and board tabs are not persisted across restart.
               docTabs: {},
               browserTabs: {},
               taskTabs: {},
+              boardTabs: {},
             });
             // Restore visible tabs, background tabs, and split trees intact.
             layoutPatch = {
@@ -2180,6 +2199,7 @@ export const useTermStore = create<TermStore>((set, get) => ({
           docTabs: state.docTabs,
           browserTabs: state.browserTabs,
           taskTabs: state.taskTabs,
+          boardTabs: state.boardTabs,
         });
       }
       const sidebarTreeViews = state.sidebarTreeViews;
@@ -2937,8 +2957,8 @@ export const useTermStore = create<TermStore>((set, get) => ({
 
   setActiveTab: (tabId) => {
     set((state) => {
-      if (state.docTabs[tabId] || state.browserTabs[tabId] || state.taskTabs[tabId]) {
-        // Document/browser/task tabs have no session or focused pane, naturally disabling session-only controls.
+      if (state.docTabs[tabId] || state.browserTabs[tabId] || state.taskTabs[tabId] || state.boardTabs[tabId]) {
+        // Document/browser/task/board tabs have no session or focused pane, naturally disabling session-only controls.
         return {
           activeTabId: tabId,
           activeSessionId: null,
@@ -2993,6 +3013,8 @@ export const useTermStore = create<TermStore>((set, get) => ({
       const taskTabs = { ...state.taskTabs };
       const closingTask = taskTabs[tabId];
       delete taskTabs[tabId];
+      const boardTabs = { ...state.boardTabs };
+      delete boardTabs[tabId];
 
       let { activeTabId, activeSessionId, focusedPaneId } = state;
       if (activeTabId === tabId) {
@@ -3023,6 +3045,7 @@ export const useTermStore = create<TermStore>((set, get) => ({
         docTabs,
         browserTabs,
         taskTabs,
+        boardTabs,
         pinnedTabs,
         activeTabId,
         lastActiveSessionTabId,
@@ -3091,6 +3114,22 @@ export const useTermStore = create<TermStore>((set, get) => ({
       };
       return {
         docTabs: { ...state.docTabs, [id]: tab },
+        openTabs: [...state.openTabs, id],
+        activeTabId: id,
+        activeSessionId: null,
+        focusedPaneId: null,
+      };
+    });
+    saveLayoutTick();
+  },
+
+  // ── Board tabs: one per project ──
+  openBoardTab: (projectId) => {
+    set((state) => {
+      const id = `board-${projectId}`;
+      if (state.boardTabs[id]) return { activeTabId: id, activeSessionId: null, focusedPaneId: null };
+      return {
+        boardTabs: { ...state.boardTabs, [id]: { id, projectId } },
         openTabs: [...state.openTabs, id],
         activeTabId: id,
         activeSessionId: null,
@@ -4243,7 +4282,7 @@ export const useTermStore = create<TermStore>((set, get) => ({
     // anchor this client published in its place (or whatever the peer is looking at). Following it would
     // pull the user out of the task tab on every peer interaction; stay until they leave it themselves.
     const local = get();
-    const inTaskTab = !!(local.activeTabId && local.taskTabs[local.activeTabId]);
+    const inTaskTab = !!(local.activeTabId && (local.taskTabs[local.activeTabId] || local.boardTabs[local.activeTabId]));
     const activeSessionId = inTaskTab ? local.activeSessionId : c.activeSessionId;
     set((s) => ({
       // A leaf arriving from a peer is not a request to start anything. If the backend says no process
@@ -4263,7 +4302,7 @@ export const useTermStore = create<TermStore>((set, get) => ({
       ),
       // Task tabs are client-local and absent from the peer's snapshot; keep this client's own at the end
       // so following the layout never closes them.
-      openTabs: [...c.openTabs, ...s.openTabs.filter((id) => s.taskTabs[id] && !c.openTabs.includes(id))],
+      openTabs: [...c.openTabs, ...s.openTabs.filter((id) => (s.taskTabs[id] || s.boardTabs[id]) && !c.openTabs.includes(id))],
       liveTabs: c.liveTabs,
       pinnedTabs: c.pinnedTabs,
       activeTabId: inTaskTab ? s.activeTabId : c.activeTabId,

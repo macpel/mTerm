@@ -50,6 +50,11 @@ const DocView = lazy(() =>
   import("./doc/DocView").then((m) => ({ default: m.DocView })),
 );
 
+// The board is opened rarely, so it loads on first use instead of joining the terminal's entry chunk.
+const BoardView = lazy(() =>
+  import("../Board/BoardView").then((m) => ({ default: m.BoardView })),
+);
+
 const rectToStyle = (r: Rect): React.CSSProperties => ({
   left: `${r.left}%`,
   top: `${r.top}%`,
@@ -151,6 +156,7 @@ export function CenterPane() {
   const docTabs = useTermStore((s) => s.docTabs);
   const browserTabs = useTermStore((s) => s.browserTabs);
   const taskTabs = useTermStore((s) => s.taskTabs);
+  const boardTabs = useTermStore((s) => s.boardTabs);
   const paneTrees = useTermStore((s) => s.paneTrees);
   const activeTabId = useTermStore((s) => s.activeTabId);
   const activeSessionId = useTermStore((s) => s.activeSessionId);
@@ -423,6 +429,15 @@ export function CenterPane() {
           .filter((tabId) => taskTabs[tabId])
           .map((tabId) => (
             <TaskView key={tabId} tab={taskTabs[tabId]} hidden={tabId !== activeTabId} />
+          ))}
+
+        {/* Board tabs stay mounted like task tabs, so filters and scroll survive tab switches. */}
+        {openTabs
+          .filter((tabId) => boardTabs[tabId])
+          .map((tabId) => (
+            <Suspense key={tabId} fallback={null}>
+              <BoardView projectId={boardTabs[tabId].projectId} hidden={tabId !== activeTabId} />
+            </Suspense>
           ))}
 
         {/* Browser tabs also remain mounted because unmounting destroys the native child WebView.

@@ -1025,6 +1025,8 @@ const ko: typeof en = {
   "tree.newAgentSessionCustom": "실행 인자 지정 후 생성…", // New with launch args…
   "tree.resumeSession": "세션 재개…", // Resume Session…
   "tree.newGroup": "새 그룹", // New Group
+  "tree.openBoard": "보드", // Board
+  "board.title": "보드", // Board
   "tree.newSubgroup": "새 하위 그룹", // New Subgroup
   "tree.newChildSession": "새 하위 세션", // New Child Session
   "tree.openSelected": "선택한 세션 열기", // Open Selected Sessions
