@@ -28,6 +28,7 @@ const SHIMS: &[(&str, &str)] = &[
     ("vstat", "--stat"),
     ("vself", "--self"),
     ("vkb", "--knowledge"),
+    ("vboard", "--board"),
     ("vflow", "--flow"),
     ("vtell", "--tell"),
     ("vrun", "--run"),

@@ -441,6 +441,10 @@ pub fn run_knowledge(args: &[String]) -> ! {
     knowledge::agent::run(args)
 }
 
+pub fn run_board(args: &[String]) -> ! {
+    board::agent::run(args)
+}
+
 /// Build-time Git commit, or unknown, used by --version and SSH remote version pinning.
 pub const GIT_COMMIT: &str = match option_env!("VLX_GIT_COMMIT") {
     Some(c) => c,

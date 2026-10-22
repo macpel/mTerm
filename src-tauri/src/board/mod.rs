@@ -2,6 +2,8 @@
 //! `dispatch` serves the app's `board_*` commands and announces each write with `board://changed`.
 
 pub mod store;
+pub mod command;
+pub mod agent;
 #[cfg(test)]
 mod tests;
 

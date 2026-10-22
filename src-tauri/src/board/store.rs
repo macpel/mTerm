@@ -87,7 +87,7 @@ pub struct CardPatch {
     pub tags: Option<Vec<String>>,
 }
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct ListFilter {
     pub column: Option<String>,
     pub type_: Option<String>,

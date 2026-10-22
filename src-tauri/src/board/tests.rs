@@ -228,3 +228,73 @@ fn edit_and_rejects_invalid_values() {
     assert!(store::update_card(&conn, PROJECT, 1, bad, &Actor::User).is_err());
     assert_eq!(store::move_card(&conn, PROJECT, 9, "todo", None, &Actor::User).unwrap_err(), "Card #9 not found.");
 }
+
+// ── vboard command parsing and execution ──
+
+use super::command::{self, BoardCommand};
+
+fn args(words: &[&str]) -> Vec<String> {
+    words.iter().map(|w| w.to_string()).collect()
+}
+
+#[test]
+fn parse_accepts_hash_numbers() {
+    assert!(matches!(command::parse(&args(&["show", "#12"])).unwrap(), BoardCommand::Show(12)));
+    assert!(matches!(command::parse(&args(&["show", "12"])).unwrap(), BoardCommand::Show(12)));
+}
+
+#[test]
+fn parse_rejects_unknown_column() {
+    let err = command::parse(&args(&["move", "3", "doing"])).unwrap_err();
+    assert_eq!(err, "Unknown column \"doing\". Use one of: backlog, todo, in_progress, review, done.");
+}
+
+#[test]
+fn parse_tag_changes() {
+    match command::parse(&args(&["tag", "4", "+ui", "-bug"])).unwrap() {
+        BoardCommand::Tag { number, add, remove } => {
+            assert_eq!(number, 4);
+            assert_eq!(add, vec!["ui".to_string()]);
+            assert_eq!(remove, vec!["bug".to_string()]);
+        }
+        _ => panic!("expected Tag"),
+    }
+}
+
+#[test]
+fn parse_add_with_options() {
+    match command::parse(&args(&["add", "Fix", "login", "--type", "bug", "--priority", "high", "--tag", "auth,ui"])).unwrap() {
+        BoardCommand::Add { title, card_type, priority, tags, .. } => {
+            assert_eq!(title, "Fix login");
+            assert_eq!(card_type.as_deref(), Some("bug"));
+            assert_eq!(priority.as_deref(), Some("high"));
+            assert_eq!(tags, vec!["auth".to_string(), "ui".to_string()]);
+        }
+        _ => panic!("expected Add"),
+    }
+}
+
+#[test]
+fn execute_next_reports_empty_board() {
+    let conn = db();
+    let (value, changed) = command::execute(&conn, PROJECT, S1, BoardCommand::Next).unwrap();
+    assert_eq!(value, serde_json::json!({ "card": null, "message": "To Do is empty." }));
+    assert!(!changed);
+}
+
+#[test]
+fn execute_tag_merges_with_existing_tags() {
+    let conn = db();
+    store::create_card(
+        &conn,
+        PROJECT,
+        NewCard { title: "a".into(), tags: vec!["bug".into(), "old".into()], ..Default::default() },
+        &Actor::User,
+    )
+    .unwrap();
+    let cmd = command::parse(&args(&["tag", "1", "+ui", "-old"])).unwrap();
+    let (card, changed) = command::execute(&conn, PROJECT, S1, cmd).unwrap();
+    assert_eq!(card["tags"], serde_json::json!(["bug", "ui"]));
+    assert_eq!(card["updatedBy"]["kind"], "agent");
+    assert!(changed);
+}
