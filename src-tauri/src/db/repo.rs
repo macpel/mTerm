@@ -164,6 +164,12 @@ pub fn import_project(conn: &Connection, root_path: &str) -> Result<Project, Str
         let project = row.map_err(|e| format!("Failed to read existing project: {e}"))?;
         let old = Path::new(&project.root_path);
         if old.canonicalize().ok().as_deref() == Some(canonical.as_path()) {
+            // A project removed while it held archived sessions is only hidden; adding its folder shows it again.
+            conn.execute(
+                "UPDATE projects SET deleted_at = NULL WHERE id = ?1 AND deleted_at IS NOT NULL",
+                params![project.id],
+            )
+            .map_err(|e| format!("Failed to restore project: {e}"))?;
             return Ok(project);
         }
     }
@@ -3118,6 +3124,22 @@ mod tests {
             assert_eq!(first.id, through_alias.id, "a symlink should resolve to the same project");
             let _ = std::fs::remove_file(alias);
         }
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    /// A project removed from the sidebar while it held archived sessions is only hidden; adding its folder again
+    /// must show it again rather than hand back the hidden row.
+    #[test]
+    fn import_project_unhides_a_tombstoned_project() {
+        let conn = mem_conn();
+        let root = std::env::temp_dir().join(format!("vela-project-unhide-{}", std::process::id()));
+        std::fs::create_dir_all(&root).unwrap();
+        let first = import_project(&conn, root.to_str().unwrap()).unwrap();
+        conn.execute("UPDATE projects SET deleted_at = 1 WHERE id = ?1", params![first.id]).unwrap();
+        assert!(list_tree(&conn).unwrap().projects.is_empty());
+        let again = import_project(&conn, root.to_str().unwrap()).unwrap();
+        assert_eq!(again.id, first.id);
+        assert_eq!(list_tree(&conn).unwrap().projects.len(), 1);
         let _ = std::fs::remove_dir_all(root);
     }
 

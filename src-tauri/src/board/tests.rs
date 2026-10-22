@@ -7,6 +7,8 @@ const S1: &str = "s1";
 const S2: &str = "s2";
 
 fn setup(conn: &Connection) {
+    // Like the app's connection (db/mod.rs), so cascades behave as they do for users.
+    conn.execute_batch("PRAGMA foreign_keys = ON;").unwrap();
     conn.execute_batch(crate::db::schema::SCHEMA).unwrap();
     super::init(conn).unwrap();
     conn.execute_batch(
@@ -467,4 +469,69 @@ fn card_colour_can_be_set_cleared_and_is_checked() {
     assert!(store::update_card(&conn, PROJECT, 1, bad, &Actor::User).is_err());
     let cmd = command::parse(&args(&["add", "b", "--color", "pink"])).unwrap();
     assert_eq!(command::execute(&conn, PROJECT, S1, cmd).unwrap().0["color"], "pink");
+}
+
+// ── the board belongs to the folder ──
+
+#[test]
+fn board_survives_project_deletion() {
+    let conn = db();
+    add(&conn, "kept", "medium");
+    store::add_column(&conn, PROJECT, Some("QA"), None).unwrap();
+    conn.execute("DELETE FROM projects WHERE id='p1'", []).unwrap();
+    let board = store::get_board(&conn, PROJECT).unwrap();
+    assert_eq!(board["cards"][0]["title"], "kept");
+    assert!(board["columns"].as_array().unwrap().iter().any(|c| c["name"] == "QA"));
+}
+
+#[test]
+fn migrates_project_keyed_tables() {
+    let conn = Connection::open_in_memory().unwrap();
+    conn.execute_batch("PRAGMA foreign_keys = ON;").unwrap();
+    conn.execute_batch(crate::db::schema::SCHEMA).unwrap();
+    conn.execute_batch(
+        "INSERT INTO projects(id,name,root_path,created_at) VALUES('p1','Demo','C:/no/such/folder',0);
+         CREATE TABLE board_boards (project_id TEXT PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+           review_enabled INTEGER NOT NULL DEFAULT 0, next_number INTEGER NOT NULL DEFAULT 1);
+         CREATE TABLE board_columns (project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+           id TEXT NOT NULL, name TEXT, role TEXT, position REAL NOT NULL, PRIMARY KEY(project_id, id));
+         CREATE TABLE board_cards (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+           number INTEGER NOT NULL, column_id TEXT NOT NULL, position REAL NOT NULL, type TEXT NOT NULL, title TEXT NOT NULL,
+           description TEXT NOT NULL DEFAULT '', priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT, color TEXT,
+           created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, updated_kind TEXT NOT NULL, updated_session TEXT,
+           UNIQUE(project_id, number));
+         INSERT INTO board_boards(project_id, next_number) VALUES('p1', 8);
+         INSERT INTO board_columns VALUES('p1','backlog',NULL,'backlog',0),('p1','todo','Ready','todo',1),('p1','c-qa','QA',NULL,2);
+         INSERT INTO board_cards(id,project_id,number,column_id,position,type,title,created_at,updated_at,updated_kind)
+           VALUES('card1','p1',7,'c-qa',1,'bug','Old card',0,0,'user');",
+    )
+    .unwrap();
+    super::init(&conn).unwrap();
+    // The folder is gone, so the key is the stored root path as written.
+    let key = "C:/no/such/folder";
+    let board = store::get_board(&conn, key).unwrap();
+    let ids: Vec<&str> = board["columns"].as_array().unwrap().iter().map(|c| c["id"].as_str().unwrap()).collect();
+    assert_eq!(ids, vec!["backlog", "todo", "c-qa"]);
+    assert_eq!(board["columns"][1]["name"], "Ready");
+    assert_eq!(board["cards"][0]["title"], "Old card");
+    assert_eq!(board["cards"][0]["column"], "c-qa");
+    let next = store::create_card(&conn, key, NewCard { title: "New".into(), ..Default::default() }, &Actor::User).unwrap();
+    assert_eq!(next["number"], 8);
+    let old_column: i64 = conn
+        .query_row("SELECT COUNT(*) FROM pragma_table_info('board_cards') WHERE name='project_id'", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(old_column, 0);
+    conn.execute("DELETE FROM projects WHERE id='p1'", []).unwrap();
+    assert_eq!(store::get_board(&conn, key).unwrap()["cards"].as_array().unwrap().len(), 2);
+}
+
+#[test]
+fn board_key_is_the_canonical_folder() {
+    let dir = std::env::temp_dir().join(format!("board-key-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let canonical = dir.canonicalize().unwrap().to_string_lossy().to_string();
+    let spelled = format!("{}/", dir.to_string_lossy().replace('\\', "/"));
+    assert_eq!(store::folder_key(&spelled), canonical);
+    assert_eq!(store::folder_key("C:/no/such/folder"), "C:/no/such/folder");
+    let _ = std::fs::remove_dir_all(&dir);
 }

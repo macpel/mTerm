@@ -18,7 +18,8 @@ fn run_request(app: &AppCtx, body: &Value) -> Result<Value, String> {
     let (value, changed, project) = {
         let conn = app.db().conn.lock().map_err(|e| e.to_string())?;
         let session = crate::db::repo::get_session(&conn, sid)?.ok_or(OUTSIDE)?;
-        let (value, changed) = command::execute(&conn, &session.project_id, sid, cmd)?;
+        let key = super::board_key(&conn, &session.project_id)?;
+        let (value, changed) = command::execute(&conn, &key, sid, cmd)?;
         (value, changed, session.project_id)
     };
     if changed {

@@ -1,5 +1,9 @@
 //! Board tables and rules. Every function takes a plain connection so tests run on an in-memory database;
 //! callers emit `board://changed` after writes.
+//!
+//! A board belongs to a folder, not to a project row: tables are keyed by `board_key`, the project's canonical
+//! folder path (see `folder_key`), with no foreign key to `projects`. Removing a project from the sidebar
+//! therefore keeps its board, and adding the same folder again brings it back.
 
 use rusqlite::{params, Connection, OptionalExtension, Transaction, TransactionBehavior};
 use serde_json::{json, Value};
@@ -28,24 +32,24 @@ pub const PRIORITIES: [&str; 4] = ["low", "medium", "high", "urgent"];
 
 pub const SCHEMA: &str = "
 CREATE TABLE IF NOT EXISTS board_boards (
- project_id TEXT PRIMARY KEY REFERENCES projects(id) ON DELETE CASCADE,
+ board_key TEXT PRIMARY KEY,
  review_enabled INTEGER NOT NULL DEFAULT 0,
  next_number INTEGER NOT NULL DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS board_cards (
  id TEXT PRIMARY KEY,
- project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+ board_key TEXT NOT NULL,
  number INTEGER NOT NULL, column_id TEXT NOT NULL, position REAL NOT NULL,
  type TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
  priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT, color TEXT,
  created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL,
  updated_kind TEXT NOT NULL, updated_session TEXT,
- UNIQUE(project_id, number)
+ UNIQUE(board_key, number)
 );
 CREATE TABLE IF NOT EXISTS board_columns (
- project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+ board_key TEXT NOT NULL,
  id TEXT NOT NULL, name TEXT, role TEXT, position REAL NOT NULL,
- PRIMARY KEY(project_id, id)
+ PRIMARY KEY(board_key, id)
 );
 CREATE TABLE IF NOT EXISTS board_card_tags (
  card_id TEXT NOT NULL REFERENCES board_cards(id) ON DELETE CASCADE,
@@ -169,32 +173,106 @@ fn clean_tags(tags: &[String]) -> Result<Vec<String>> {
     Ok(out)
 }
 
-/// Tables and the upgrade of databases made before cards had a colour.
+/// The board key for a project folder: its canonical path, or the path as stored when the folder is gone.
+pub fn folder_key(root_path: &str) -> String {
+    std::path::Path::new(root_path)
+        .canonicalize()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_else(|_| root_path.to_string())
+}
+
+fn has_column(conn: &Connection, table: &str, column: &str) -> Result<bool> {
+    conn.query_row(
+        "SELECT COUNT(*) FROM pragma_table_info(?1) WHERE name=?2",
+        params![table, column],
+        |r| r.get::<_, i64>(0),
+    )
+    .map(|n| n > 0)
+    .map_err(db)
+}
+
+/// Tables, plus the upgrades of older databases: cards without a colour, and boards keyed by project id.
 pub fn init(conn: &Connection) -> Result<()> {
     conn.execute_batch(SCHEMA).map_err(db)?;
-    let has_color: i64 = conn
-        .query_row("SELECT COUNT(*) FROM pragma_table_info('board_cards') WHERE name='color'", [], |r| r.get(0))
-        .map_err(db)?;
-    if has_color == 0 {
+    if !has_column(conn, "board_cards", "color")? {
         conn.execute_batch("ALTER TABLE board_cards ADD COLUMN color TEXT").map_err(db)?;
+    }
+    if has_column(conn, "board_cards", "project_id")? {
+        migrate_to_folder_keys(conn)?;
     }
     Ok(())
 }
 
+/// Rebuild the three project-keyed tables keyed by folder. SQLite cannot drop a column's foreign key in place,
+/// so each table is copied into a new one, dropped and replaced, with foreign keys off so nothing cascades.
+fn migrate_to_folder_keys(conn: &Connection) -> Result<()> {
+    let enforced: i64 = conn.query_row("PRAGMA foreign_keys", [], |r| r.get(0)).map_err(db)?;
+    conn.execute_batch("PRAGMA foreign_keys = OFF;").map_err(db)?;
+    let result = (|| -> Result<()> {
+        let tx = conn.unchecked_transaction().map_err(db)?;
+        tx.execute_batch("CREATE TEMP TABLE board_key_map (project_id TEXT PRIMARY KEY, board_key TEXT NOT NULL)").map_err(db)?;
+        let projects: Vec<(String, String)> = {
+            let mut stmt = tx.prepare("SELECT id, root_path FROM projects").map_err(db)?;
+            let rows = stmt.query_map([], |r| Ok((r.get(0)?, r.get(1)?))).map_err(db)?;
+            rows.collect::<std::result::Result<_, _>>().map_err(db)?
+        };
+        for (id, root) in &projects {
+            tx.execute("INSERT INTO board_key_map VALUES(?1, ?2)", params![id, folder_key(root)]).map_err(db)?;
+        }
+        tx.execute_batch(
+            "CREATE TABLE board_boards_new (board_key TEXT PRIMARY KEY, review_enabled INTEGER NOT NULL DEFAULT 0, next_number INTEGER NOT NULL DEFAULT 1);
+             INSERT OR IGNORE INTO board_boards_new SELECT m.board_key, b.review_enabled, b.next_number
+               FROM board_boards b JOIN board_key_map m ON m.project_id = b.project_id;
+             DROP TABLE board_boards;
+             ALTER TABLE board_boards_new RENAME TO board_boards;
+
+             CREATE TABLE board_columns_new (board_key TEXT NOT NULL, id TEXT NOT NULL, name TEXT, role TEXT,
+               position REAL NOT NULL, PRIMARY KEY(board_key, id));
+             INSERT OR IGNORE INTO board_columns_new SELECT m.board_key, c.id, c.name, c.role, c.position
+               FROM board_columns c JOIN board_key_map m ON m.project_id = c.project_id;
+             DROP TABLE board_columns;
+             ALTER TABLE board_columns_new RENAME TO board_columns;
+
+             CREATE TABLE board_cards_new (id TEXT PRIMARY KEY, board_key TEXT NOT NULL, number INTEGER NOT NULL,
+               column_id TEXT NOT NULL, position REAL NOT NULL, type TEXT NOT NULL, title TEXT NOT NULL,
+               description TEXT NOT NULL DEFAULT '', priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT, color TEXT,
+               created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, updated_kind TEXT NOT NULL, updated_session TEXT,
+               UNIQUE(board_key, number));
+             INSERT OR IGNORE INTO board_cards_new SELECT c.id, m.board_key, c.number, c.column_id, c.position, c.type,
+               c.title, c.description, c.priority, c.claimed_by, c.color, c.created_at, c.updated_at, c.updated_kind,
+               c.updated_session
+               FROM board_cards c JOIN board_key_map m ON m.project_id = c.project_id;
+             DROP TABLE board_cards;
+             ALTER TABLE board_cards_new RENAME TO board_cards;
+
+             DROP TABLE board_key_map;
+             DELETE FROM board_card_tags WHERE card_id NOT IN (SELECT id FROM board_cards);
+             DELETE FROM board_notes WHERE card_id NOT IN (SELECT id FROM board_cards);
+             DELETE FROM board_history WHERE card_id NOT IN (SELECT id FROM board_cards);",
+        )
+        .map_err(db)?;
+        tx.commit().map_err(db)
+    })();
+    if enforced != 0 {
+        conn.execute_batch("PRAGMA foreign_keys = ON;").map_err(db)?;
+    }
+    result
+}
+
 /// Create the board on first use with the standard columns. Review is added too when the board used the
 /// older Review switch or still holds cards in Review.
-fn ensure_board(conn: &Connection, project: &str) -> Result<()> {
-    conn.execute("INSERT OR IGNORE INTO board_boards(project_id) VALUES(?1)", [project]).map_err(db)?;
+fn ensure_board(conn: &Connection, board: &str) -> Result<()> {
+    conn.execute("INSERT OR IGNORE INTO board_boards(board_key) VALUES(?1)", [board]).map_err(db)?;
     let has_columns: i64 =
-        conn.query_row("SELECT COUNT(*) FROM board_columns WHERE project_id=?1", [project], |r| r.get(0)).map_err(db)?;
+        conn.query_row("SELECT COUNT(*) FROM board_columns WHERE board_key=?1", [board], |r| r.get(0)).map_err(db)?;
     if has_columns > 0 {
         return Ok(());
     }
     let review: i64 = conn
         .query_row(
-            "SELECT (SELECT review_enabled FROM board_boards WHERE project_id=?1)
-                  + (SELECT COUNT(*) FROM board_cards WHERE project_id=?1 AND column_id='review')",
-            [project],
+            "SELECT (SELECT review_enabled FROM board_boards WHERE board_key=?1)
+                  + (SELECT COUNT(*) FROM board_cards WHERE board_key=?1 AND column_id='review')",
+            [board],
             |r| r.get(0),
         )
         .map_err(db)?;
@@ -203,8 +281,8 @@ fn ensure_board(conn: &Connection, project: &str) -> Result<()> {
             continue;
         }
         conn.execute(
-            "INSERT INTO board_columns(project_id,id,name,role,position) VALUES(?1,?2,NULL,?2,?3)",
-            params![project, role, i as f64],
+            "INSERT INTO board_columns(board_key,id,name,role,position) VALUES(?1,?2,NULL,?2,?3)",
+            params![board, role, i as f64],
         )
         .map_err(db)?;
     }
@@ -212,24 +290,24 @@ fn ensure_board(conn: &Connection, project: &str) -> Result<()> {
 }
 
 /// The column holding a standard role, if the board still has one.
-fn role_column(conn: &Connection, project: &str, role: &str) -> Result<Option<String>> {
-    ensure_board(conn, project)?;
-    conn.query_row("SELECT id FROM board_columns WHERE project_id=?1 AND role=?2", params![project, role], |r| r.get(0))
+fn role_column(conn: &Connection, board: &str, role: &str) -> Result<Option<String>> {
+    ensure_board(conn, board)?;
+    conn.query_row("SELECT id FROM board_columns WHERE board_key=?1 AND role=?2", params![board, role], |r| r.get(0))
         .optional()
         .map_err(db)
 }
 
-fn column_role(conn: &Connection, project: &str, column: &str) -> Result<Option<String>> {
-    conn.query_row("SELECT role FROM board_columns WHERE project_id=?1 AND id=?2", params![project, column], |r| r.get(0))
+fn column_role(conn: &Connection, board: &str, column: &str) -> Result<Option<String>> {
+    conn.query_row("SELECT role FROM board_columns WHERE board_key=?1 AND id=?2", params![board, column], |r| r.get(0))
         .optional()
         .map_err(db)
         .map(Option::flatten)
 }
 
-fn check_column(conn: &Connection, project: &str, column: &str) -> Result<()> {
-    ensure_board(conn, project)?;
+fn check_column(conn: &Connection, board: &str, column: &str) -> Result<()> {
+    ensure_board(conn, board)?;
     let found: i64 = conn
-        .query_row("SELECT COUNT(*) FROM board_columns WHERE project_id=?1 AND id=?2", params![project, column], |r| r.get(0))
+        .query_row("SELECT COUNT(*) FROM board_columns WHERE board_key=?1 AND id=?2", params![board, column], |r| r.get(0))
         .map_err(db)?;
     if found == 0 {
         return Err(format!("Column \"{column}\" not found."));
@@ -238,10 +316,10 @@ fn check_column(conn: &Connection, project: &str, column: &str) -> Result<()> {
 }
 
 /// With a Review column, only a person puts cards in Done; agents finish through Review.
-fn check_review_gate(conn: &Connection, project: &str, column: &str, actor: &Actor) -> Result<()> {
+fn check_review_gate(conn: &Connection, board: &str, column: &str, actor: &Actor) -> Result<()> {
     if matches!(actor, Actor::Agent(_))
-        && column_role(conn, project, column)?.as_deref() == Some("done")
-        && role_column(conn, project, "review")?.is_some()
+        && column_role(conn, board, column)?.as_deref() == Some("done")
+        && role_column(conn, board, "review")?.is_some()
     {
         return Err("Review is on: use vboard done; a person moves cards to Done.".into());
     }
@@ -256,17 +334,17 @@ fn clean_color(color: &str) -> Result<Option<String>> {
     one_of(&color, &COLORS, "colour").map(Some)
 }
 
-fn card_id(conn: &Connection, project: &str, number: i64) -> Result<String> {
-    conn.query_row("SELECT id FROM board_cards WHERE project_id=?1 AND number=?2", params![project, number], |r| r.get(0))
+fn card_id(conn: &Connection, board: &str, number: i64) -> Result<String> {
+    conn.query_row("SELECT id FROM board_cards WHERE board_key=?1 AND number=?2", params![board, number], |r| r.get(0))
         .optional()
         .map_err(db)?
         .ok_or_else(|| format!("Card #{number} not found."))
 }
 
-fn end_position(conn: &Connection, project: &str, column: &str, except: &str) -> Result<f64> {
+fn end_position(conn: &Connection, board: &str, column: &str, except: &str) -> Result<f64> {
     conn.query_row(
-        "SELECT COALESCE(MAX(position),0)+1 FROM board_cards WHERE project_id=?1 AND column_id=?2 AND id<>?3",
-        params![project, column, except],
+        "SELECT COALESCE(MAX(position),0)+1 FROM board_cards WHERE board_key=?1 AND column_id=?2 AND id<>?3",
+        params![board, column, except],
         |r| r.get(0),
     )
     .map_err(db)
@@ -296,13 +374,13 @@ fn set_tags(conn: &Connection, id: &str, tags: &[String]) -> Result<()> {
     Ok(())
 }
 
-/// Every card of the project as JSON, in column order then position.
-fn all_cards(conn: &Connection, project: &str) -> Result<Vec<Value>> {
+/// Every card of the board as JSON, in column order then position.
+fn all_cards(conn: &Connection, board: &str) -> Result<Vec<Value>> {
     let mut tags: HashMap<String, Vec<String>> = HashMap::new();
     let mut stmt = conn
-        .prepare("SELECT t.card_id, t.tag FROM board_card_tags t JOIN board_cards c ON c.id=t.card_id WHERE c.project_id=?1 ORDER BY t.tag")
+        .prepare("SELECT t.card_id, t.tag FROM board_card_tags t JOIN board_cards c ON c.id=t.card_id WHERE c.board_key=?1 ORDER BY t.tag")
         .map_err(db)?;
-    let rows = stmt.query_map([project], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))).map_err(db)?;
+    let rows = stmt.query_map([board], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?))).map_err(db)?;
     for row in rows {
         let (card, tag) = row.map_err(db)?;
         tags.entry(card).or_default().push(tag);
@@ -314,11 +392,11 @@ fn all_cards(conn: &Connection, project: &str) -> Result<Vec<Value>> {
              FROM board_cards c
              LEFT JOIN sessions cs ON cs.id=c.claimed_by
              LEFT JOIN sessions us ON us.id=c.updated_session
-             WHERE c.project_id=?1",
+             WHERE c.board_key=?1",
         )
         .map_err(db)?;
     let rows = stmt
-        .query_map([project], |r| {
+        .query_map([board], |r| {
             let id: String = r.get(0)?;
             Ok(json!({
                 "id": id,
@@ -348,7 +426,7 @@ fn all_cards(conn: &Connection, project: &str) -> Result<Vec<Value>> {
         card["tags"] = json!(tags.remove(&id).unwrap_or_default());
         cards.push(card);
     }
-    let order: Vec<String> = columns(conn, project)?.iter().filter_map(|c| c["id"].as_str().map(str::to_string)).collect();
+    let order: Vec<String> = columns(conn, board)?.iter().filter_map(|c| c["id"].as_str().map(str::to_string)).collect();
     let rank = |c: &Value| order.iter().position(|col| c["column"] == *col).unwrap_or(order.len());
     cards.sort_by(|a, b| {
         rank(a).cmp(&rank(b)).then(
@@ -358,27 +436,27 @@ fn all_cards(conn: &Connection, project: &str) -> Result<Vec<Value>> {
     Ok(cards)
 }
 
-fn card_json(conn: &Connection, project: &str, number: i64) -> Result<Value> {
-    all_cards(conn, project)?
+fn card_json(conn: &Connection, board: &str, number: i64) -> Result<Value> {
+    all_cards(conn, board)?
         .into_iter()
         .find(|c| c["number"] == number)
         .ok_or_else(|| format!("Card #{number} not found."))
 }
 
-pub fn get_board(conn: &Connection, project: &str) -> Result<Value> {
-    Ok(json!({ "columns": columns(conn, project)?, "cards": all_cards(conn, project)? }))
+pub fn get_board(conn: &Connection, board: &str) -> Result<Value> {
+    Ok(json!({ "columns": columns(conn, board)?, "cards": all_cards(conn, board)? }))
 }
 
 // ── columns ──
 
 /// The board's columns in order: `{id, name, role, position}`; `name` is null until a standard column is renamed.
-pub fn columns(conn: &Connection, project: &str) -> Result<Vec<Value>> {
-    ensure_board(conn, project)?;
+pub fn columns(conn: &Connection, board: &str) -> Result<Vec<Value>> {
+    ensure_board(conn, board)?;
     let mut stmt = conn
-        .prepare("SELECT id, name, role, position FROM board_columns WHERE project_id=?1 ORDER BY position")
+        .prepare("SELECT id, name, role, position FROM board_columns WHERE board_key=?1 ORDER BY position")
         .map_err(db)?;
     let rows = stmt
-        .query_map([project], |r| {
+        .query_map([board], |r| {
             Ok(json!({
                 "id": r.get::<_, String>(0)?,
                 "name": r.get::<_, Option<String>>(1)?,
@@ -396,8 +474,8 @@ pub fn display_name(column: &Value) -> String {
 }
 
 /// Find a column by id, role (`in_progress`, `in-progress`) or display name, ignoring case.
-pub fn resolve_column(conn: &Connection, project: &str, word: &str) -> Result<String> {
-    let all = columns(conn, project)?;
+pub fn resolve_column(conn: &Connection, board: &str, word: &str) -> Result<String> {
+    let all = columns(conn, board)?;
     let wanted = word.trim().to_lowercase();
     let role = wanted.replace(['-', ' '], "_");
     all.iter()
@@ -411,12 +489,12 @@ pub fn resolve_column(conn: &Connection, project: &str, word: &str) -> Result<St
         })
 }
 
-fn clean_column_name(conn: &Connection, project: &str, name: &str, except: &str) -> Result<String> {
+fn clean_column_name(conn: &Connection, board: &str, name: &str, except: &str) -> Result<String> {
     let name = name.trim();
     if name.is_empty() || name.chars().count() > 40 {
         return Err("A column name is 1 to 40 characters.".into());
     }
-    let taken = columns(conn, project)?
+    let taken = columns(conn, board)?
         .iter()
         .any(|c| c["id"].as_str() != Some(except) && display_name(c).to_lowercase() == name.to_lowercase());
     if taken {
@@ -433,62 +511,62 @@ fn refuse_backlog(column: &str) -> Result<()> {
 }
 
 /// Add a column at the end: a custom one with a name, or a missing standard one by role.
-pub fn add_column(conn: &Connection, project: &str, name: Option<&str>, role: Option<&str>) -> Result<Value> {
-    ensure_board(conn, project)?;
+pub fn add_column(conn: &Connection, board: &str, name: Option<&str>, role: Option<&str>) -> Result<Value> {
+    ensure_board(conn, board)?;
     let (id, name, role) = match role {
         Some(role) => {
             let role = one_of(role, &ROLES[1..], "column role")?;
-            if role_column(conn, project, &role)?.is_some() {
+            if role_column(conn, board, &role)?.is_some() {
                 return Err(format!("The board already has a {} column.", role_name(&role)));
             }
             let name = match name {
-                Some(n) => Some(clean_column_name(conn, project, n, "")?),
+                Some(n) => Some(clean_column_name(conn, board, n, "")?),
                 None => {
-                    clean_column_name(conn, project, role_name(&role), "")?;
+                    clean_column_name(conn, board, role_name(&role), "")?;
                     None
                 }
             };
             (role.clone(), name, Some(role))
         }
         None => {
-            let name = clean_column_name(conn, project, name.unwrap_or(""), "")?;
+            let name = clean_column_name(conn, board, name.unwrap_or(""), "")?;
             (format!("c-{}", &uuid::Uuid::new_v4().simple().to_string()[..8]), Some(name), None)
         }
     };
     let position: f64 = conn
-        .query_row("SELECT COALESCE(MAX(position),0)+1 FROM board_columns WHERE project_id=?1", [project], |r| r.get(0))
+        .query_row("SELECT COALESCE(MAX(position),0)+1 FROM board_columns WHERE board_key=?1", [board], |r| r.get(0))
         .map_err(db)?;
     conn.execute(
-        "INSERT INTO board_columns(project_id,id,name,role,position) VALUES(?1,?2,?3,?4,?5)",
-        params![project, id, name, role, position],
+        "INSERT INTO board_columns(board_key,id,name,role,position) VALUES(?1,?2,?3,?4,?5)",
+        params![board, id, name, role, position],
     )
     .map_err(db)?;
-    columns(conn, project)?.into_iter().find(|c| c["id"] == id.as_str()).ok_or_else(|| "Column not saved.".to_string())
+    columns(conn, board)?.into_iter().find(|c| c["id"] == id.as_str()).ok_or_else(|| "Column not saved.".to_string())
 }
 
-pub fn rename_column(conn: &Connection, project: &str, column: &str, name: &str) -> Result<()> {
+pub fn rename_column(conn: &Connection, board: &str, column: &str, name: &str) -> Result<()> {
     refuse_backlog(column)?;
-    check_column(conn, project, column)?;
-    let name = clean_column_name(conn, project, name, column)?;
-    conn.execute("UPDATE board_columns SET name=?3 WHERE project_id=?1 AND id=?2", params![project, column, name]).map_err(db)?;
+    check_column(conn, board, column)?;
+    let name = clean_column_name(conn, board, name, column)?;
+    conn.execute("UPDATE board_columns SET name=?3 WHERE board_key=?1 AND id=?2", params![board, column, name]).map_err(db)?;
     Ok(())
 }
 
 /// Move a column before `before`, or to the end. Nothing goes before Backlog.
-pub fn move_column(conn: &Connection, project: &str, column: &str, before: Option<&str>) -> Result<()> {
+pub fn move_column(conn: &Connection, board: &str, column: &str, before: Option<&str>) -> Result<()> {
     refuse_backlog(column)?;
-    check_column(conn, project, column)?;
+    check_column(conn, board, column)?;
     let position: f64 = match before {
         Some(target) => {
             refuse_backlog(target)?;
-            check_column(conn, project, target)?;
+            check_column(conn, board, target)?;
             let target_pos: f64 = conn
-                .query_row("SELECT position FROM board_columns WHERE project_id=?1 AND id=?2", params![project, target], |r| r.get(0))
+                .query_row("SELECT position FROM board_columns WHERE board_key=?1 AND id=?2", params![board, target], |r| r.get(0))
                 .map_err(db)?;
             let above: Option<f64> = conn
                 .query_row(
-                    "SELECT MAX(position) FROM board_columns WHERE project_id=?1 AND position<?2 AND id<>?3",
-                    params![project, target_pos, column],
+                    "SELECT MAX(position) FROM board_columns WHERE board_key=?1 AND position<?2 AND id<>?3",
+                    params![board, target_pos, column],
                     |r| r.get(0),
                 )
                 .map_err(db)?;
@@ -496,74 +574,74 @@ pub fn move_column(conn: &Connection, project: &str, column: &str, before: Optio
         }
         None => conn
             .query_row(
-                "SELECT COALESCE(MAX(position),0)+1 FROM board_columns WHERE project_id=?1 AND id<>?2",
-                params![project, column],
+                "SELECT COALESCE(MAX(position),0)+1 FROM board_columns WHERE board_key=?1 AND id<>?2",
+                params![board, column],
                 |r| r.get(0),
             )
             .map_err(db)?,
     };
-    conn.execute("UPDATE board_columns SET position=?3 WHERE project_id=?1 AND id=?2", params![project, column, position])
+    conn.execute("UPDATE board_columns SET position=?3 WHERE board_key=?1 AND id=?2", params![board, column, position])
         .map_err(db)?;
     Ok(())
 }
 
 /// Delete a column; its cards move to the end of Backlog and lose their claim.
-pub fn delete_column(conn: &Connection, project: &str, column: &str, actor: &Actor) -> Result<()> {
+pub fn delete_column(conn: &Connection, board: &str, column: &str, actor: &Actor) -> Result<()> {
     refuse_backlog(column)?;
-    check_column(conn, project, column)?;
+    check_column(conn, board, column)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
     let ids: Vec<String> = {
         let mut stmt = tx
-            .prepare("SELECT id FROM board_cards WHERE project_id=?1 AND column_id=?2 ORDER BY position")
+            .prepare("SELECT id FROM board_cards WHERE board_key=?1 AND column_id=?2 ORDER BY position")
             .map_err(db)?;
-        let rows = stmt.query_map(params![project, column], |r| r.get(0)).map_err(db)?;
+        let rows = stmt.query_map(params![board, column], |r| r.get(0)).map_err(db)?;
         rows.collect::<std::result::Result<_, _>>().map_err(db)?
     };
     for id in &ids {
-        place(&tx, project, id, "backlog", None)?;
+        place(&tx, board, id, "backlog", None)?;
         tx.execute("UPDATE board_cards SET claimed_by=NULL WHERE id=?1", [id]).map_err(db)?;
         touch(&tx, id, actor, "moved", "backlog")?;
     }
-    tx.execute("DELETE FROM board_columns WHERE project_id=?1 AND id=?2", params![project, column]).map_err(db)?;
+    tx.execute("DELETE FROM board_columns WHERE board_key=?1 AND id=?2", params![board, column]).map_err(db)?;
     tx.commit().map_err(db)?;
     Ok(())
 }
 
-pub fn create_card(conn: &Connection, project: &str, card: NewCard, actor: &Actor) -> Result<Value> {
+pub fn create_card(conn: &Connection, board: &str, card: NewCard, actor: &Actor) -> Result<Value> {
     let title = clean_title(&card.title)?;
     let card_type = one_of(if card.card_type.is_empty() { "task" } else { &card.card_type }, &TYPES, "type")?;
     let priority = one_of(if card.priority.is_empty() { "medium" } else { &card.priority }, &PRIORITIES, "priority")?;
     let column = match card.column {
         Some(column) => column,
-        None => role_column(conn, project, "todo")?.unwrap_or_else(|| "backlog".to_string()),
+        None => role_column(conn, board, "todo")?.unwrap_or_else(|| "backlog".to_string()),
     };
-    check_column(conn, project, &column)?;
+    check_column(conn, board, &column)?;
     let description = clean_description(&card.description)?;
     let tags = clean_tags(&card.tags)?;
     let color = clean_color(card.color.as_deref().unwrap_or(""))?;
-    check_review_gate(conn, project, &column, actor)?;
+    check_review_gate(conn, board, &column, actor)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
-    ensure_board(&tx, project)?;
+    ensure_board(&tx, board)?;
     let number: i64 =
-        tx.query_row("SELECT next_number FROM board_boards WHERE project_id=?1", [project], |r| r.get(0)).map_err(db)?;
-    tx.execute("UPDATE board_boards SET next_number=next_number+1 WHERE project_id=?1", [project]).map_err(db)?;
+        tx.query_row("SELECT next_number FROM board_boards WHERE board_key=?1", [board], |r| r.get(0)).map_err(db)?;
+    tx.execute("UPDATE board_boards SET next_number=next_number+1 WHERE board_key=?1", [board]).map_err(db)?;
     let id = uuid::Uuid::new_v4().to_string();
-    let position = end_position(&tx, project, &column, &id)?;
+    let position = end_position(&tx, board, &column, &id)?;
     let at = now();
     tx.execute(
-        "INSERT INTO board_cards(id,project_id,number,column_id,position,type,title,description,priority,color,created_at,updated_at,updated_kind,updated_session)
+        "INSERT INTO board_cards(id,board_key,number,column_id,position,type,title,description,priority,color,created_at,updated_at,updated_kind,updated_session)
          VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?13,?10,?10,?11,?12)",
-        params![id, project, number, column, position, card_type, title, description, priority, at, actor.kind(), actor.session(), color],
+        params![id, board, number, column, position, card_type, title, description, priority, at, actor.kind(), actor.session(), color],
     )
     .map_err(db)?;
     set_tags(&tx, &id, &tags)?;
     touch(&tx, &id, actor, "created", "")?;
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
-pub fn update_card(conn: &Connection, project: &str, number: i64, patch: CardPatch, actor: &Actor) -> Result<Value> {
-    let id = card_id(conn, project, number)?;
+pub fn update_card(conn: &Connection, board: &str, number: i64, patch: CardPatch, actor: &Actor) -> Result<Value> {
+    let id = card_id(conn, board, number)?;
     let mut changed: Vec<&str> = Vec::new();
     let tx = conn.unchecked_transaction().map_err(db)?;
     if let Some(title) = &patch.title {
@@ -596,74 +674,74 @@ pub fn update_card(conn: &Connection, project: &str, number: i64, patch: CardPat
         touch(&tx, &id, actor, action, &changed.join(", "))?;
     }
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
 /// Move a card to `column`, before card `before` when given, otherwise to the end of the column.
 /// Cards moved back to Backlog or To Do lose their claim.
-pub fn move_card(conn: &Connection, project: &str, number: i64, column: &str, before: Option<i64>, actor: &Actor) -> Result<Value> {
-    check_column(conn, project, column)?;
-    let id = card_id(conn, project, number)?;
-    check_review_gate(conn, project, column, actor)?;
-    let role = column_role(conn, project, column)?;
+pub fn move_card(conn: &Connection, board: &str, number: i64, column: &str, before: Option<i64>, actor: &Actor) -> Result<Value> {
+    check_column(conn, board, column)?;
+    let id = card_id(conn, board, number)?;
+    check_review_gate(conn, board, column, actor)?;
+    let role = column_role(conn, board, column)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
-    place(&tx, project, &id, column, before)?;
+    place(&tx, board, &id, column, before)?;
     if matches!(role.as_deref(), Some("backlog" | "todo")) {
         tx.execute("UPDATE board_cards SET claimed_by=NULL WHERE id=?1", [&id]).map_err(db)?;
     }
     touch(&tx, &id, actor, "moved", column)?;
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
-fn place(conn: &Connection, project: &str, id: &str, column: &str, before: Option<i64>) -> Result<()> {
+fn place(conn: &Connection, board: &str, id: &str, column: &str, before: Option<i64>) -> Result<()> {
     let position = match before {
         Some(target) => {
             let (target_id, target_column, target_pos): (String, String, f64) = conn
                 .query_row(
-                    "SELECT id, column_id, position FROM board_cards WHERE project_id=?1 AND number=?2",
-                    params![project, target],
+                    "SELECT id, column_id, position FROM board_cards WHERE board_key=?1 AND number=?2",
+                    params![board, target],
                     |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)),
                 )
                 .optional()
                 .map_err(db)?
                 .ok_or_else(|| format!("Card #{target} not found."))?;
             if target_column != column || target_id == id {
-                end_position(conn, project, column, id)?
+                end_position(conn, board, column, id)?
             } else {
                 let above: Option<f64> = conn
                     .query_row(
-                        "SELECT MAX(position) FROM board_cards WHERE project_id=?1 AND column_id=?2 AND position<?3 AND id<>?4",
-                        params![project, column, target_pos, id],
+                        "SELECT MAX(position) FROM board_cards WHERE board_key=?1 AND column_id=?2 AND position<?3 AND id<>?4",
+                        params![board, column, target_pos, id],
                         |r| r.get(0),
                     )
                     .map_err(db)?;
                 (above.unwrap_or(target_pos - 1.0) + target_pos) / 2.0
             }
         }
-        None => end_position(conn, project, column, id)?,
+        None => end_position(conn, board, column, id)?,
     };
     conn.execute("UPDATE board_cards SET column_id=?2, position=?3 WHERE id=?1", params![id, column, position]).map_err(db)?;
     Ok(())
 }
 
-pub fn delete_card(conn: &Connection, project: &str, number: i64, _actor: &Actor) -> Result<()> {
-    let id = card_id(conn, project, number)?;
+pub fn delete_card(conn: &Connection, board: &str, number: i64, _actor: &Actor) -> Result<()> {
+    let id = card_id(conn, board, number)?;
     conn.execute("DELETE FROM board_cards WHERE id=?1", [&id]).map_err(db)?;
     Ok(())
 }
 
-pub fn add_note(conn: &Connection, project: &str, number: i64, text: &str, actor: &Actor) -> Result<Value> {
+pub fn add_note(conn: &Connection, board: &str, number: i64, text: &str, actor: &Actor) -> Result<Value> {
     let text = text.trim();
     if text.is_empty() || text.chars().count() > 4000 {
         return Err("A note is 1 to 4,000 characters.".into());
     }
-    let id = card_id(conn, project, number)?;
+    let id = card_id(conn, board, number)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
     insert_note(&tx, &id, text, actor)?;
     touch(&tx, &id, actor, "noted", "")?;
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
 fn insert_note(conn: &Connection, card: &str, text: &str, actor: &Actor) -> Result<()> {
@@ -676,8 +754,8 @@ fn insert_note(conn: &Connection, card: &str, text: &str, actor: &Actor) -> Resu
 }
 
 /// One card with its notes (oldest first) and history (newest first).
-pub fn card_detail(conn: &Connection, project: &str, number: i64) -> Result<Value> {
-    let mut card = card_json(conn, project, number)?;
+pub fn card_detail(conn: &Connection, board: &str, number: i64) -> Result<Value> {
+    let mut card = card_json(conn, board, number)?;
     let id = card["id"].as_str().unwrap_or_default().to_string();
     let mut stmt = conn
         .prepare(
@@ -719,32 +797,32 @@ pub fn card_detail(conn: &Connection, project: &str, number: i64) -> Result<Valu
 }
 
 /// Give a specific card to a session: In Progress, taken by it.
-pub fn claim(conn: &Connection, project: &str, number: i64, session: &str) -> Result<Value> {
-    let id = card_id(conn, project, number)?;
+pub fn claim(conn: &Connection, board: &str, number: i64, session: &str) -> Result<Value> {
+    let id = card_id(conn, board, number)?;
     let tx = conn.unchecked_transaction().map_err(db)?;
-    take(&tx, project, &id, session)?;
+    take(&tx, board, &id, session)?;
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
-fn take(conn: &Connection, project: &str, id: &str, session: &str) -> Result<()> {
-    let working = role_column(conn, project, "in_progress")?.ok_or("This board has no In Progress column.")?;
-    place(conn, project, id, &working, None)?;
+fn take(conn: &Connection, board: &str, id: &str, session: &str) -> Result<()> {
+    let working = role_column(conn, board, "in_progress")?.ok_or("This board has no In Progress column.")?;
+    place(conn, board, id, &working, None)?;
     conn.execute("UPDATE board_cards SET claimed_by=?2 WHERE id=?1", params![id, session]).map_err(db)?;
     touch(conn, id, &Actor::Agent(session.to_string()), "claimed", "")
 }
 
 /// Take the top To Do card (priority, then position) for `session`. The write lock is held from the read
 /// to the update, so two sessions can never receive the same card.
-pub fn claim_next(conn: &Connection, project: &str, session: &str) -> Result<Option<Value>> {
-    let todo = role_column(conn, project, "todo")?.ok_or("This board has no To Do column.")?;
+pub fn claim_next(conn: &Connection, board: &str, session: &str) -> Result<Option<Value>> {
+    let todo = role_column(conn, board, "todo")?.ok_or("This board has no To Do column.")?;
     let tx = Transaction::new_unchecked(conn, TransactionBehavior::Immediate).map_err(db)?;
     let next: Option<(String, i64)> = tx
         .query_row(
-            "SELECT id, number FROM board_cards WHERE project_id=?1 AND column_id=?2
+            "SELECT id, number FROM board_cards WHERE board_key=?1 AND column_id=?2
              ORDER BY CASE priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END, position
              LIMIT 1",
-            params![project, todo],
+            params![board, todo],
             |r| Ok((r.get(0)?, r.get(1)?)),
         )
         .optional()
@@ -753,38 +831,38 @@ pub fn claim_next(conn: &Connection, project: &str, session: &str) -> Result<Opt
         tx.commit().map_err(db)?;
         return Ok(None);
     };
-    take(&tx, project, &id, session)?;
+    take(&tx, board, &id, session)?;
     tx.commit().map_err(db)?;
-    card_json(conn, project, number).map(Some)
+    card_json(conn, board, number).map(Some)
 }
 
 /// Finish a card from an agent: the Review column when there is one, otherwise Done. The summary becomes a note.
-pub fn finish(conn: &Connection, project: &str, number: i64, session: &str, summary: &str) -> Result<Value> {
-    let id = card_id(conn, project, number)?;
-    let column = match role_column(conn, project, "review")? {
+pub fn finish(conn: &Connection, board: &str, number: i64, session: &str, summary: &str) -> Result<Value> {
+    let id = card_id(conn, board, number)?;
+    let column = match role_column(conn, board, "review")? {
         Some(review) => review,
-        None => role_column(conn, project, "done")?.ok_or("This board has no Review or Done column.")?,
+        None => role_column(conn, board, "done")?.ok_or("This board has no Review or Done column.")?,
     };
     let actor = Actor::Agent(session.to_string());
     let tx = conn.unchecked_transaction().map_err(db)?;
-    place(&tx, project, &id, &column, None)?;
+    place(&tx, board, &id, &column, None)?;
     touch(&tx, &id, &actor, "moved", &column)?;
     let summary = summary.trim();
     if !summary.is_empty() {
         insert_note(&tx, &id, summary, &actor)?;
     }
     tx.commit().map_err(db)?;
-    card_json(conn, project, number)
+    card_json(conn, board, number)
 }
 
-pub fn list(conn: &Connection, project: &str, filter: ListFilter) -> Result<Vec<Value>> {
-    let column = filter.column.as_deref().map(|c| resolve_column(conn, project, c)).transpose()?;
+pub fn list(conn: &Connection, board: &str, filter: ListFilter) -> Result<Vec<Value>> {
+    let column = filter.column.as_deref().map(|c| resolve_column(conn, board, c)).transpose()?;
     if let Some(card_type) = &filter.type_ {
         one_of(card_type, &TYPES, "type")?;
     }
     let tag = filter.tag.map(|t| t.trim().to_lowercase());
     let search = filter.search.map(|s| s.trim().to_lowercase()).filter(|s| !s.is_empty());
-    Ok(all_cards(conn, project)?
+    Ok(all_cards(conn, board)?
         .into_iter()
         .filter(|c| column.as_ref().is_none_or(|col| c["column"] == *col))
         .filter(|c| filter.type_.as_ref().is_none_or(|t| c["type"] == *t))
