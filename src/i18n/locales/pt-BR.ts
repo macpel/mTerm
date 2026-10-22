@@ -1052,6 +1052,26 @@ const ptBR: typeof en = {
   "board.byYou": "Você", // You
   "board.takenBy": (name: string) => `Assumido por ${name}`, // Taken by {}
   "board.cardMenu": "Ações do cartão", // Card actions
+  "board.newCard": "Novo cartão", // New card
+  "board.fieldTitle": "Título", // Title
+  "board.fieldType": "Tipo", // Type
+  "board.fieldPriority": "Prioridade", // Priority
+  "board.fieldDescription": "Descrição", // Description
+  "board.fieldTags": "Tags", // Tags
+  "board.tagHint": "Digite uma tag e pressione Enter", // Type a tag and press Enter
+  "board.save": "Salvar", // Save
+  "board.delete": "Excluir", // Delete
+  "board.deleteConfirm": "Clique de novo para excluir", // Click again to delete
+  "board.notes": "Notas", // Notes
+  "board.addNote": "Adicionar uma nota", // Add a note
+  "board.addNoteButton": "Adicionar nota", // Add note
+  "board.history": "Histórico", // History
+  "board.action.created": "criou", // created
+  "board.action.moved": "moveu para", // moved to
+  "board.action.edited": "editou", // edited
+  "board.action.tagged": "alterou as tags", // changed tags
+  "board.action.noted": "adicionou uma nota", // added a note
+  "board.action.claimed": "assumiu", // took
   "tree.newSubgroup": "Novo subgrupo", // New Subgroup
   "tree.newChildSession": "Nova sessão filha", // New Child Session
   "tree.openSelected": "Abrir sessões selecionadas", // Open Selected Sessions

@@ -1035,6 +1035,26 @@ const zhTW: typeof en = {
   "board.byYou": "你", // You
   "board.takenBy": (name: string) => `由 ${name} 認領`, // Taken by {}
   "board.cardMenu": "卡片操作", // Card actions
+  "board.newCard": "新卡片", // New card
+  "board.fieldTitle": "標題", // Title
+  "board.fieldType": "類型", // Type
+  "board.fieldPriority": "優先順序", // Priority
+  "board.fieldDescription": "描述", // Description
+  "board.fieldTags": "標籤", // Tags
+  "board.tagHint": "輸入標籤後按 Enter", // Type a tag and press Enter
+  "board.save": "儲存", // Save
+  "board.delete": "刪除", // Delete
+  "board.deleteConfirm": "再按一次以刪除", // Click again to delete
+  "board.notes": "備註", // Notes
+  "board.addNote": "新增備註", // Add a note
+  "board.addNoteButton": "新增備註", // Add note
+  "board.history": "歷程", // History
+  "board.action.created": "建立了", // created
+  "board.action.moved": "移到", // moved to
+  "board.action.edited": "編輯了", // edited
+  "board.action.tagged": "修改了標籤", // changed tags
+  "board.action.noted": "新增了備註", // added a note
+  "board.action.claimed": "認領了", // took
   "tree.newSubgroup": "新增子群組", // New Subgroup
   "tree.newChildSession": "新增子會話", // New Child Session
   "tree.openSelected": "開啟選取的會話", // Open Selected Sessions

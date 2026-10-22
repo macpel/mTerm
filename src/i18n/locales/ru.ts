@@ -1061,6 +1061,26 @@ const ru: typeof en = {
   "board.byYou": "Вы", // You
   "board.takenBy": (name: string) => `Взял ${name}`, // Taken by {}
   "board.cardMenu": "Действия с карточкой", // Card actions
+  "board.newCard": "Новая карточка", // New card
+  "board.fieldTitle": "Название", // Title
+  "board.fieldType": "Тип", // Type
+  "board.fieldPriority": "Приоритет", // Priority
+  "board.fieldDescription": "Описание", // Description
+  "board.fieldTags": "Теги", // Tags
+  "board.tagHint": "Введите тег и нажмите Enter", // Type a tag and press Enter
+  "board.save": "Сохранить", // Save
+  "board.delete": "Удалить", // Delete
+  "board.deleteConfirm": "Нажмите ещё раз, чтобы удалить", // Click again to delete
+  "board.notes": "Заметки", // Notes
+  "board.addNote": "Добавить заметку", // Add a note
+  "board.addNoteButton": "Добавить заметку", // Add note
+  "board.history": "История", // History
+  "board.action.created": "создал(а)", // created
+  "board.action.moved": "переместил(а) в", // moved to
+  "board.action.edited": "изменил(а)", // edited
+  "board.action.tagged": "изменил(а) теги", // changed tags
+  "board.action.noted": "добавил(а) заметку", // added a note
+  "board.action.claimed": "взял(а)", // took
   "tree.newSubgroup": "Новая подгруппа", // New Subgroup
   "tree.newChildSession": "Новая дочерняя сессия", // New Child Session
   "tree.openSelected": "Открыть выбранные сессии", // Open Selected Sessions

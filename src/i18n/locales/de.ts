@@ -1051,6 +1051,26 @@ const de: typeof en = {
   "board.byYou": "Du", // You
   "board.takenBy": (name: string) => `Übernommen von ${name}`, // Taken by {}
   "board.cardMenu": "Kartenaktionen", // Card actions
+  "board.newCard": "Neue Karte", // New card
+  "board.fieldTitle": "Titel", // Title
+  "board.fieldType": "Typ", // Type
+  "board.fieldPriority": "Priorität", // Priority
+  "board.fieldDescription": "Beschreibung", // Description
+  "board.fieldTags": "Tags", // Tags
+  "board.tagHint": "Tag eingeben und Enter drücken", // Type a tag and press Enter
+  "board.save": "Speichern", // Save
+  "board.delete": "Löschen", // Delete
+  "board.deleteConfirm": "Zum Löschen erneut klicken", // Click again to delete
+  "board.notes": "Notizen", // Notes
+  "board.addNote": "Notiz hinzufügen", // Add a note
+  "board.addNoteButton": "Notiz hinzufügen", // Add note
+  "board.history": "Verlauf", // History
+  "board.action.created": "erstellt", // created
+  "board.action.moved": "verschoben nach", // moved to
+  "board.action.edited": "bearbeitet", // edited
+  "board.action.tagged": "Tags geändert", // changed tags
+  "board.action.noted": "Notiz hinzugefügt", // added a note
+  "board.action.claimed": "übernommen", // took
   "tree.newSubgroup": "Neue Untergruppe", // New Subgroup
   "tree.newChildSession": "Neue Untersitzung", // New Child Session
   "tree.openSelected": "Ausgewählte Sitzungen öffnen", // Open Selected Sessions

@@ -1047,6 +1047,26 @@ const ko: typeof en = {
   "board.byYou": "나", // You
   "board.takenBy": (name: string) => `${name} 담당`, // Taken by {}
   "board.cardMenu": "카드 작업", // Card actions
+  "board.newCard": "새 카드", // New card
+  "board.fieldTitle": "제목", // Title
+  "board.fieldType": "유형", // Type
+  "board.fieldPriority": "우선순위", // Priority
+  "board.fieldDescription": "설명", // Description
+  "board.fieldTags": "태그", // Tags
+  "board.tagHint": "태그를 입력하고 Enter", // Type a tag and press Enter
+  "board.save": "저장", // Save
+  "board.delete": "삭제", // Delete
+  "board.deleteConfirm": "한 번 더 클릭하면 삭제", // Click again to delete
+  "board.notes": "메모", // Notes
+  "board.addNote": "메모 추가", // Add a note
+  "board.addNoteButton": "메모 추가", // Add note
+  "board.history": "기록", // History
+  "board.action.created": "생성", // created
+  "board.action.moved": "이동:", // moved to
+  "board.action.edited": "편집", // edited
+  "board.action.tagged": "태그 변경", // changed tags
+  "board.action.noted": "메모 추가", // added a note
+  "board.action.claimed": "담당", // took
   "tree.newSubgroup": "새 하위 그룹", // New Subgroup
   "tree.newChildSession": "새 하위 세션", // New Child Session
   "tree.openSelected": "선택한 세션 열기", // Open Selected Sessions

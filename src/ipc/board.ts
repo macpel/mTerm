@@ -39,11 +39,14 @@ export interface CardNote {
   createdAt: number;
 }
 
+/** What a history entry records; written by the backend's board store. */
+export type CardAction = "created" | "moved" | "edited" | "tagged" | "noted" | "claimed";
+
 export interface CardEvent {
   id: string;
   actorKind: "user" | "agent";
   actorName: string | null;
-  action: string;
+  action: CardAction;
   detail: string;
   createdAt: number;
 }

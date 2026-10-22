@@ -1054,6 +1054,26 @@ const fr: typeof en = {
   "board.byYou": "Vous", // You
   "board.takenBy": (name: string) => `Prise par ${name}`, // Taken by {}
   "board.cardMenu": "Actions de la carte", // Card actions
+  "board.newCard": "Nouvelle carte", // New card
+  "board.fieldTitle": "Titre", // Title
+  "board.fieldType": "Type", // Type
+  "board.fieldPriority": "Priorité", // Priority
+  "board.fieldDescription": "Description", // Description
+  "board.fieldTags": "Étiquettes", // Tags
+  "board.tagHint": "Saisissez une étiquette puis Entrée", // Type a tag and press Enter
+  "board.save": "Enregistrer", // Save
+  "board.delete": "Supprimer", // Delete
+  "board.deleteConfirm": "Cliquez à nouveau pour supprimer", // Click again to delete
+  "board.notes": "Notes", // Notes
+  "board.addNote": "Ajouter une note", // Add a note
+  "board.addNoteButton": "Ajouter la note", // Add note
+  "board.history": "Historique", // History
+  "board.action.created": "a créé", // created
+  "board.action.moved": "a déplacé vers", // moved to
+  "board.action.edited": "a modifié", // edited
+  "board.action.tagged": "a changé les étiquettes", // changed tags
+  "board.action.noted": "a ajouté une note", // added a note
+  "board.action.claimed": "a pris", // took
   "tree.newSubgroup": "Nouveau sous-groupe", // New Subgroup
   "tree.newChildSession": "Nouvelle session enfant", // New Child Session
   "tree.openSelected": "Ouvrir les sessions sélectionnées", // Open Selected Sessions

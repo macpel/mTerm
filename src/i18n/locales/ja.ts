@@ -1051,6 +1051,26 @@ const ja: typeof en = {
   "board.byYou": "あなた", // You
   "board.takenBy": (name: string) => `${name} が担当中`, // Taken by {}
   "board.cardMenu": "カードの操作", // Card actions
+  "board.newCard": "新しいカード", // New card
+  "board.fieldTitle": "タイトル", // Title
+  "board.fieldType": "種類", // Type
+  "board.fieldPriority": "優先度", // Priority
+  "board.fieldDescription": "説明", // Description
+  "board.fieldTags": "タグ", // Tags
+  "board.tagHint": "タグを入力して Enter", // Type a tag and press Enter
+  "board.save": "保存", // Save
+  "board.delete": "削除", // Delete
+  "board.deleteConfirm": "もう一度クリックで削除", // Click again to delete
+  "board.notes": "メモ", // Notes
+  "board.addNote": "メモを追加", // Add a note
+  "board.addNoteButton": "メモを追加", // Add note
+  "board.history": "履歴", // History
+  "board.action.created": "作成", // created
+  "board.action.moved": "移動先:", // moved to
+  "board.action.edited": "編集", // edited
+  "board.action.tagged": "タグを変更", // changed tags
+  "board.action.noted": "メモを追加", // added a note
+  "board.action.claimed": "担当", // took
   "tree.newSubgroup": "新規サブグループ", // New Subgroup
   "tree.newChildSession": "新規子セッション", // New Child Session
   "tree.openSelected": "選択したセッションを開く", // Open Selected Sessions

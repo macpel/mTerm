@@ -18,6 +18,7 @@ import {
 } from "../../ipc/board";
 import { BoardColumn } from "./BoardColumn";
 import { TYPE_ICON } from "./BoardCard";
+import { CardDetails } from "./CardDetails";
 import { allTags, filterCards } from "./filter";
 import "./board.css";
 
@@ -30,7 +31,7 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
   const [tags, setTags] = useState<string[]>([]);
   const [menu, setMenu] = useState<{ card: BoardCard; x: number; y: number } | null>(null);
   /** Card number open in the details panel, or "new" for the new-card form. */
-  const [, setOpen] = useState<number | "new" | null>(null);
+  const [open, setOpen] = useState<number | "new" | null>(null);
 
   const load = useCallback(() => {
     boardGet(projectId)
@@ -125,6 +126,7 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
       </div>
       {error && <div className="board-error" role="alert">{error}</div>}
       {data && data.cards.length === 0 && <div className="board-empty">{t("board.empty")}</div>}
+      <div className="board-main">
       <div className="board-cols">
         {columns.map((column) => (
           <BoardColumn
@@ -136,6 +138,15 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
             onMove={move}
           />
         ))}
+      </div>
+      {open !== null && (
+        <CardDetails
+          key={open}
+          projectId={projectId}
+          number={open === "new" ? undefined : open}
+          onClose={() => setOpen(null)}
+        />
+      )}
       </div>
       {menu && <ContextMenu x={menu.x} y={menu.y} items={menuItems(menu.card)} onClose={() => setMenu(null)} />}
     </div>
