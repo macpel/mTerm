@@ -1,12 +1,12 @@
 //! Vela-style application header with branding, theme toggle, appearance settings, and panel controls.
 //! The window retains native decorations; this row sits below the system title bar.
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icons from "../../components/Icons";
 import { useT } from "../../i18n";
 import { sharingNavigate, useSharingLocation } from "../../sharing/navigation";
 import { getBackendVersion } from "../../ipc/commands";
-import { apiUrl, isShareSurface } from "../../ipc/shareBase";
+import { isShareSurface } from "../../ipc/shareBase";
 import { invoke, isTauri } from "../../ipc/transport";
 import { recordRequestError } from "../../ipc/reqLog";
 import { screenshotShortcutGet, screenshotStart, type ScreenshotShortcutStatus } from "../../ipc/screenshot";
@@ -211,17 +211,8 @@ export function TitleBar() {
 
   return (
     <div className="titlebar">
+      {/* The window title already names the app, so the bar only carries the dev build badge. */}
       <div className="brand">
-        <img
-          className="logo"
-          // CSS content on `.brand .logo` follows data-theme so system-mode changes do not require a
-          // TitleBar rerender. This light src is only a fallback when CSS content is unavailable.
-          src={apiUrl("/mterm.svg")}
-          style={{"--brand-logo-light":`url("${apiUrl("/mterm.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/mterm.svg")}")`} as CSSProperties}
-          alt="mTerm"
-          draggable={false}
-        />
-        <span className="v">mTerm</span>
         {env.isDev || __DEV_BUILD__ ? (
           <span
             // Vite development for Tauri/browser shows HMR time. Electron loads packaged assets without
