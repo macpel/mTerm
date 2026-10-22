@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import type { MergeView } from "@codemirror/merge";
 import { useT } from "../../i18n";
 import { Backdrop } from "../Backdrop";
+import { Splitter } from "../Splitter";
 import { diffIgnoringWhitespace } from "./whitespaceDiff";
 import { replaceChangesPath, useChangesRoute } from "./changesRoute";
 import { filesForSide } from "./changeGroups";
@@ -54,6 +55,22 @@ function writeDiffOptions(options: DiffOptions): void {
     localStorage.setItem(OPTIONS_KEY, JSON.stringify(options));
   } catch {
     // The choice then lasts while the dialog is open.
+  }
+}
+
+/** File-list width, dragged with the splitter and kept across openings. */
+const LIST_WIDTH_KEY = "vlx.diff.listWidth";
+const LIST_DEFAULT_W = 300;
+const LIST_MIN_W = 180;
+/** Largest share of the dialog body the list may take, so the diff always keeps most of the room. */
+const LIST_MAX_SHARE = 0.6;
+
+function readListWidth(): number {
+  try {
+    const saved = Number(localStorage.getItem(LIST_WIDTH_KEY));
+    return Number.isFinite(saved) && saved >= LIST_MIN_W ? saved : LIST_DEFAULT_W;
+  } catch {
+    return LIST_DEFAULT_W;
   }
 }
 
@@ -196,6 +213,14 @@ export function ChangesModal() {
     return next;
   });
   const dialog = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  const [listWidth, setListWidth] = useState(readListWidth);
+  const resizeList = (dx: number) => setListWidth((w) => {
+    const max = Math.max(LIST_MIN_W, (body.current?.clientWidth ?? 0) * LIST_MAX_SHARE);
+    const next = Math.min(max, Math.max(LIST_MIN_W, w + dx));
+    try { localStorage.setItem(LIST_WIDTH_KEY, String(Math.round(next))); } catch { /* Keep it for this session. */ }
+    return next;
+  });
 
   useEffect(() => {
     setFiles(null);
@@ -263,8 +288,8 @@ export function ChangesModal() {
           <button type="button" className="vlx-btn" onClick={close}>{t("common.close")}</button>
         </div>
       </header>
-      <div className="changes-body">
-        <div className="changes-files" aria-label={t("git.changedFiles", files?.length ?? 0)}>
+      <div className="changes-body" ref={body}>
+        <div className="changes-files" style={{ width: listWidth }} aria-label={t("git.changedFiles", files?.length ?? 0)}>
           {err && <div className="changes-message git-err" role="alert">{err}</div>}
           {!err && files === null && <div className="changes-message">{t("changes.loading")}</div>}
           {!err && files?.length === 0 && <div className="changes-message">{t("changes.noChanges")}</div>}
@@ -273,6 +298,7 @@ export function ChangesModal() {
               onOpen={() => setSelected(f.path)} actions={[]} />
           </div>)}
         </div>
+        <div className="changes-splitter"><Splitter onDrag={resizeList} /></div>
         <div className="changes-content">
           {selected ? <>
             <div className="changes-file-path">{file?.originalPath && <span>{file.originalPath} → </span>}{selected}</div>
