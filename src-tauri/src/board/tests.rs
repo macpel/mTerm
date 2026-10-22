@@ -23,6 +23,19 @@ fn db() -> Connection {
     conn
 }
 
+/// Switch Review on or off by adding or deleting the Review column.
+fn review(conn: &Connection, on: bool) {
+    if on {
+        store::add_column(conn, PROJECT, None, Some("review")).unwrap();
+    } else {
+        store::delete_column(conn, PROJECT, "review", &Actor::User).unwrap();
+    }
+}
+
+fn column_ids(conn: &Connection) -> Vec<String> {
+    store::columns(conn, PROJECT).unwrap().iter().map(|c| c["id"].as_str().unwrap().to_string()).collect()
+}
+
 fn add(conn: &Connection, title: &str, priority: &str) -> i64 {
     let card = store::create_card(
         conn,
@@ -45,7 +58,9 @@ fn column_order(conn: &Connection, column: &str) -> Vec<i64> {
 fn board_is_created_on_first_use() {
     let conn = db();
     let board = store::get_board(&conn, PROJECT).unwrap();
-    assert_eq!(board["reviewEnabled"], false);
+    let roles: Vec<&str> = board["columns"].as_array().unwrap().iter().map(|c| c["role"].as_str().unwrap()).collect();
+    assert_eq!(roles, vec!["backlog", "todo", "in_progress", "done"]);
+    assert_eq!(board["columns"][0]["name"], serde_json::Value::Null);
     assert_eq!(board["cards"], serde_json::json!([]));
 }
 
@@ -90,7 +105,7 @@ fn move_places_card_before_target() {
 fn agent_cannot_move_to_done_while_review_on() {
     let conn = db();
     add(&conn, "a", "medium");
-    store::set_review(&conn, PROJECT, true).unwrap();
+    review(&conn, true);
     let err = store::move_card(&conn, PROJECT, 1, "done", None, &Actor::Agent(S1.into())).unwrap_err();
     assert_eq!(err, "Review is on: use vboard done; a person moves cards to Done.");
     store::move_card(&conn, PROJECT, 1, "done", None, &Actor::User).unwrap();
@@ -153,9 +168,9 @@ fn finish_goes_to_review_or_done() {
     let conn = db();
     add(&conn, "a", "medium");
     add(&conn, "b", "medium");
-    store::set_review(&conn, PROJECT, true).unwrap();
+    review(&conn, true);
     assert_eq!(store::finish(&conn, PROJECT, 1, S1, "fixed it").unwrap()["column"], "review");
-    store::set_review(&conn, PROJECT, false).unwrap();
+    review(&conn, false);
     assert_eq!(store::finish(&conn, PROJECT, 2, S1, "done too").unwrap()["column"], "done");
     let detail = store::card_detail(&conn, PROJECT, 1).unwrap();
     assert_eq!(detail["notes"][0]["text"], "fixed it");
@@ -244,9 +259,12 @@ fn parse_accepts_hash_numbers() {
 }
 
 #[test]
-fn parse_rejects_unknown_column() {
-    let err = command::parse(&args(&["move", "3", "doing"])).unwrap_err();
-    assert_eq!(err, "Unknown column \"doing\". Use one of: backlog, todo, in_progress, review, done.");
+fn move_to_unknown_column_lists_the_board_columns() {
+    let conn = db();
+    add(&conn, "a", "medium");
+    let cmd = command::parse(&args(&["move", "1", "doing"])).unwrap();
+    let err = command::execute(&conn, PROJECT, S1, cmd).unwrap_err();
+    assert_eq!(err, "Column \"doing\" not found. Columns: Backlog, To Do, In Progress, Done.");
 }
 
 #[test]
@@ -302,11 +320,151 @@ fn execute_tag_merges_with_existing_tags() {
 #[test]
 fn agent_cannot_add_straight_to_done_while_review_on() {
     let conn = db();
-    store::set_review(&conn, PROJECT, true).unwrap();
+    review(&conn, true);
     let card = |column: &str| NewCard { title: "Fixed it".into(), column: Some(column.into()), ..Default::default() };
     let err = store::create_card(&conn, PROJECT, card("done"), &Actor::Agent(S1.into())).unwrap_err();
     assert_eq!(err, "Review is on: use vboard done; a person moves cards to Done.");
     assert_eq!(store::create_card(&conn, PROJECT, card("done"), &Actor::User).unwrap()["column"], "done");
-    store::set_review(&conn, PROJECT, false).unwrap();
+    review(&conn, false);
     assert_eq!(store::create_card(&conn, PROJECT, card("done"), &Actor::Agent(S1.into())).unwrap()["column"], "done");
+}
+
+// ── editable columns ──
+
+#[test]
+fn old_review_setting_seeds_a_review_column() {
+    let conn = Connection::open_in_memory().unwrap();
+    conn.execute_batch(crate::db::schema::SCHEMA).unwrap();
+    conn.execute_batch(
+        "INSERT INTO projects(id,name,root_path,created_at) VALUES('p1','Demo','C:/demo',0);
+         CREATE TABLE board_boards(project_id TEXT PRIMARY KEY, review_enabled INTEGER NOT NULL DEFAULT 0, next_number INTEGER NOT NULL DEFAULT 1);
+         INSERT INTO board_boards(project_id, review_enabled) VALUES('p1', 1);",
+    )
+    .unwrap();
+    super::init(&conn).unwrap();
+    assert_eq!(column_ids(&conn), vec!["backlog", "todo", "in_progress", "review", "done"]);
+}
+
+#[test]
+fn old_database_gains_the_color_column() {
+    let conn = Connection::open_in_memory().unwrap();
+    conn.execute_batch(crate::db::schema::SCHEMA).unwrap();
+    conn.execute_batch(
+        "CREATE TABLE board_cards (id TEXT PRIMARY KEY, project_id TEXT NOT NULL, number INTEGER NOT NULL,
+         column_id TEXT NOT NULL, position REAL NOT NULL, type TEXT NOT NULL, title TEXT NOT NULL,
+         description TEXT NOT NULL DEFAULT '', priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT,
+         created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, updated_kind TEXT NOT NULL, updated_session TEXT,
+         UNIQUE(project_id, number));",
+    )
+    .unwrap();
+    super::init(&conn).unwrap();
+    let has: bool = conn
+        .query_row("SELECT COUNT(*) FROM pragma_table_info('board_cards') WHERE name='color'", [], |r| r.get::<_, i64>(0))
+        .map(|n| n == 1)
+        .unwrap();
+    assert!(has);
+}
+
+#[test]
+fn custom_columns_can_be_added_renamed_moved_and_deleted() {
+    let conn = db();
+    let qa = store::add_column(&conn, PROJECT, Some("QA"), None).unwrap();
+    let qa_id = qa["id"].as_str().unwrap().to_string();
+    assert!(qa_id.starts_with("c-"));
+    assert_eq!(qa["role"], serde_json::Value::Null);
+    assert_eq!(column_ids(&conn).last().unwrap(), &qa_id);
+    store::rename_column(&conn, PROJECT, &qa_id, "  Testing ").unwrap();
+    assert_eq!(store::columns(&conn, PROJECT).unwrap().last().unwrap()["name"], "Testing");
+    store::move_column(&conn, PROJECT, &qa_id, Some("done")).unwrap();
+    assert_eq!(column_ids(&conn), vec!["backlog", "todo", "in_progress", qa_id.as_str(), "done"]);
+    store::delete_column(&conn, PROJECT, &qa_id, &Actor::User).unwrap();
+    assert_eq!(column_ids(&conn), vec!["backlog", "todo", "in_progress", "done"]);
+}
+
+#[test]
+fn column_names_are_unique_and_roles_appear_once() {
+    let conn = db();
+    store::add_column(&conn, PROJECT, Some("QA"), None).unwrap();
+    assert_eq!(store::add_column(&conn, PROJECT, Some("qa"), None).unwrap_err(), "A column named \"qa\" already exists.");
+    assert_eq!(store::add_column(&conn, PROJECT, Some("to do"), None).unwrap_err(), "A column named \"to do\" already exists.");
+    assert!(store::add_column(&conn, PROJECT, None, Some("todo")).is_err());
+    assert!(store::add_column(&conn, PROJECT, Some(" "), None).is_err());
+}
+
+#[test]
+fn deleting_a_column_moves_its_cards_to_backlog() {
+    let conn = db();
+    add(&conn, "a", "medium");
+    store::claim(&conn, PROJECT, 1, S1).unwrap();
+    store::delete_column(&conn, PROJECT, "in_progress", &Actor::User).unwrap();
+    let card = store::card_detail(&conn, PROJECT, 1).unwrap();
+    assert_eq!(card["column"], "backlog");
+    assert_eq!(card["claimedBy"], serde_json::Value::Null);
+}
+
+#[test]
+fn backlog_cannot_be_renamed_moved_or_deleted() {
+    let conn = db();
+    let qa = store::add_column(&conn, PROJECT, Some("QA"), None).unwrap();
+    let qa_id = qa["id"].as_str().unwrap();
+    assert!(store::delete_column(&conn, PROJECT, "backlog", &Actor::User).is_err());
+    assert!(store::rename_column(&conn, PROJECT, "backlog", "Ideas").is_err());
+    assert!(store::move_column(&conn, PROJECT, "backlog", None).is_err());
+    assert!(store::move_column(&conn, PROJECT, qa_id, Some("backlog")).is_err());
+    assert_eq!(column_ids(&conn)[0], "backlog");
+}
+
+#[test]
+fn next_and_done_follow_roles_after_renames() {
+    let conn = db();
+    add(&conn, "a", "medium");
+    store::rename_column(&conn, PROJECT, "todo", "Ready").unwrap();
+    store::rename_column(&conn, PROJECT, "done", "Shipped").unwrap();
+    assert_eq!(store::claim_next(&conn, PROJECT, S1).unwrap().unwrap()["column"], "in_progress");
+    assert_eq!(store::finish(&conn, PROJECT, 1, S1, "").unwrap()["column"], "done");
+}
+
+#[test]
+fn next_needs_a_to_do_column() {
+    let conn = db();
+    store::delete_column(&conn, PROJECT, "todo", &Actor::User).unwrap();
+    assert_eq!(store::claim_next(&conn, PROJECT, S1).unwrap_err(), "This board has no To Do column.");
+    store::add_column(&conn, PROJECT, None, Some("todo")).unwrap();
+    assert!(store::claim_next(&conn, PROJECT, S1).unwrap().is_none());
+}
+
+#[test]
+fn vboard_moves_by_display_name_and_lists_columns() {
+    let conn = db();
+    add(&conn, "a", "medium");
+    store::add_column(&conn, PROJECT, Some("In Review"), None).unwrap();
+    let cmd = command::parse(&args(&["move", "1", "in", "review"])).unwrap();
+    let (card, _) = command::execute(&conn, PROJECT, S1, cmd).unwrap();
+    assert!(card["column"].as_str().unwrap().starts_with("c-"));
+    let cmd = command::parse(&args(&["move", "1", "To", "Do"])).unwrap();
+    assert_eq!(command::execute(&conn, PROJECT, S1, cmd).unwrap().0["column"], "todo");
+    let (list, changed) = command::execute(&conn, PROJECT, S1, command::parse(&args(&["columns"])).unwrap()).unwrap();
+    assert!(!changed);
+    let names: Vec<&str> = list.as_array().unwrap().iter().map(|c| c["name"].as_str().unwrap()).collect();
+    assert_eq!(names, vec!["Backlog", "To Do", "In Progress", "Done", "In Review"]);
+    assert_eq!(list[1]["cards"], 1);
+}
+
+#[test]
+fn card_colour_can_be_set_cleared_and_is_checked() {
+    let conn = db();
+    let card = store::create_card(
+        &conn,
+        PROJECT,
+        NewCard { title: "a".into(), color: Some("green".into()), ..Default::default() },
+        &Actor::User,
+    )
+    .unwrap();
+    assert_eq!(card["color"], "green");
+    let cleared = store::update_card(&conn, PROJECT, 1, CardPatch { color: Some("".into()), ..Default::default() }, &Actor::User).unwrap();
+    assert_eq!(cleared["color"], serde_json::Value::Null);
+    let bad = CardPatch { color: Some("teal".into()), ..Default::default() };
+    assert!(store::update_card(&conn, PROJECT, 1, bad, &Actor::User).is_err());
+    let cmd = command::parse(&args(&["add", "b", "--color", "pink"])).unwrap();
+    assert_eq!(command::execute(&conn, PROJECT, S1, cmd).unwrap().0["color"], "pink");
 }

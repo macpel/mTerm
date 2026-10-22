@@ -6,26 +6,44 @@ use rusqlite::Connection;
 use serde_json::{json, Value};
 
 pub const USAGE: &str = "usage: vboard <command>
+  columns                                                   list the board's columns
   list [--column C] [--type T] [--tag T] [--search TEXT]   list cards
   show N                                                    one card with notes and history
-  add \"title\" [--type T] [--desc TEXT] [--priority P] [--tag a,b] [--column C]
-  edit N [--title TEXT] [--type T] [--desc TEXT] [--priority P]
+  add \"title\" [--type T] [--desc TEXT] [--priority P] [--tag a,b] [--column C] [--color COLOUR]
+  edit N [--title TEXT] [--type T] [--desc TEXT] [--priority P] [--color COLOUR]
   tag N +add -remove                                        change tags
   move N <column>                                           move a card
   note N \"text\"                                             add a note
   next                                                      take the top To Do card
   done N \"summary\"                                          finish: Review when on, else Done
   delete N                                                  delete a card (prefer done)
-Columns: backlog, todo, in_progress, review, done. Types: task, bug, feature, epic.
-Priorities: low, medium, high, urgent. N may be written 12 or #12.";
+A column is named by its name (\"In Progress\", \"QA\") or a standard role (todo, in_progress, review, done).
+Types: task, bug, feature, epic. Priorities: low, medium, high, urgent.
+Colours: red, orange, yellow, green, blue, purple, pink, none. N may be written 12 or #12.";
 
 #[derive(Debug)]
 pub enum BoardCommand {
     Help,
+    Columns,
     List(ListFilter),
     Show(i64),
-    Add { title: String, card_type: Option<String>, description: Option<String>, priority: Option<String>, tags: Vec<String>, column: Option<String> },
-    Edit { number: i64, title: Option<String>, card_type: Option<String>, description: Option<String>, priority: Option<String> },
+    Add {
+        title: String,
+        card_type: Option<String>,
+        description: Option<String>,
+        priority: Option<String>,
+        tags: Vec<String>,
+        column: Option<String>,
+        color: Option<String>,
+    },
+    Edit {
+        number: i64,
+        title: Option<String>,
+        card_type: Option<String>,
+        description: Option<String>,
+        priority: Option<String>,
+        color: Option<String>,
+    },
     Tag { number: i64, add: Vec<String>, remove: Vec<String> },
     Move { number: i64, column: String },
     Note { number: i64, text: String },
@@ -37,15 +55,6 @@ pub enum BoardCommand {
 fn card_number(word: Option<&String>) -> Result<i64> {
     let word = word.ok_or("Give a card number, for example 12.")?;
     word.trim_start_matches('#').parse().map_err(|_| format!("\"{word}\" is not a card number."))
-}
-
-fn column(word: &str) -> Result<String> {
-    let normal = word.trim().to_lowercase().replace('-', "_");
-    if store::COLUMNS.contains(&normal.as_str()) {
-        Ok(normal)
-    } else {
-        Err(format!("Unknown column \"{word}\". Use one of: {}.", store::COLUMNS.join(", ")))
-    }
 }
 
 /// Positional words and `--flag value` pairs; only the flags in `allowed` are accepted.
@@ -85,32 +94,35 @@ pub fn parse(args: &[String]) -> Result<BoardCommand> {
         "list" | "ls" => {
             let (_, flags) = split(words, &["column", "type", "tag", "search"])?;
             BoardCommand::List(ListFilter {
-                column: flag(&flags, "column").map(|c| column(&c)).transpose()?,
+                column: flag(&flags, "column"),
                 type_: flag(&flags, "type"),
                 tag: flag(&flags, "tag"),
                 search: flag(&flags, "search"),
             })
         }
+        "columns" => BoardCommand::Columns,
         "show" => BoardCommand::Show(card_number(words.first())?),
         "add" => {
-            let (positional, flags) = split(words, &["type", "desc", "priority", "tag", "column"])?;
+            let (positional, flags) = split(words, &["type", "desc", "priority", "tag", "column", "color"])?;
             BoardCommand::Add {
                 title: rest(&positional),
                 card_type: flag(&flags, "type"),
                 description: flag(&flags, "desc"),
                 priority: flag(&flags, "priority"),
                 tags: flag(&flags, "tag").map(|t| t.split(',').map(|s| s.trim().to_string()).collect()).unwrap_or_default(),
-                column: flag(&flags, "column").map(|c| column(&c)).transpose()?,
+                column: flag(&flags, "column"),
+                color: flag(&flags, "color"),
             }
         }
         "edit" => {
-            let (positional, flags) = split(words, &["title", "type", "desc", "priority"])?;
+            let (positional, flags) = split(words, &["title", "type", "desc", "priority", "color"])?;
             BoardCommand::Edit {
                 number: card_number(positional.first())?,
                 title: flag(&flags, "title"),
                 card_type: flag(&flags, "type"),
                 description: flag(&flags, "desc"),
                 priority: flag(&flags, "priority"),
+                color: flag(&flags, "color"),
             }
         }
         "tag" => {
@@ -125,10 +137,13 @@ pub fn parse(args: &[String]) -> Result<BoardCommand> {
             }
             BoardCommand::Tag { number, add, remove }
         }
-        "move" | "mv" => BoardCommand::Move {
-            number: card_number(words.first())?,
-            column: column(words.get(1).ok_or("Give a column, for example: vboard move 12 in_progress")?)?,
-        },
+        "move" | "mv" => {
+            let column = rest(&words[1.min(words.len())..]);
+            if column.is_empty() {
+                return Err("Give a column, for example: vboard move 12 in_progress".into());
+            }
+            BoardCommand::Move { number: card_number(words.first())?, column }
+        }
         "note" => BoardCommand::Note { number: card_number(words.first())?, text: rest(&words[1.min(words.len())..]) },
         "next" => BoardCommand::Next,
         "done" => BoardCommand::Done { number: card_number(words.first())?, summary: rest(&words[1.min(words.len())..]) },
@@ -142,21 +157,33 @@ pub fn execute(conn: &Connection, project: &str, session: &str, cmd: BoardComman
     let actor = Actor::Agent(session.to_string());
     Ok(match cmd {
         BoardCommand::Help => (json!(USAGE), false),
+        BoardCommand::Columns => {
+            let cards = store::list(conn, project, ListFilter::default())?;
+            let columns: Vec<Value> = store::columns(conn, project)?
+                .iter()
+                .map(|c| {
+                    let count = cards.iter().filter(|card| card["column"] == c["id"]).count();
+                    json!({ "id": c["id"], "name": store::display_name(c), "role": c["role"], "cards": count })
+                })
+                .collect();
+            (json!(columns), false)
+        }
         BoardCommand::List(filter) => (json!(store::list(conn, project, filter)?), false),
         BoardCommand::Show(n) => (store::card_detail(conn, project, n)?, false),
-        BoardCommand::Add { title, card_type, description, priority, tags, column } => {
+        BoardCommand::Add { title, card_type, description, priority, tags, column, color } => {
             let card = NewCard {
                 title,
                 card_type: card_type.unwrap_or_default(),
                 description: description.unwrap_or_default(),
                 priority: priority.unwrap_or_default(),
                 tags,
-                column,
+                column: column.map(|c| store::resolve_column(conn, project, &c)).transpose()?,
+                color,
             };
             (store::create_card(conn, project, card, &actor)?, true)
         }
-        BoardCommand::Edit { number, title, card_type, description, priority } => {
-            let patch = CardPatch { title, card_type, description, priority, tags: None };
+        BoardCommand::Edit { number, title, card_type, description, priority, color } => {
+            let patch = CardPatch { title, card_type, description, priority, tags: None, color };
             (store::update_card(conn, project, number, patch, &actor)?, true)
         }
         BoardCommand::Tag { number, add, remove } => {
@@ -171,7 +198,10 @@ pub fn execute(conn: &Connection, project: &str, session: &str, cmd: BoardComman
             let patch = CardPatch { tags: Some(tags), ..Default::default() };
             (store::update_card(conn, project, number, patch, &actor)?, true)
         }
-        BoardCommand::Move { number, column } => (store::move_card(conn, project, number, &column, None, &actor)?, true),
+        BoardCommand::Move { number, column } => {
+            let column = store::resolve_column(conn, project, &column)?;
+            (store::move_card(conn, project, number, &column, None, &actor)?, true)
+        }
         BoardCommand::Note { number, text } => (store::add_note(conn, project, number, &text, &actor)?, true),
         BoardCommand::Next => match store::claim_next(conn, project, session)? {
             Some(card) => (json!({ "card": card }), true),

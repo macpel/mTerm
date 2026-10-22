@@ -15,7 +15,7 @@ use store::{Actor, CardPatch, NewCard, Result};
 pub const CHANGED_EVENT: &str = "board://changed";
 
 pub fn init(conn: &Connection) -> Result<()> {
-    conn.execute_batch(store::SCHEMA).map_err(|e| e.to_string())
+    store::init(conn)
 }
 
 fn text<'a>(args: &'a Value, key: &str) -> Result<&'a str> {
@@ -57,6 +57,7 @@ pub fn dispatch(app: &AppCtx, cmd: &str, args: &Value) -> Result<Value> {
                     priority: opt_text(args, "priority").unwrap_or_default(),
                     tags: tags(args).unwrap_or_default(),
                     column: opt_text(args, "column"),
+                    color: opt_text(args, "color"),
                 },
                 &Actor::User,
             )?,
@@ -70,6 +71,7 @@ pub fn dispatch(app: &AppCtx, cmd: &str, args: &Value) -> Result<Value> {
                     description: opt_text(args, "description"),
                     priority: opt_text(args, "priority"),
                     tags: tags(args),
+                    color: opt_text(args, "color"),
                 },
                 &Actor::User,
             )?,
@@ -86,8 +88,19 @@ pub fn dispatch(app: &AppCtx, cmd: &str, args: &Value) -> Result<Value> {
                 Value::Null
             }
             "board_note_add" => store::add_note(conn, &project, number(args, "number")?, text(args, "text")?, &Actor::User)?,
-            "board_set_review" => {
-                store::set_review(conn, &project, args.get("enabled").and_then(Value::as_bool).unwrap_or(false))?;
+            "board_column_add" => {
+                store::add_column(conn, &project, opt_text(args, "name").as_deref(), opt_text(args, "role").as_deref())?
+            }
+            "board_column_rename" => {
+                store::rename_column(conn, &project, text(args, "columnId")?, text(args, "name")?)?;
+                Value::Null
+            }
+            "board_column_move" => {
+                store::move_column(conn, &project, text(args, "columnId")?, opt_text(args, "beforeColumnId").as_deref())?;
+                Value::Null
+            }
+            "board_column_delete" => {
+                store::delete_column(conn, &project, text(args, "columnId")?, &Actor::User)?;
                 Value::Null
             }
             "board_claim" => store::claim(conn, &project, number(args, "number")?, text(args, "sessionId")?)?,
