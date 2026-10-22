@@ -197,15 +197,49 @@ pub fn init(conn: &Connection) -> Result<()> {
     if !has_column(conn, "board_cards", "color")? {
         conn.execute_batch("ALTER TABLE board_cards ADD COLUMN color TEXT").map_err(db)?;
     }
-    if has_column(conn, "board_cards", "project_id")? {
-        migrate_to_folder_keys(conn)?;
+    let old: Vec<&str> = ["board_boards", "board_columns", "board_cards"]
+        .into_iter()
+        .filter(|table| has_column(conn, table, "project_id").unwrap_or(false))
+        .collect();
+    if !old.is_empty() {
+        migrate_to_folder_keys(conn, &old)?;
     }
     Ok(())
 }
 
-/// Rebuild the three project-keyed tables keyed by folder. SQLite cannot drop a column's foreign key in place,
-/// so each table is copied into a new one, dropped and replaced, with foreign keys off so nothing cascades.
-fn migrate_to_folder_keys(conn: &Connection) -> Result<()> {
+/// The new shape of each project-keyed table, and how its rows are copied across.
+fn rebuild_sql(table: &str) -> &'static str {
+    match table {
+        "board_boards" => {
+            "CREATE TABLE board_boards_new (board_key TEXT PRIMARY KEY, review_enabled INTEGER NOT NULL DEFAULT 0, next_number INTEGER NOT NULL DEFAULT 1);
+             INSERT OR IGNORE INTO board_boards_new SELECT m.board_key, b.review_enabled, b.next_number
+               FROM board_boards b JOIN board_key_map m ON m.project_id = b.project_id;"
+        }
+        "board_columns" => {
+            "CREATE TABLE board_columns_new (board_key TEXT NOT NULL, id TEXT NOT NULL, name TEXT, role TEXT,
+               position REAL NOT NULL, PRIMARY KEY(board_key, id));
+             INSERT OR IGNORE INTO board_columns_new SELECT m.board_key, c.id, c.name, c.role, c.position
+               FROM board_columns c JOIN board_key_map m ON m.project_id = c.project_id;"
+        }
+        _ => {
+            "CREATE TABLE board_cards_new (id TEXT PRIMARY KEY, board_key TEXT NOT NULL, number INTEGER NOT NULL,
+               column_id TEXT NOT NULL, position REAL NOT NULL, type TEXT NOT NULL, title TEXT NOT NULL,
+               description TEXT NOT NULL DEFAULT '', priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT, color TEXT,
+               created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, updated_kind TEXT NOT NULL, updated_session TEXT,
+               UNIQUE(board_key, number));
+             INSERT OR IGNORE INTO board_cards_new SELECT c.id, m.board_key, c.number, c.column_id, c.position, c.type,
+               c.title, c.description, c.priority, c.claimed_by, c.color, c.created_at, c.updated_at, c.updated_kind,
+               c.updated_session
+               FROM board_cards c JOIN board_key_map m ON m.project_id = c.project_id;"
+        }
+    }
+}
+
+/// Rebuild the tables still keyed by project id, keyed by folder instead. Each one is upgraded on its own: a
+/// database made before columns existed has old board and card tables but a new column table. SQLite cannot
+/// drop a column's foreign key in place, so each table is copied into a new one, dropped and replaced, with
+/// foreign keys off so nothing cascades.
+fn migrate_to_folder_keys(conn: &Connection, tables: &[&str]) -> Result<()> {
     let enforced: i64 = conn.query_row("PRAGMA foreign_keys", [], |r| r.get(0)).map_err(db)?;
     conn.execute_batch("PRAGMA foreign_keys = OFF;").map_err(db)?;
     let result = (|| -> Result<()> {
@@ -219,33 +253,12 @@ fn migrate_to_folder_keys(conn: &Connection) -> Result<()> {
         for (id, root) in &projects {
             tx.execute("INSERT INTO board_key_map VALUES(?1, ?2)", params![id, folder_key(root)]).map_err(db)?;
         }
+        for table in tables {
+            tx.execute_batch(rebuild_sql(table)).map_err(db)?;
+            tx.execute_batch(&format!("DROP TABLE {table}; ALTER TABLE {table}_new RENAME TO {table};")).map_err(db)?;
+        }
         tx.execute_batch(
-            "CREATE TABLE board_boards_new (board_key TEXT PRIMARY KEY, review_enabled INTEGER NOT NULL DEFAULT 0, next_number INTEGER NOT NULL DEFAULT 1);
-             INSERT OR IGNORE INTO board_boards_new SELECT m.board_key, b.review_enabled, b.next_number
-               FROM board_boards b JOIN board_key_map m ON m.project_id = b.project_id;
-             DROP TABLE board_boards;
-             ALTER TABLE board_boards_new RENAME TO board_boards;
-
-             CREATE TABLE board_columns_new (board_key TEXT NOT NULL, id TEXT NOT NULL, name TEXT, role TEXT,
-               position REAL NOT NULL, PRIMARY KEY(board_key, id));
-             INSERT OR IGNORE INTO board_columns_new SELECT m.board_key, c.id, c.name, c.role, c.position
-               FROM board_columns c JOIN board_key_map m ON m.project_id = c.project_id;
-             DROP TABLE board_columns;
-             ALTER TABLE board_columns_new RENAME TO board_columns;
-
-             CREATE TABLE board_cards_new (id TEXT PRIMARY KEY, board_key TEXT NOT NULL, number INTEGER NOT NULL,
-               column_id TEXT NOT NULL, position REAL NOT NULL, type TEXT NOT NULL, title TEXT NOT NULL,
-               description TEXT NOT NULL DEFAULT '', priority TEXT NOT NULL DEFAULT 'medium', claimed_by TEXT, color TEXT,
-               created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, updated_kind TEXT NOT NULL, updated_session TEXT,
-               UNIQUE(board_key, number));
-             INSERT OR IGNORE INTO board_cards_new SELECT c.id, m.board_key, c.number, c.column_id, c.position, c.type,
-               c.title, c.description, c.priority, c.claimed_by, c.color, c.created_at, c.updated_at, c.updated_kind,
-               c.updated_session
-               FROM board_cards c JOIN board_key_map m ON m.project_id = c.project_id;
-             DROP TABLE board_cards;
-             ALTER TABLE board_cards_new RENAME TO board_cards;
-
-             DROP TABLE board_key_map;
+            "DROP TABLE board_key_map;
              DELETE FROM board_card_tags WHERE card_id NOT IN (SELECT id FROM board_cards);
              DELETE FROM board_notes WHERE card_id NOT IN (SELECT id FROM board_cards);
              DELETE FROM board_history WHERE card_id NOT IN (SELECT id FROM board_cards);",

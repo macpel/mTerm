@@ -344,7 +344,9 @@ fn old_review_setting_seeds_a_review_column() {
     )
     .unwrap();
     super::init(&conn).unwrap();
-    assert_eq!(column_ids(&conn), vec!["backlog", "todo", "in_progress", "review", "done"]);
+    // After the upgrade the board lives under its folder (gone here, so the stored path).
+    let ids: Vec<String> = store::columns(&conn, "C:/demo").unwrap().iter().map(|c| c["id"].as_str().unwrap().to_string()).collect();
+    assert_eq!(ids, vec!["backlog", "todo", "in_progress", "review", "done"]);
 }
 
 #[test]
