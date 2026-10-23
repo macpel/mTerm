@@ -3,18 +3,24 @@
 import { useState } from "react";
 import { useT } from "../../i18n";
 import { CARD_COLORS, CARD_TYPES, PRIORITIES, type CardFields } from "../../ipc/board";
+import { Markdown } from "../CenterPane/session/markdown";
+import "../CenterPane/session/session-view.css";
 
 export const EMPTY_FIELDS: CardFields = { title: "", type: "task", priority: "medium", description: "", tags: [], color: null };
 
 export function CardFieldsForm({
   fields,
   onChange,
+  preview = false,
 }: {
   fields: CardFields;
   onChange: <K extends keyof CardFields>(key: K, value: CardFields[K]) => void;
+  /** Open the description rendered rather than in the editor. */
+  preview?: boolean;
 }) {
   const t = useT();
   const [tagDraft, setTagDraft] = useState("");
+  const [showPreview, setShowPreview] = useState(preview);
   const addTag = () => {
     const tag = tagDraft.trim().toLowerCase();
     if (tag && !fields.tags.includes(tag)) onChange("tags", [...fields.tags, tag]);
@@ -61,15 +67,33 @@ export function CardFieldsForm({
           ))}
         </div>
       </div>
-      <label className="board-field">
-        <span>{t("board.fieldDescription")}</span>
-        <textarea
-          aria-label={t("board.fieldDescription")}
-          rows={4}
-          value={fields.description}
-          onChange={(e) => onChange("description", e.target.value)}
-        />
-      </label>
+      <div className="board-field">
+        <div className="board-desc-head">
+          <span>{t("board.fieldDescription")}</span>
+          <div className="board-desc-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected={!showPreview} onClick={() => setShowPreview(false)}>
+              {t("board.write")}
+            </button>
+            <button type="button" role="tab" aria-selected={showPreview} onClick={() => setShowPreview(true)}>
+              {t("board.preview")}
+            </button>
+          </div>
+        </div>
+        {showPreview ? (
+          <div className="board-desc-preview" onDoubleClick={() => setShowPreview(false)}>
+            {fields.description.trim() ? <Markdown text={fields.description} /> : <span className="board-muted">{t("board.noDescription")}</span>}
+          </div>
+        ) : (
+          <textarea
+            aria-label={t("board.fieldDescription")}
+            className="board-desc-input"
+            rows={14}
+            value={fields.description}
+            placeholder={t("board.markdownHint")}
+            onChange={(e) => onChange("description", e.target.value)}
+          />
+        )}
+      </div>
       <div className="board-field">
         <span>{t("board.fieldTags")}</span>
         {fields.tags.length > 0 && (

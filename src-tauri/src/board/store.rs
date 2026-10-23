@@ -744,49 +744,10 @@ pub fn delete_card(conn: &Connection, board: &str, number: i64, _actor: &Actor) 
     Ok(())
 }
 
-pub fn add_note(conn: &Connection, board: &str, number: i64, text: &str, actor: &Actor) -> Result<Value> {
-    let text = text.trim();
-    if text.is_empty() || text.chars().count() > 4000 {
-        return Err("A note is 1 to 4,000 characters.".into());
-    }
-    let id = card_id(conn, board, number)?;
-    let tx = conn.unchecked_transaction().map_err(db)?;
-    insert_note(&tx, &id, text, actor)?;
-    touch(&tx, &id, actor, "noted", "")?;
-    tx.commit().map_err(db)?;
-    card_json(conn, board, number)
-}
-
-fn insert_note(conn: &Connection, card: &str, text: &str, actor: &Actor) -> Result<()> {
-    conn.execute(
-        "INSERT INTO board_notes(id,card_id,author_kind,author_session,text,created_at) VALUES(?1,?2,?3,?4,?5,?6)",
-        params![uuid::Uuid::new_v4().to_string(), card, actor.kind(), actor.session(), text, now()],
-    )
-    .map_err(db)?;
-    Ok(())
-}
-
-/// One card with its notes (oldest first) and history (newest first).
+/// One card with its history (newest first).
 pub fn card_detail(conn: &Connection, board: &str, number: i64) -> Result<Value> {
     let mut card = card_json(conn, board, number)?;
     let id = card["id"].as_str().unwrap_or_default().to_string();
-    let mut stmt = conn
-        .prepare(
-            "SELECT n.id, n.author_kind, s.name, n.text, n.created_at FROM board_notes n
-             LEFT JOIN sessions s ON s.id=n.author_session WHERE n.card_id=?1 ORDER BY n.rowid",
-        )
-        .map_err(db)?;
-    let notes: Vec<Value> = stmt
-        .query_map([&id], |r| {
-            Ok(json!({
-                "id": r.get::<_, String>(0)?, "authorKind": r.get::<_, String>(1)?,
-                "authorName": r.get::<_, Option<String>>(2)?, "text": r.get::<_, String>(3)?,
-                "createdAt": r.get::<_, i64>(4)?,
-            }))
-        })
-        .map_err(db)?
-        .collect::<std::result::Result<_, _>>()
-        .map_err(db)?;
     let mut stmt = conn
         .prepare(
             "SELECT h.id, h.actor_kind, s.name, h.action, h.detail, h.created_at FROM board_history h
@@ -804,7 +765,6 @@ pub fn card_detail(conn: &Connection, board: &str, number: i64) -> Result<Value>
         .map_err(db)?
         .collect::<std::result::Result<_, _>>()
         .map_err(db)?;
-    card["notes"] = json!(notes);
     card["history"] = json!(history);
     Ok(card)
 }
@@ -849,8 +809,8 @@ pub fn claim_next(conn: &Connection, board: &str, session: &str) -> Result<Optio
     card_json(conn, board, number).map(Some)
 }
 
-/// Finish a card from an agent: the Review column when there is one, otherwise Done. The summary becomes a note.
-pub fn finish(conn: &Connection, board: &str, number: i64, session: &str, summary: &str) -> Result<Value> {
+/// Finish a card from an agent: the Review column when there is one, otherwise Done.
+pub fn finish(conn: &Connection, board: &str, number: i64, session: &str) -> Result<Value> {
     let id = card_id(conn, board, number)?;
     let column = match role_column(conn, board, "review")? {
         Some(review) => review,
@@ -860,10 +820,6 @@ pub fn finish(conn: &Connection, board: &str, number: i64, session: &str, summar
     let tx = conn.unchecked_transaction().map_err(db)?;
     place(&tx, board, &id, &column, None)?;
     touch(&tx, &id, &actor, "moved", &column)?;
-    let summary = summary.trim();
-    if !summary.is_empty() {
-        insert_note(&tx, &id, summary, &actor)?;
-    }
     tx.commit().map_err(db)?;
     card_json(conn, board, number)
 }

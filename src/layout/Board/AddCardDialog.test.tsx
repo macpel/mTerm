@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../../i18n", () => ({
   useT: () => (key: string, ...args: unknown[]) => (args.length ? `${key}:${args.join(",")}` : key),
   getLocale: () => "en",
+  t: (key: string) => key,
 }));
 vi.mock("../../hooks/nativeViewSuspend", () => ({ useSuspendNativeViews: () => {}, useNativeViewSuspended: () => false }));
 vi.mock("../../ipc/board", async (importOriginal) => ({

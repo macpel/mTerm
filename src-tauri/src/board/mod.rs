@@ -101,7 +101,6 @@ pub fn dispatch(app: &AppCtx, cmd: &str, args: &Value) -> Result<Value> {
                 store::delete_card(conn, &key, number(args, "number")?, &Actor::User)?;
                 Value::Null
             }
-            "board_note_add" => store::add_note(conn, &key, number(args, "number")?, text(args, "text")?, &Actor::User)?,
             "board_column_add" => {
                 store::add_column(conn, &key, opt_text(args, "name").as_deref(), opt_text(args, "role").as_deref())?
             }

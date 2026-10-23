@@ -1,4 +1,4 @@
-//! Side panel of the board for one card: its fields, notes thread, history and "Send to Claude".
+//! Side panel of the board for one card: its fields, history and "Send to Claude".
 //! New cards are added through `AddCardDialog`.
 import { useCallback, useEffect, useState } from "react";
 import { ContextMenu, type MenuItem } from "../../components/ContextMenu";
@@ -8,7 +8,6 @@ import {
   boardCardDelete,
   boardCardDetail,
   boardCardUpdate,
-  boardNoteAdd,
   onBoardChanged,
   type BoardCard,
   type BoardColumnInfo,
@@ -40,7 +39,6 @@ export function CardDetails({
   const t = useT();
   const [card, setCard] = useState<CardDetail | null>(null);
   const [fields, setFields] = useState<CardFields>(EMPTY_FIELDS);
-  const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -102,7 +100,14 @@ export function CardDetails({
           <span>{t("board.fieldTitle")}</span>
           <input aria-label={t("board.fieldTitle")} value={fields.title} onChange={(e) => setFields((f) => ({ ...f, title: e.target.value }))} />
         </label>
-        <CardFieldsForm fields={fields} onChange={(key, value) => setFields((f) => ({ ...f, [key]: value }))} />
+        {/* Mounted once the card is loaded, so a card with a description opens it rendered. */}
+        {card && (
+          <CardFieldsForm
+            fields={fields}
+            preview={card.description.trim() !== ""}
+            onChange={(key, value) => setFields((f) => ({ ...f, [key]: value }))}
+          />
+        )}
         {error && <div className="board-error" role="alert">{error}</div>}
         <div className="board-details-actions">
           <button type="button" className="vlx-btn vlx-btn-primary" disabled={busy || !fields.title.trim()} onClick={() => void save()}>
@@ -144,24 +149,6 @@ export function CardDetails({
         )}
         {card && (
           <>
-            <h4>{t("board.notes")}</h4>
-            <ul className="board-notes" aria-label={t("board.notes")}>
-              {card.notes.map((n) => (
-                <li key={n.id}>
-                  <div className="board-when">{who(n.authorKind, n.authorName)} · {ago(n.createdAt)}</div>
-                  <div className="board-note-text">{n.text}</div>
-                </li>
-              ))}
-            </ul>
-            <textarea aria-label={t("board.addNote")} rows={2} value={note} placeholder={t("board.addNote")} onChange={(e) => setNote(e.target.value)} />
-            <button
-              type="button"
-              className="vlx-btn"
-              disabled={busy || !note.trim()}
-              onClick={() => void run(() => boardNoteAdd(projectId, card.number, note.trim()), () => { setNote(""); load(false); })}
-            >
-              {t("board.addNoteButton")}
-            </button>
             <h4>{t("board.history")}</h4>
             <ul className="board-history" aria-label={t("board.history")}>
               {card.history.map((h) => {

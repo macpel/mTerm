@@ -1080,9 +1080,10 @@ const ptBR: typeof en = {
   "board.save": "Salvar", // Save
   "board.delete": "Excluir", // Delete
   "board.deleteConfirm": "Clique de novo para excluir", // Click again to delete
-  "board.notes": "Notas", // Notes
-  "board.addNote": "Adicionar uma nota", // Add a note
-  "board.addNoteButton": "Adicionar nota", // Add note
+  "board.write": "Escrever", // Write
+  "board.preview": "Visualizar", // Preview
+  "board.noDescription": "Sem descrição.", // No description.
+  "board.markdownHint": "Suporta Markdown: # título, **negrito**, - lista, `código`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "Histórico", // History
   "board.sendToClaude": "Enviar ao Claude", // Send to Claude
   "board.newSession": "Nova sessão do Claude", // New Claude session

@@ -1079,9 +1079,10 @@ const de: typeof en = {
   "board.save": "Speichern", // Save
   "board.delete": "Löschen", // Delete
   "board.deleteConfirm": "Zum Löschen erneut klicken", // Click again to delete
-  "board.notes": "Notizen", // Notes
-  "board.addNote": "Notiz hinzufügen", // Add a note
-  "board.addNoteButton": "Notiz hinzufügen", // Add note
+  "board.write": "Schreiben", // Write
+  "board.preview": "Vorschau", // Preview
+  "board.noDescription": "Keine Beschreibung.", // No description.
+  "board.markdownHint": "Markdown möglich: # Überschrift, **fett**, - Liste, `Code`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "Verlauf", // History
   "board.sendToClaude": "An Claude senden", // Send to Claude
   "board.newSession": "Neue Claude-Sitzung", // New Claude session

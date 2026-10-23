@@ -1075,9 +1075,10 @@ const ko: typeof en = {
   "board.save": "저장", // Save
   "board.delete": "삭제", // Delete
   "board.deleteConfirm": "한 번 더 클릭하면 삭제", // Click again to delete
-  "board.notes": "메모", // Notes
-  "board.addNote": "메모 추가", // Add a note
-  "board.addNoteButton": "메모 추가", // Add note
+  "board.write": "작성", // Write
+  "board.preview": "미리 보기", // Preview
+  "board.noDescription": "설명이 없습니다.", // No description.
+  "board.markdownHint": "Markdown 지원: # 제목, **굵게**, - 목록, `코드`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "기록", // History
   "board.sendToClaude": "Claude에게 보내기", // Send to Claude
   "board.newSession": "새 Claude 세션", // New Claude session

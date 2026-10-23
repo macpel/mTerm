@@ -1063,9 +1063,10 @@ const zhTW: typeof en = {
   "board.save": "儲存", // Save
   "board.delete": "刪除", // Delete
   "board.deleteConfirm": "再按一次以刪除", // Click again to delete
-  "board.notes": "備註", // Notes
-  "board.addNote": "新增備註", // Add a note
-  "board.addNoteButton": "新增備註", // Add note
+  "board.write": "編輯", // Write
+  "board.preview": "預覽", // Preview
+  "board.noDescription": "尚無描述。", // No description.
+  "board.markdownHint": "支援 Markdown：# 標題、**粗體**、- 清單、`程式碼`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "歷程", // History
   "board.sendToClaude": "傳送給 Claude", // Send to Claude
   "board.newSession": "新的 Claude 工作階段", // New Claude session

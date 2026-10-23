@@ -4,8 +4,6 @@ import type { Session } from "../../types";
 
 const h = vi.hoisted(() => ({
   store: {
-    agentDefaults: {} as Record<string, { engine?: string }>,
-    addSession: vi.fn(),
     openSession: vi.fn(),
     setPendingPrompt: vi.fn(),
   },
@@ -41,7 +39,7 @@ import { boardClaim } from "../../ipc/board";
 import { chatStart } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
 import { createSubmission } from "../CenterPane/session/outbox";
-import { cardPrompt, sendCardToClaude, sendTargets } from "./sendToClaude";
+import { cardPrompt, cardSessionPrefill, sendCardToSession, sendTargets, startCardSession, worktreeName } from "./sendToClaude";
 
 const card: BoardCard = {
   id: "c7",
@@ -68,33 +66,35 @@ beforeEach(() => {
   vi.clearAllMocks();
   h.calls = [];
   h.receipt = "sent";
-  h.store.agentDefaults = {};
 });
 
-describe("sendCardToClaude", () => {
+describe("sendToClaude", () => {
   it("cardPrompt includes number, type, priority and done hint", () => {
     const prompt = cardPrompt(card);
-    expect(prompt.startsWith("Work on board card #7 (bug, high): Login crash")).toBe(true);
+    expect(prompt.startsWith("Board card #7 (bug, high): Login crash")).toBe(true);
     expect(prompt).toContain("Crashes on an empty password.");
-    expect(prompt).toContain('vboard done 7 "');
+    expect(prompt).toContain("vboard done 7.");
     expect(cardPrompt({ ...card, description: "" })).not.toContain("\n\n\n");
   });
 
-  it("new TUI session gets the prompt as its first launch prompt", async () => {
-    h.store.agentDefaults = { claude: { engine: "tui" } };
-    h.store.addSession.mockResolvedValue(session("s9", "tui"));
-    await sendCardToClaude("p1", card, "new");
-    expect(h.store.addSession).toHaveBeenCalledWith(
-      expect.objectContaining({ projectId: "p1", kind: "claude", name: "#7 Login crash", engine: "tui" }),
-    );
+  it("prefills the new-session dialog from the card, in plan mode", () => {
+    expect(cardSessionPrefill({ ...card, title: "Fix: login crash (Windows)!" })).toEqual({
+      name: "#7 Fix: login crash (Windows)!",
+      worktreeName: "fix-login-crash-windows",
+      permissionMode: "plan",
+    });
+    expect(worktreeName({ ...card, title: "日本語" })).toBe("card-7");
+    expect(worktreeName({ ...card, title: "a".repeat(80) })).toHaveLength(40);
+  });
+
+  it("new terminal session gets the card as its first launch prompt, then takes it", async () => {
+    await startCardSession("p1", card, session("s9", "tui"));
     expect(h.store.setPendingPrompt).toHaveBeenCalledWith("s9", cardPrompt(card));
-    expect(h.store.openSession).toHaveBeenCalledWith("s9");
     expect(boardClaim).toHaveBeenCalledWith("p1", 7, "s9");
   });
 
   it("new chat session starts its agent through the outbox, then takes the card", async () => {
-    h.store.addSession.mockResolvedValue(session("s10", "chat"));
-    await sendCardToClaude("p1", card, "new");
+    await startCardSession("p1", card, session("s10", "chat"));
     expect(h.store.openSession).toHaveBeenCalledWith("s10");
     expect(createSubmission).toHaveBeenCalledWith("s10", cardPrompt(card), [], "queue");
     expect(chatStart).toHaveBeenCalledWith("s10");
@@ -103,12 +103,12 @@ describe("sendCardToClaude", () => {
 
   it("does not take the card when the chat message is not delivered", async () => {
     h.receipt = undefined;
-    await expect(sendCardToClaude("p1", card, session("s2", "chat"))).rejects.toThrow();
+    await expect(sendCardToSession("p1", card, session("s2", "chat"))).rejects.toThrow();
     expect(boardClaim).not.toHaveBeenCalled();
   });
 
   it("terminal session gets a bracketed paste without control characters, then Enter, then the card", async () => {
-    await sendCardToClaude("p1", { ...card, description: "Line one\nLine two\x1b[31m\x07" }, session("s1", "tui"));
+    await sendCardToSession("p1", { ...card, description: "Line one\nLine two\x1b[31m\x07" }, session("s1", "tui"));
     const pasted = vi.mocked(ptyWrite).mock.calls[0][1];
     expect(pasted.startsWith("\x1b[200~")).toBe(true);
     expect(pasted.endsWith("\x1b[201~")).toBe(true);
@@ -121,7 +121,7 @@ describe("sendCardToClaude", () => {
 
   it("does not take the card when writing to the terminal fails", async () => {
     vi.mocked(ptyWrite).mockRejectedValueOnce(new Error("no running process"));
-    await expect(sendCardToClaude("p1", card, session("s1", "tui"))).rejects.toThrow();
+    await expect(sendCardToSession("p1", card, session("s1", "tui"))).rejects.toThrow();
     expect(boardClaim).not.toHaveBeenCalled();
   });
 

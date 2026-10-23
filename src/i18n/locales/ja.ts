@@ -1079,9 +1079,10 @@ const ja: typeof en = {
   "board.save": "保存", // Save
   "board.delete": "削除", // Delete
   "board.deleteConfirm": "もう一度クリックで削除", // Click again to delete
-  "board.notes": "メモ", // Notes
-  "board.addNote": "メモを追加", // Add a note
-  "board.addNoteButton": "メモを追加", // Add note
+  "board.write": "編集", // Write
+  "board.preview": "プレビュー", // Preview
+  "board.noDescription": "説明はありません。", // No description.
+  "board.markdownHint": "Markdown 対応: # 見出し、**太字**、- リスト、`コード`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "履歴", // History
   "board.sendToClaude": "Claude に送る", // Send to Claude
   "board.newSession": "新しい Claude セッション", // New Claude session

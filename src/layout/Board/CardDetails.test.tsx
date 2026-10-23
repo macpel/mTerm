@@ -6,6 +6,7 @@ import type { Session } from "../../types";
 vi.mock("../../i18n", () => ({
   useT: () => (key: string, ...args: unknown[]) => (args.length ? `${key}:${args.join(",")}` : key),
   getLocale: () => "en",
+  t: (key: string) => key,
 }));
 const h = vi.hoisted(() => ({ changed: null as null | (() => void) }));
 
@@ -15,7 +16,6 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
   boardCardDetail: vi.fn(),
   boardCardCreate: vi.fn(() => Promise.resolve({})),
   boardCardUpdate: vi.fn(() => Promise.resolve({})),
-  boardNoteAdd: vi.fn(() => Promise.resolve({})),
   boardCardDelete: vi.fn(() => Promise.resolve()),
   onBoardChanged: vi.fn((_projectId: string, cb: () => void) => {
     h.changed = cb;
@@ -23,7 +23,7 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
   }),
 }));
 
-import { boardCardDetail, boardCardUpdate, boardNoteAdd } from "../../ipc/board";
+import { boardCardDetail, boardCardUpdate } from "../../ipc/board";
 import { CardDetails } from "./CardDetails";
 
 const detail: CardDetail = {
@@ -33,7 +33,7 @@ const detail: CardDetail = {
   position: 1,
   type: "bug",
   title: "Login crash",
-  description: "Empty password",
+  description: "**Empty** password",
   priority: "high",
   tags: ["auth"],
   color: null,
@@ -41,7 +41,6 @@ const detail: CardDetail = {
   claimedByName: null,
   updatedAt: 0,
   updatedBy: { kind: "agent", sessionId: "s1", name: "Session One" },
-  notes: [{ id: "n1", authorKind: "agent", authorName: "Session One", text: "Reproduced it", createdAt: 0 }],
   history: [
     { id: "h2", actorKind: "agent", actorName: "Session One", action: "moved", detail: "in_progress", createdAt: 20 },
     { id: "h1", actorKind: "user", actorName: null, action: "created", detail: "", createdAt: 10 },
@@ -56,7 +55,7 @@ beforeEach(() => {
 describe("CardDetails", () => {
   it("saves edits including a colour, and none clears it", async () => {
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
-    await screen.findByText("Reproduced it");
+    await screen.findByText("Empty");
     fireEvent.click(screen.getByRole("radio", { name: "board.colour.purple" }));
     fireEvent.click(screen.getByRole("button", { name: "board.save" }));
     await waitFor(() =>
@@ -69,7 +68,7 @@ describe("CardDetails", () => {
 
   it("save disabled when the title is cleared", async () => {
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
-    await screen.findByText("Reproduced it");
+    await screen.findByText("Empty");
     const save = screen.getByRole("button", { name: "board.save" }) as HTMLButtonElement;
     expect(save.disabled).toBe(false);
     fireEvent.change(screen.getByLabelText("board.fieldTitle"), { target: { value: "   " } });
@@ -79,17 +78,17 @@ describe("CardDetails", () => {
   it("shows backend error inline", async () => {
     vi.mocked(boardCardUpdate).mockRejectedValueOnce("A card can have at most 10 tags.");
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
-    await screen.findByText("Reproduced it");
+    await screen.findByText("Empty");
     fireEvent.click(screen.getByRole("button", { name: "board.save" }));
     expect((await screen.findByRole("alert")).textContent).toBe("A card can have at most 10 tags.");
   });
 
-  it("adds a note", async () => {
+  it("shows the description as Markdown, and Write edits the source", async () => {
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
-    expect(await screen.findByText("Reproduced it")).toBeTruthy();
-    fireEvent.change(screen.getByLabelText("board.addNote"), { target: { value: "Fixed in main" } });
-    fireEvent.click(screen.getByRole("button", { name: "board.addNoteButton" }));
-    await waitFor(() => expect(boardNoteAdd).toHaveBeenCalledWith("p1", 7, "Fixed in main"));
+    expect((await screen.findByText("Empty")).closest("strong")).not.toBeNull();
+    expect(screen.queryByLabelText("board.notes")).toBeNull();
+    fireEvent.click(screen.getByRole("tab", { name: "board.write" }));
+    expect((screen.getByLabelText("board.fieldDescription") as HTMLTextAreaElement).value).toBe("**Empty** password");
   });
 
   it("lists history newest first", async () => {
@@ -105,7 +104,7 @@ describe("CardDetails", () => {
     const onSend = vi.fn();
     const sessions = [{ id: "s1", name: "Session One" }] as Session[];
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} claudeSessions={sessions} onSend={onSend} />);
-    await screen.findByText("Reproduced it");
+    await screen.findByText("Empty");
     fireEvent.click(screen.getByRole("button", { name: "board.sendToClaude" }));
     expect(await screen.findByRole("menuitem", { name: "Session One" })).toBeTruthy();
     fireEvent.click(screen.getByRole("menuitem", { name: "board.newSession" }));
@@ -114,15 +113,16 @@ describe("CardDetails", () => {
 
   it("keeps unsaved edits when the board changes elsewhere", async () => {
     render(<CardDetails projectId="p1" number={7} onClose={() => {}} />);
-    await screen.findByText("Reproduced it");
+    await screen.findByText("Empty");
+    fireEvent.click(screen.getByRole("tab", { name: "board.write" }));
     const description = screen.getByLabelText("board.fieldDescription") as HTMLTextAreaElement;
     fireEvent.change(description, { target: { value: "Typed but not saved" } });
     vi.mocked(boardCardDetail).mockResolvedValue({
       ...detail,
-      notes: [...detail.notes, { id: "n2", authorKind: "agent", authorName: "Session One", text: "Claude was here", createdAt: 1 }],
+      history: [{ id: "h3", actorKind: "agent", actorName: "Claude was here", action: "edited", detail: "", createdAt: 30 }, ...detail.history],
     });
     h.changed?.();
-    expect(await screen.findByText("Claude was here")).toBeTruthy();
+    expect(await screen.findByText(/Claude was here/)).toBeTruthy();
     expect(description.value).toBe("Typed but not saved");
   });
 });

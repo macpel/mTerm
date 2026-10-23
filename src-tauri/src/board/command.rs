@@ -8,14 +8,13 @@ use serde_json::{json, Value};
 pub const USAGE: &str = "usage: vboard <command>
   columns                                                   list the board's columns
   list [--column C] [--type T] [--tag T] [--search TEXT]   list cards
-  show N                                                    one card with notes and history
+  show N                                                    one card with its history
   add \"title\" [--type T] [--desc TEXT] [--priority P] [--tag a,b] [--column C] [--color COLOUR]
   edit N [--title TEXT] [--type T] [--desc TEXT] [--priority P] [--color COLOUR]
   tag N +add -remove                                        change tags
   move N <column>                                           move a card
-  note N \"text\"                                             add a note
   next                                                      take the top To Do card
-  done N \"summary\"                                          finish: Review when on, else Done
+  done N                                                    finish: Review when on, else Done
   delete N                                                  delete a card (prefer done)
 A column is named by its name (\"In Progress\", \"QA\") or a standard role (todo, in_progress, review, done).
 Types: task, bug, feature, epic. Priorities: low, medium, high, urgent.
@@ -46,9 +45,8 @@ pub enum BoardCommand {
     },
     Tag { number: i64, add: Vec<String>, remove: Vec<String> },
     Move { number: i64, column: String },
-    Note { number: i64, text: String },
     Next,
-    Done { number: i64, summary: String },
+    Done(i64),
     Delete(i64),
 }
 
@@ -144,9 +142,9 @@ pub fn parse(args: &[String]) -> Result<BoardCommand> {
             }
             BoardCommand::Move { number: card_number(words.first())?, column }
         }
-        "note" => BoardCommand::Note { number: card_number(words.first())?, text: rest(&words[1.min(words.len())..]) },
         "next" => BoardCommand::Next,
-        "done" => BoardCommand::Done { number: card_number(words.first())?, summary: rest(&words[1.min(words.len())..]) },
+        // Words after the number (a summary from older skill copies) are ignored.
+        "done" => BoardCommand::Done(card_number(words.first())?),
         "delete" | "rm" => BoardCommand::Delete(card_number(words.first())?),
         other => return Err(format!("Unknown command \"{other}\". Run vboard help.")),
     })
@@ -202,12 +200,11 @@ pub fn execute(conn: &Connection, project: &str, session: &str, cmd: BoardComman
             let column = store::resolve_column(conn, project, &column)?;
             (store::move_card(conn, project, number, &column, None, &actor)?, true)
         }
-        BoardCommand::Note { number, text } => (store::add_note(conn, project, number, &text, &actor)?, true),
         BoardCommand::Next => match store::claim_next(conn, project, session)? {
             Some(card) => (json!({ "card": card }), true),
             None => (json!({ "card": null, "message": "To Do is empty." }), false),
         },
-        BoardCommand::Done { number, summary } => (store::finish(conn, project, number, session, &summary)?, true),
+        BoardCommand::Done(number) => (store::finish(conn, project, number, session)?, true),
         BoardCommand::Delete(number) => {
             store::delete_card(conn, project, number, &actor)?;
             (json!({ "deleted": number }), true)

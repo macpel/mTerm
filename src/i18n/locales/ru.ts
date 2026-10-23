@@ -1089,9 +1089,10 @@ const ru: typeof en = {
   "board.save": "Сохранить", // Save
   "board.delete": "Удалить", // Delete
   "board.deleteConfirm": "Нажмите ещё раз, чтобы удалить", // Click again to delete
-  "board.notes": "Заметки", // Notes
-  "board.addNote": "Добавить заметку", // Add a note
-  "board.addNoteButton": "Добавить заметку", // Add note
+  "board.write": "Текст", // Write
+  "board.preview": "Просмотр", // Preview
+  "board.noDescription": "Нет описания.", // No description.
+  "board.markdownHint": "Поддерживается Markdown: # заголовок, **жирный**, - список, `код`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "История", // History
   "board.sendToClaude": "Отправить Claude", // Send to Claude
   "board.newSession": "Новая сессия Claude", // New Claude session

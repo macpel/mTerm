@@ -29,7 +29,7 @@ vi.mock("../../ipc/board", async (importOriginal) => ({
 vi.mock("../../store/termStore", () => ({
   useTermStore: (select: (state: { sessions: unknown[]; runtimes: object }) => unknown) => select({ sessions: [], runtimes: {} }),
 }));
-vi.mock("./sendToClaude", () => ({ sendCardToClaude: vi.fn(), sendTargets: () => [] }));
+vi.mock("./sendToClaude", () => ({ sendCardToSession: vi.fn(), startCardSession: vi.fn(), cardSessionPrefill: vi.fn(), sendTargets: () => [] }));
 
 import {
   boardCardCreate,

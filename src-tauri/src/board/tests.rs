@@ -171,13 +171,25 @@ fn finish_goes_to_review_or_done() {
     add(&conn, "a", "medium");
     add(&conn, "b", "medium");
     review(&conn, true);
-    assert_eq!(store::finish(&conn, PROJECT, 1, S1, "fixed it").unwrap()["column"], "review");
-    review(&conn, false);
-    assert_eq!(store::finish(&conn, PROJECT, 2, S1, "done too").unwrap()["column"], "done");
+    assert_eq!(store::finish(&conn, PROJECT, 1, S1).unwrap()["column"], "review");
     let detail = store::card_detail(&conn, PROJECT, 1).unwrap();
-    assert_eq!(detail["notes"][0]["text"], "fixed it");
-    assert_eq!(detail["notes"][0]["authorKind"], "agent");
-    assert_eq!(detail["notes"][0]["authorName"], "Session One");
+    assert!(detail.get("notes").is_none());
+    assert_eq!(detail["history"][0]["action"], "moved");
+    assert_eq!(detail["history"][0]["actorName"], "Session One");
+    review(&conn, false);
+    assert_eq!(store::finish(&conn, PROJECT, 2, S1).unwrap()["column"], "done");
+}
+
+#[test]
+fn notes_are_gone_and_done_ignores_extra_words() {
+    let conn = db();
+    add(&conn, "a", "medium");
+    let err = command::parse(&args(&["note", "1", "hi"])).unwrap_err();
+    assert_eq!(err, "Unknown command \"note\". Run vboard help.");
+    assert!(!command::USAGE.contains("note"));
+    // Older skill copies still pass a summary after the number; it is accepted and dropped.
+    let cmd = command::parse(&args(&["done", "1", "fixed", "it"])).unwrap();
+    assert_eq!(command::execute(&conn, PROJECT, S1, cmd).unwrap().0["column"], "done");
 }
 
 #[test]
@@ -425,7 +437,7 @@ fn next_and_done_follow_roles_after_renames() {
     store::rename_column(&conn, PROJECT, "todo", "Ready").unwrap();
     store::rename_column(&conn, PROJECT, "done", "Shipped").unwrap();
     assert_eq!(store::claim_next(&conn, PROJECT, S1).unwrap().unwrap()["column"], "in_progress");
-    assert_eq!(store::finish(&conn, PROJECT, 1, S1, "").unwrap()["column"], "done");
+    assert_eq!(store::finish(&conn, PROJECT, 1, S1).unwrap()["column"], "done");
 }
 
 #[test]

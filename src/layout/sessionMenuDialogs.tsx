@@ -743,10 +743,12 @@ export interface WorktreeChoiceState {
 export function useWorktreeChoice(
   repoRoot: string | null,
   initialMode: WtMode = "none",
+  initialName = "",
 ): WorktreeChoiceState {
   const [mode, setMode] = useState<WtMode>(initialMode);
-  const [name, setNameRaw] = useState("");
-  const [nameEdited, setNameEdited] = useState(false);
+  const [name, setNameRaw] = useState(initialName);
+  // A given starting name counts as chosen, so typing a session name leaves it alone.
+  const [nameEdited, setNameEdited] = useState(initialName !== "");
   const [existing, setExisting] = useState<WorktreeEntry[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -1224,12 +1226,15 @@ export function NewAgentSession({
   projectId,
   parentSessionId,
   initialWtMode = "none",
+  prefill,
   onConfirm,
   onCancel,
 }: {
   projectId: string;
   parentSessionId: string | null;
   initialWtMode?: "none" | "new" | "existing";
+  /** Starting session name, worktree name and permission mode, e.g. from a board card. */
+  prefill?: { name: string; worktreeName: string; permissionMode: string };
   onConfirm: (opts: {
     kind: SessionKind;
     name: string;
@@ -1252,11 +1257,11 @@ export function NewAgentSession({
   const t = useT();
   const agentDefaults = useTermStore((s) => s.agentDefaults);
   const [kind, setKind] = useState<SessionKind>("claude");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(prefill?.name ?? "");
   // Prefill arguments and permissions from this type's global agent template; users may override or clear.
   const [agentArgs, setAgentArgs] = useState(() => agentDefaults["claude"]?.args ?? "");
   const [permissionMode, setPermissionMode] = useState(
-    () => agentDefaults["claude"]?.permissionMode ?? "",
+    () => prefill?.permissionMode ?? agentDefaults["claude"]?.permissionMode ?? "",
   );
   // Which of the two views this session opens in, which is the same thing as which engine drives it.
   // The dialog starts on the selected agent's configured default; kinds the chat engine cannot drive are
@@ -1292,7 +1297,7 @@ export function NewAgentSession({
     const project = st.projects.find((p) => p.id === projectId);
     return parent?.cwd || projectRoot(project) || null;
   });
-  const wt = useWorktreeChoice(repoRoot, initialWtMode);
+  const wt = useWorktreeChoice(repoRoot, initialWtMode, prefill?.worktreeName);
 
   // Working directory for this session. It starts at the repository above it — the parent session's directory or
   // the project root — and falls back to the home directory inside a collection, which has no folder. The user can

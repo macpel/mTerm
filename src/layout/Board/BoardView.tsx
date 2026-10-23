@@ -25,8 +25,10 @@ import { BoardColumn } from "./BoardColumn";
 import { columnLabel } from "./columns";
 import { TYPE_ICON } from "./BoardCard";
 import { useTermStore } from "../../store/termStore";
+import type { Session } from "../../types";
 import { CardDetails } from "./CardDetails";
-import { sendCardToClaude, sendTargets } from "./sendToClaude";
+import { cardSessionPrefill, sendCardToSession, sendTargets, startCardSession } from "./sendToClaude";
+import { useSessionMenu } from "../sessionMenu";
 import { allTags, filterCards } from "./filter";
 import "./board.css";
 
@@ -48,6 +50,20 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
   const allSessions = useTermStore((st) => st.sessions);
   const runtimes = useTermStore((st) => st.runtimes);
   const claudeSessions = useMemo(() => sendTargets(allSessions, runtimes, projectId), [allSessions, runtimes, projectId]);
+  // "Send to Claude → New session" opens mTerm's New Agent Session dialog, prefilled from the card.
+  const sessionMenu = useSessionMenu();
+  const sendCard = (card: BoardCard, target: "new" | Session) => {
+    if (target !== "new") return sendCardToSession(projectId, card, target);
+    sessionMenu.openDialog({
+      type: "newAgentSession",
+      projectId,
+      groupId: null,
+      parentSessionId: null,
+      initialWtMode: "new",
+      prefill: cardSessionPrefill(card),
+      onCreated: (session) => startCardSession(projectId, card, session),
+    });
+  };
 
   const load = useCallback(() => {
     boardGet(projectId)
@@ -199,7 +215,7 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
             onClose={() => setOpen(null)}
             columns={columns}
             claudeSessions={claudeSessions}
-            onSend={(card, target) => sendCardToClaude(projectId, card, target)}
+            onSend={sendCard}
           />
         )}
       </div>
@@ -208,6 +224,7 @@ export function BoardView({ projectId, hidden }: { projectId: string; hidden: bo
       {adding && (
         <AddCardDialog projectId={projectId} column={adding.id} columnName={columnLabel(t, adding)} onClose={() => setAdding(null)} />
       )}
+      {sessionMenu.dialogs}
     </div>
   );
 }

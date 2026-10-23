@@ -1082,9 +1082,10 @@ const fr: typeof en = {
   "board.save": "Enregistrer", // Save
   "board.delete": "Supprimer", // Delete
   "board.deleteConfirm": "Cliquez à nouveau pour supprimer", // Click again to delete
-  "board.notes": "Notes", // Notes
-  "board.addNote": "Ajouter une note", // Add a note
-  "board.addNoteButton": "Ajouter la note", // Add note
+  "board.write": "Écrire", // Write
+  "board.preview": "Aperçu", // Preview
+  "board.noDescription": "Aucune description.", // No description.
+  "board.markdownHint": "Markdown pris en charge : # titre, **gras**, - liste, `code`", // Markdown supported: # heading, **bold**, - list, `code`
   "board.history": "Historique", // History
   "board.sendToClaude": "Envoyer à Claude", // Send to Claude
   "board.newSession": "Nouvelle session Claude", // New Claude session

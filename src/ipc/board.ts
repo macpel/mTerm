@@ -45,15 +45,7 @@ export interface BoardData {
   cards: BoardCard[];
 }
 
-export interface CardNote {
-  id: string;
-  authorKind: "user" | "agent";
-  authorName: string | null;
-  text: string;
-  createdAt: number;
-}
-
-/** What a history entry records; written by the backend's board store. */
+/** What a history entry records; written by the backend's board store. "noted" only appears in older history. */
 export type CardAction = "created" | "moved" | "edited" | "tagged" | "noted" | "claimed";
 
 export interface CardEvent {
@@ -65,7 +57,7 @@ export interface CardEvent {
   createdAt: number;
 }
 
-export type CardDetail = BoardCard & { notes: CardNote[]; history: CardEvent[] };
+export type CardDetail = BoardCard & { history: CardEvent[] };
 
 export interface CardFields {
   title: string;
@@ -84,8 +76,6 @@ export const boardCardUpdate = (projectId: string, number: number, fields: Parti
 export const boardCardMove = (projectId: string, number: number, column: string, beforeNumber?: number) =>
   invoke<BoardCard>("board_card_move", { projectId, number, column, beforeNumber });
 export const boardCardDelete = (projectId: string, number: number) => invoke<void>("board_card_delete", { projectId, number });
-export const boardNoteAdd = (projectId: string, number: number, text: string) =>
-  invoke<BoardCard>("board_note_add", { projectId, number, text });
 export const boardCardDetail = (projectId: string, number: number) => invoke<CardDetail>("board_card_detail", { projectId, number });
 /** Add a custom column by name, or a missing standard column by role. */
 export const boardColumnAdd = (projectId: string, column: { name?: string; role?: ColumnRole }) =>
