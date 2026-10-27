@@ -128,6 +128,7 @@ import {
   type TermRenderer,
 } from "./settings";
 import { docKindOf, makeDocTab, type DocTab } from "./docTab";
+import { loadDrafts, removeDraft } from "./docDrafts";
 import { traceSplit, type SplitSource } from "./splitTrace";
 
 // Re-export the public API after moving implementations to settings/docTab, preserving existing import paths.
@@ -2187,6 +2188,36 @@ export const useTermStore = create<TermStore>((set, get) => ({
         } catch {
           /* Invalid or obsolete layout data falls back to a clean start. */
         }
+        // Unsaved drafts come back on every launch, after the restored tabs; DocView reloads their text.
+        const drafts = Object.entries(loadDrafts());
+        if (drafts.length > 0) {
+          const patch = layoutPatch as {
+            openTabs?: string[];
+            docTabs?: Record<string, DocTab>;
+            activeTabId?: string | null;
+          };
+          const docTabs: Record<string, DocTab> = { ...(patch.docTabs ?? state.docTabs) };
+          for (const [id, d] of drafts) {
+            docTabs[id] = {
+              id,
+              path: "",
+              title: d.title,
+              kind: "code",
+              mode: d.mode,
+              dirty: false,
+              pendingClose: false,
+              reloadNonce: 0,
+              isNew: true,
+            };
+          }
+          const openTabs = [...(patch.openTabs ?? state.openTabs), ...drafts.map(([id]) => id)];
+          layoutPatch = {
+            ...layoutPatch,
+            docTabs,
+            openTabs,
+            activeTabId: patch.activeTabId ?? state.activeTabId ?? openTabs[0],
+          };
+        }
       } else {
         // Later tree refreshes reconcile current memory state only, preserving visible and background tabs.
         layoutPatch = reconcileTabs({
@@ -3004,6 +3035,8 @@ export const useTermStore = create<TermStore>((set, get) => ({
     // Explicit tab closure terminates all contained sessions here. Unmount also serves automatic detach-only
     // flows in browser mode, so it cannot express user intent reliably. Repeated stops are idempotent.
     stopTabSessions(get(), tabId);
+    // A closed draft was either saved or discarded; either way it must not come back on the next launch.
+    if (get().docTabs[tabId]?.isNew) removeDraft(tabId);
     set((state) => {
       const idx = state.openTabs.indexOf(tabId);
       const openTabs = state.openTabs.filter((t) => t !== tabId);
