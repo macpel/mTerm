@@ -10,6 +10,7 @@
 //!   native layer and forwarded to the main window as an app-level new-tab request instead.
 //! - Allow only HTTP, HTTPS, and about:blank through both normalization and `on_navigation`.
 //! - Commands accept tabId only; BrowserManager owns labels and never trusts frontend labels.
+//! - Windows: saved passwords live in WebView2's own DPAPI-encrypted store; the app never reads them.
 //!
 //! Coordinate conversion, verified on macOS and Linux: macOS add_child uses the frame origin above the
 //! native title bar, while CSS begins in the content area and tao reports frame size for both outer/inner.
@@ -254,6 +255,24 @@ pub async fn browser_open(
         .map_err(|e| format!("Failed to create browser webview: {e}"))?;
     #[cfg(target_os = "windows")]
     crate::focus_win::track(&_webview);
+    // Turn on WebView2's own password saver and autofill. WebView2 stores logins locally, encrypted with
+    // Windows DPAPI; the app never reads them.
+    #[cfg(target_os = "windows")]
+    let _ = _webview.with_webview(|webview| {
+        use webview2_com::Microsoft::Web::WebView2::Win32::ICoreWebView2Settings4;
+        use windows::core::Interface;
+        // SAFETY: wry owns the live WebView2 COM pointer for this child.
+        unsafe {
+            if let Ok(core) = webview.controller().CoreWebView2() {
+                if let Ok(settings) = core.Settings() {
+                    if let Ok(s4) = settings.cast::<ICoreWebView2Settings4>() {
+                        let _ = s4.SetIsPasswordAutosaveEnabled(true);
+                        let _ = s4.SetIsGeneralAutofillEnabled(true);
+                    }
+                }
+            }
+        }
+    });
 
     if let Ok(mut map) = state.0.lock() {
         map.insert(tab_id, label);
