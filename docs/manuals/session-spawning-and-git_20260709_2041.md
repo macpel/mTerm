@@ -8,7 +8,7 @@ Updated: 2026-09-25 10:21
 
 ## 1. What spawning is
 
-From inside any session, you can split off a subtask. VelaTerm creates a new child session **under** the current node (the tree becomes hierarchical: parent → child → grandchild), optionally gives it an isolated git worktree, and sends the task description as the new session's **first message**. The new agent starts working as soon as it launches, without further explanation.
+From inside any session, you can split off a subtask. mTerm creates a new child session **under** the current node (the tree becomes hierarchical: parent → child → grandchild), optionally gives it an isolated git worktree, and sends the task description as the new session's **first message**. The new agent starts working as soon as it launches, without further explanation.
 
 The result is a real session in the tree, with its own process, that you can watch, answer, reopen and resume at any time. It is not a hidden background task.
 
@@ -23,7 +23,7 @@ For work that should be planned, carried out and reviewed by separate agents, us
 | `/vspawn task` in Claude Code, `$vspawn task` in Codex | You ask the agent; it expands the task into a self-contained prompt first | Off by default |
 | `/vspawn-tree task` in Claude Code, `$vspawn-tree task` in Codex | Same | Always on |
 
-The two commands are available in every session that VelaTerm starts. The agent skills require **Vela Skills**: choose "Install" in Settings ▸ General, then start a new Claude Code or Codex conversation so the agent picks them up. Agents call these skills only when you ask for them.
+The two commands are available in every session that mTerm starts. The agent skills require **mTerm Skills**: choose "Install" in Settings ▸ General, then start a new Claude Code or Codex conversation so the agent picks them up. Agents call these skills only when you ask for them.
 
 A new session does not see the conversation it came from. When you use the skill, the agent writes the goal, relevant files, conclusions so far, constraints and acceptance criteria into the task. When you run the command yourself, include them in the task text.
 
@@ -79,13 +79,13 @@ When the work is done, merge it. For any session or group whose directory is a g
 - The dialog lists the changes the merge brings into the target branch before you confirm.
 - The merge runs in the working tree where the target branch is checked out. If the target branch is not checked out anywhere, the merge cannot run; check it out first.
 - If the source branch's working tree has uncommitted changes, they are committed first with the message you enter ("Commit & merge").
-- If the merge has conflicts, VelaTerm leaves them in place and tells you where to resolve them. Resolve them in that worktree's terminal (or ask an agent to), then commit.
+- If the merge has conflicts, mTerm leaves them in place and tells you where to resolve them. Resolve them in that worktree's terminal (or ask an agent to), then commit.
 
 Merging does not delete the worktree. Remove it afterwards with "Git ▸ Delete worktree…" once you no longer need it.
 
 ## 7. A typical workflow
 
-1. In the main session, discuss the task with Claude Code, then run `/vspawn-tree refactor the checkout module` (requires Vela Skills).
+1. In the main session, discuss the task with Claude Code, then run `/vspawn-tree refactor the checkout module` (requires mTerm Skills).
 2. Review the task on the confirmation card and choose "Start session". The child starts in its own worktree and appears in the sidebar under its parent, with a green status dot while it works.
 3. Continue in the main session. When the child asks something or finishes, its dot changes and a notification appears.
 4. Review the child's work, then choose "Git ▸ Merge…" to merge its branch into the main branch.

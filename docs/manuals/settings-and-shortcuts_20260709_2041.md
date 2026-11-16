@@ -15,8 +15,8 @@ Updated: 2026-09-25 10:21
 | Language | Interface language. "Auto (system)" follows the system language; eleven languages are available |
 | Notification sound | Sound for notifications (on by default) |
 | System notifications | Turns system notifications on or off (on by default). If the system has not allowed notifications yet, "Allow notifications" asks for permission; if they are blocked, the steps for your system are shown |
-| Shell command | macOS desktop app only: "Install 'vela' command" adds `vela <project-path>` to your shell, which opens a project in VelaTerm. "Uninstall 'vela' command" removes it |
-| Vela Skills | "Install" (later "Reinstall") installs the VelaTerm skills for Claude Code and Codex, such as `/vspawn` and `$vspawn`. Start a new Codex session if Codex does not list them. See [Session Commands](session-commands_20260925_1012.md) §2 |
+| Shell command | macOS desktop app only: "Install 'vela' command" adds `vela <project-path>` to your shell, which opens a project in mTerm. "Uninstall 'vela' command" removes it |
+| mTerm Skills | "Install" (later "Reinstall") installs the mTerm skills for Claude Code and Codex, such as `/vspawn` and `$vspawn`. Start a new Codex session if Codex does not list them. See [Session Commands](session-commands_20260925_1012.md) §2 |
 
 ## 2. Appearance
 
@@ -114,7 +114,7 @@ Click an action's key combination, then press the new combination; Escape cancel
 | Select all in terminal | ⌘A | Ctrl+Shift+A |
 | Save document | ⌘S | Ctrl+S |
 
-**Regular browsers.** When you use VelaTerm in a regular browser (URL remote access), the browser itself uses many ⌘ and Ctrl combinations, so the Windows and Linux bindings above apply on every system, and the settings page shows them that way. The exception is a browser on macOS, where split right and split down stay ⌘D and ⌘⇧D. Remote-connection windows of the desktop app use the desktop bindings.
+**Regular browsers.** When you use mTerm in a regular browser (URL remote access), the browser itself uses many ⌘ and Ctrl combinations, so the Windows and Linux bindings above apply on every system, and the settings page shows them that way. The exception is a browser on macOS, where split right and split down stay ⌘D and ⌘⇧D. Remote-connection windows of the desktop app use the desktop bindings.
 
 **Fixed keys** that cannot be changed: ⌘1–9 switches tabs, and ⌘+ / ⌘- / ⌘0 changes or resets the terminal font size (Ctrl on Windows, Linux and in browsers).
 

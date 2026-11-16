@@ -12,7 +12,7 @@ The desktop app, the Electron backend and the headless server each write to `log
 
 - Requests from a remote window are logged by the backend on the remote machine. Setting up an SSH connection is logged by the local desktop app.
 - Split events follow the same rule: native windows log to the local desktop app, and browser clients log to the backend they are connected to.
-- A VelaTerm server started on a remote machine over SSH also writes its console output to `~/.velaterm/server.log` there (`server.log` and `server.err.log` in `%USERPROFILE%\.velaterm` on Windows).
+- An mTerm server started on a remote machine over SSH also writes its console output to `~/.velaterm/server.log` there (`server.log` and `server.err.log` in `%USERPROFILE%\.velaterm` on Windows).
 
 Environment variables control where and how much is logged. They are read when a process starts, so restart the process after changing them.
 
@@ -21,7 +21,7 @@ Environment variables control where and how much is logged. They are read when a
 - `VLX_LOG_LEVEL` sets the level: `TRACE`, `DEBUG`, `INFO` (default), `WARN`, `ERROR` or `OFF`, in any letter case. An unrecognized value counts as `INFO`.
 - The module variables `VLX_SPLIT_LOG_LEVEL`, `VLX_MEMORY_LOG_LEVEL`, `VLX_KNOWLEDGE_LOG_LEVEL`, `VLX_SECURITY_LOG_LEVEL` and `VLX_MODEL_CATALOG_LOG_LEVEL` filter their own events further. They cannot show more than `VLX_LOG_LEVEL` allows.
 
-Each log file grows to about 10 MiB; each process keeps its current file and up to four older ones. While writing, VelaTerm removes its own runtime logs that are older than 7 days or that push the directory above about 100 MiB in total. This cleanup runs periodically rather than as a strict limit, and it never touches session recordings or other data. On macOS and Linux the log directory is readable only by you (`0700`, files `0600`), and VelaTerm refuses to write when the directory or file is a symbolic link. On Windows the files inherit the directory's permissions; VelaTerm does not change them.
+Each log file grows to about 10 MiB; each process keeps its current file and up to four older ones. While writing, mTerm removes its own runtime logs that are older than 7 days or that push the directory above about 100 MiB in total. This cleanup runs periodically rather than as a strict limit, and it never touches session recordings or other data. On macOS and Linux the log directory is readable only by you (`0700`, files `0600`), and mTerm refuses to write when the directory or file is a symbolic link. On Windows the files inherit the directory's permissions; mTerm does not change them.
 
 The Electron shell writes its own events, such as a failed start or a backend restart, to `logs/electron-*.log` in its user data directory, or to `VLX_LOG_DIR`. These files follow the same limits (about 10 MiB per file, at most five files, 7 days and about 100 MiB). The shell does not copy the backend's output; read the backend's runtime log for that.
 
@@ -29,9 +29,9 @@ The Electron shell writes its own events, such as a failed start or a backend re
 
 If the desktop app stops responding, look for `event=main_thread_stall` in the runtime log.
 
-- When the app's main thread has been blocked for at least one second, VelaTerm writes `main_thread_stall` with `"status":"blocked"` and the time blocked so far (`blockedMs`), even while the freeze is still in progress.
+- When the app's main thread has been blocked for at least one second, mTerm writes `main_thread_stall` with `"status":"blocked"` and the time blocked so far (`blockedMs`), even while the freeze is still in progress.
 - If the freeze continues, the line is repeated every five seconds.
-- When the app responds again, VelaTerm writes `"status":"recovered"` with the total time.
+- When the app responds again, mTerm writes `"status":"recovered"` with the total time.
 
 A stall line says that the app froze, not why. Look at lines with the same timestamp to find the cause:
 
@@ -85,8 +85,6 @@ Log lines are written by a background thread with a queue of 2048 lines. When th
 
 The local desktop app can report the logger's state (`initialized`, `droppedCount`, `writeFailures`) through the `diagnostic_health` command; remote clients cannot call it. `droppedCount` also includes interface events dropped by the rate limit.
 
-Logs stay on your machine. Session recordings, conversation history, the database, knowledge base source snapshots, audit reports and normal command output are separate data and are not part of the runtime log. Logs written by third-party tools are not managed by VelaTerm; do not attach them to a report without checking their contents.
-
-Builds of the VelaTerm mobile app record their native SSH connection steps in the platform log (the `VelaTerm` tag on Android, the system log on iOS) as `event=mobile_connection` with the step, the previous step and its duration. These lines are not copied to a computer or uploaded.
+Logs stay on your machine. Session recordings, conversation history, the database, knowledge base source snapshots, audit reports and normal command output are separate data and are not part of the runtime log. Logs written by third-party tools are not managed by mTerm; do not attach them to a report without checking their contents.
 
 See also: [Split diagnostics](split-diagnostics_20260905_2027.md).

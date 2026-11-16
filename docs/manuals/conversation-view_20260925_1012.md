@@ -8,7 +8,7 @@ Created: 2026-09-25 10:12
 
 Every agent session can run in the **Terminal view**, where the agent shows its own terminal interface. Five agents can also run in the **Conversation view**: Claude Code, Codex, OpenCode, Pi and OMP. The other agent types always use the terminal view.
 
-In the conversation view, VelaTerm draws the conversation itself: your messages, the agent's answers and reasoning, one card per tool call, and cards for permission requests and questions. You can change the model, reasoning effort and permission mode from the controls under the message box without restarting the session.
+In the conversation view, mTerm draws the conversation itself: your messages, the agent's answers and reasoning, one card per tool call, and cards for permission requests and questions. You can change the model, reasoning effort and permission mode from the controls under the message box without restarting the session.
 
 Both views continue the same conversation. A session can move from one view to the other, and the history carries over.
 
@@ -23,7 +23,7 @@ Both views continue the same conversation. A session can move from one view to t
 - In the terminal view, the robot button ("Conversation view") moves the session to the conversation view.
 - In the conversation view, the terminal button ("Terminal view") moves it back. A short hint points at this button until you close the hint or use the button.
 
-If the agent is working, VelaTerm asks first: "Switching views restarts the agent. The turn in progress will stop. Your conversation is kept." Choose "Switch" to continue. An idle session switches immediately.
+If the agent is working, mTerm asks first: "Switching views restarts the agent. The turn in progress will stop. Your conversation is kept." Choose "Switch" to continue. An idle session switches immediately.
 
 ## 3. Sending messages
 
@@ -81,7 +81,7 @@ Claude and Codex conversations also show a small context meter next to the send 
 | OMP | "Always Ask", "Bypass" |
 | Pi | No permission control; Pi runs tools without asking |
 
-A change to a Codex session applies to the next turn, and the menu marks it accordingly. Switching a running Claude session to "Bypass" requires a restart; VelaTerm asks "Restart to enable Bypass?" and keeps the conversation history. "Bypass" and "Full Access" skip all confirmations, so use them with care.
+A change to a Codex session applies to the next turn, and the menu marks it accordingly. Switching a running Claude session to "Bypass" requires a restart; mTerm asks "Restart to enable Bypass?" and keeps the conversation history. "Bypass" and "Full Access" skip all confirmations, so use them with care.
 
 ## 5. Answering the agent
 
@@ -100,7 +100,7 @@ Paste or drop images into the message box. A message can carry up to 4 images of
 
 Type `/` to list commands and `@` to insert a file path. Tab or Enter inserts the highlighted suggestion; Esc closes the list. For Claude and Codex, the list includes the agent's own commands and skills.
 
-VelaTerm handles these commands itself:
+mTerm handles these commands itself:
 
 | Command | Agents | What happens |
 |---------|--------|--------------|
@@ -134,7 +134,7 @@ While background tasks run, the session keeps its "working" status.
 
 ## 10. Usage limits and automatic continuation
 
-When a Claude or Codex conversation stops because a five-hour or weekly usage limit was reached, VelaTerm continues the task once the limit resets. This is on by default; switch off Settings ▸ Behavior ▸ "Continue after limit resets" to disable it.
+When a Claude or Codex conversation stops because a five-hour or weekly usage limit was reached, mTerm continues the task once the limit resets. This is on by default; switch off Settings ▸ Behavior ▸ "Continue after limit resets" to disable it.
 
 With the setting on, the conversation shows when it will continue, for example "5-hour usage limit reached. The task will continue automatically at 14:30.", with a "Cancel" button. The wait survives an application restart. It ends without sending anything when you send a message yourself, rewind, cancel it, turn the setting off, archive or delete the session, or move the session to the terminal view. If the reset time is unknown, or the limit is reached again after continuing, the conversation says so and does not continue on its own.
 

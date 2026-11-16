@@ -10,7 +10,7 @@ Updated: 2026-10-17 21:43
 
 A terminal session runs a real shell. On macOS and Linux it is the system default shell (`$SHELL`); on Windows it is cmd by default and can be changed (see §7). The working directory defaults to the project root. The session's edit form lets you change "Working directory (leave empty for project root)" and set a "Startup command (optional)", which runs every time the session starts (for example `pnpm dev`).
 
-When several agents produce a lot of output at once, VelaTerm gives your typing and the visible tab priority and throttles output from background tabs. This behavior is controlled by Settings ▸ Advanced ▸ "Foreground-priority output" (on by default). If a full-screen program ever looks garbled after you switch tabs, click the "Redraw" button in the pane header to repaint it. Settings ▸ Advanced ▸ "Redraw on tab switch" does this automatically whenever a tab becomes visible.
+When several agents produce a lot of output at once, mTerm gives your typing and the visible tab priority and throttles output from background tabs. This behavior is controlled by Settings ▸ Advanced ▸ "Foreground-priority output" (on by default). If a full-screen program ever looks garbled after you switch tabs, click the "Redraw" button in the pane header to repaint it. Settings ▸ Advanced ▸ "Redraw on tab switch" does this automatically whenever a tab becomes visible.
 
 ## 2. In-terminal search (⌘F)
 
@@ -37,16 +37,16 @@ Settings ▸ Behavior ▸ "Auto-clean pasted images" removes these temporary fil
 
 ## 5. Command suggestions
 
-In plain terminal sessions on macOS and Linux, VelaTerm can show a suggestion list built from your shell's own completion definitions. Settings ▸ Terminal ▸ "Command suggestions" chooses "Automatic" (default), "On Tab" or "Off". Use the arrow keys to select a candidate and Tab to insert it; Enter always runs the command as typed. When the selection cannot move any further, Up and Down go back to the shell, so Up on the first candidate recalls the previous command. The list is not available on Windows. Full details are in [Command suggestions](terminal-completion_20260908.md).
+In plain terminal sessions on macOS and Linux, mTerm can show a suggestion list built from your shell's own completion definitions. Settings ▸ Terminal ▸ "Command suggestions" chooses "Automatic" (default), "On Tab" or "Off". Use the arrow keys to select a candidate and Tab to insert it; Enter always runs the command as typed. When the selection cannot move any further, Up and Down go back to the shell, so Up on the first candidate recalls the previous command. The list is not available on Windows. Full details are in [Command suggestions](terminal-completion_20260908.md).
 
 ## 6. Built-in commands
 
-Every session VelaTerm starts has a set of short commands on its PATH. They need no installation and work in plain terminals as well as agent sessions:
+Every session mTerm starts has a set of short commands on its PATH. They need no installation and work in plain terminals as well as agent sessions:
 
 | Command | Purpose |
 |---------|---------|
 | `vopen <file or URL>...` | Open files in document tabs and web addresses in browser tabs (see below) |
-| `vspawn <task>` / `vspawn-tree <task>` | Ask VelaTerm to start a child session; `vspawn-tree` gives it a separate worktree |
+| `vspawn <task>` / `vspawn-tree <task>` | Ask mTerm to start a child session; `vspawn-tree` gives it a separate worktree |
 | `vrefer <session>` | Read another session's conversation |
 | `vsearch <words...>` | Search the content of all sessions |
 | `vstat` | Show which sessions are working or waiting |
@@ -55,7 +55,7 @@ Every session VelaTerm starts has a set of short commands on its PATH. They need
 | `vrun <label> <command...>` | Run a long command and wait for it (see §6.1) |
 | `vflow` | Used by the planner in planning and execution sessions |
 
-Run a command with `--help` to see its options; [Session Commands](session-commands_20260925_1012.md) describes each one in detail. Most of these commands also exist as skills inside Claude Code (`/vopen`) and Codex (`$vopen`); `vrun` and `vflow` have no skill, and `vask` exists only as a skill. The skills are installed with the "Vela Skills" button in Settings ▸ General.
+Run a command with `--help` to see its options; [Session Commands](session-commands_20260925_1012.md) describes each one in detail. Most of these commands also exist as skills inside Claude Code (`/vopen`) and Codex (`$vopen`); `vrun` and `vflow` have no skill, and `vask` exists only as a skill. The skills are installed with the "mTerm Skills" button in Settings ▸ General.
 
 `vopen` chooses the view by file type:
 
@@ -86,9 +86,9 @@ macOS and Linux have no shell picker; sessions use the system default shell.
 
 ## 8. Session recording
 
-Settings ▸ Advanced ▸ "Record session logs" is off by default. When it is on, VelaTerm saves the terminal output of agent sessions running in the terminal view to a local log file, up to 50 MB per session. Plain terminal sessions are never recorded.
+Settings ▸ Advanced ▸ "Record session logs" is off by default. When it is on, mTerm saves the terminal output of agent sessions running in the terminal view to a local log file, up to 50 MB per session. Plain terminal sessions are never recorded.
 
-A recording lets you replay an archived session as it appeared on screen and makes its screen text searchable. VelaTerm uses a recording only when the agent's own conversation record cannot be read; otherwise the conversation record is used for viewing and search. Recording files are deleted together with their session.
+A recording lets you replay an archived session as it appeared on screen and makes its screen text searchable. mTerm uses a recording only when the agent's own conversation record cannot be read; otherwise the conversation record is used for viewing and search. Recording files are deleted together with their session.
 
 ## 9. Renderer
 

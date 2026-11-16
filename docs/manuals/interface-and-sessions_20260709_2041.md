@@ -4,7 +4,7 @@ Created: 2026-07-09 20:41
 
 Updated: 2026-09-25 10:21
 
-> This chapter covers VelaTerm's organizational model: the window layout, managing the tree, how tabs and split panes behave, status dots and filtering, archiving, global search, and saving the workspace on quit. The other chapters build on these.
+> This chapter covers mTerm's organizational model: the window layout, managing the tree, how tabs and split panes behave, status dots and filtering, archiving, global search, and saving the workspace on quit. The other chapters build on these.
 
 ## 1. The layout
 
@@ -12,13 +12,13 @@ Updated: 2026-09-25 10:21
 
 | Area | Contents |
 |------|----------|
-| Title bar (right side) | Theme switch (follow system, dark, light), Remote Access (Browser), Connect to Remote Server, Share, Settings, Account, Feedback, and the buttons that show or hide the sidebar and the info panel |
+| Title bar (right side) | Theme switch (follow system, dark, light), Remote Access (Browser), Connect to Remote Server, Settings, and the buttons that show or hide the sidebar and the info panel |
 | Left sidebar | "Workspace": the project tree with a search box and filter; header buttons Create Project, Import Project, Clone from Git, Search All Sessions and Archived Sessions |
 | Center pane | Tab bar and the open sessions, documents, browser pages and background tasks; each session tab can be split into panes |
 | Right panel | Four tabs that follow the current session: Files, Info, Git, and Knowledge Base |
 | Status bar | Session count, current session type, Git branch, permission mode, notification switch, the Working / Pending / Viewed counters, background tabs, and update notices |
 
-Remote Access and Connect to Remote Server appear in the desktop app; see [Remote Development & Management](remote-development-guide_20260709_2041.md). Feedback opens the VelaTerm feedback page in your browser. On Windows and Linux, pressing Alt shows a menu bar with File, Terminal and Help.
+Remote Access and Connect to Remote Server appear in the desktop app; see [Remote Development & Management](remote-development-guide_20260709_2041.md). On Windows and Linux, pressing Alt shows a menu bar with File, Terminal and Help.
 
 Both side panels can be hidden with the title bar buttons and resized by dragging their edges.
 
@@ -70,12 +70,12 @@ Settings ▸ Behavior ▸ "Tabs" chooses how sessions open:
 
 "Open in New Tab" always opens a new tab. In both modes, switching to another tab does not stop anything; **closing a tab (⌘W or ×) ends its processes**. For agent sessions this is safe: the conversation is kept, and opening the node again resumes it.
 
-Background tabs appear in the status bar as "Background N/M"; click it to bring a tab back or end it. In Single mode, "Background limit" (default 32) caps their number. Past the limit, the oldest inactive background tab ends automatically. If every background tab is working or waiting for you, VelaTerm asks which one to end.
+Background tabs appear in the status bar as "Background N/M"; click it to bring a tab back or end it. In Single mode, "Background limit" (default 32) caps their number. Past the limit, the oldest inactive background tab ends automatically. If every background tab is working or waiting for you, mTerm asks which one to end.
 
 Tab bar details:
 
 - ⌘1–9 (Ctrl+1–9 on Windows and Linux) switches to a tab by position. A middle click closes a tab.
-- The ＋ after the tabs opens a scratch terminal. The buttons on the right open a new terminal, a new document, a built-in browser tab (desktop app), and the Game Center.
+- The ＋ after the tabs opens a scratch terminal. The buttons on the right open a new terminal, a new document, and a built-in browser tab (desktop app).
 - A tab's context menu has "Close Tab", "Close Other Tabs", "Close Tabs to the Right", "Close All Tabs", "Send to Background" (keeps the tab's processes running), and the same session items as the tree.
 
 Document and browser tabs are covered in [Document & Browser Tabs](document-and-browser-tabs_20260709_2041.md).
@@ -148,4 +148,4 @@ Deleting a session removes it permanently, together with its recording. When you
 
 ## 11. Quitting and restoring the workspace
 
-Quitting asks "Quit VelaTerm?" and stops running terminal and agent sessions. With "Save workspace" checked, the next start reopens the same tabs and splits. Restored sessions do not start on their own: each pane shows "Restored from your saved workspace. No process is running yet." with a "Start" button. The checkbox remembers your last choice.
+Quitting asks "Quit mTerm?" and stops running terminal and agent sessions. With "Save workspace" checked, the next start reopens the same tabs and splits. Restored sessions do not start on their own: each pane shows "Restored from your saved workspace. No process is running yet." with a "Start" button. The checkbox remembers your last choice.
