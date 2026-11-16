@@ -228,6 +228,9 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
         crate::kb::guard_paths(app,cmd,args,|path|guard_remote_path(app,origin,path))?;
         return crate::kb::dispatch(app,cmd,args);
     }
+    if cmd.starts_with("board_") {
+        return crate::board::dispatch(app, cmd, args);
+    }
     if cmd.starts_with("knowledge_") {
         crate::knowledge::guard_paths(app,cmd,args,|path|guard_remote_path(app,origin,path))?;
         return crate::knowledge::dispatch(app, cmd, args);
@@ -1229,6 +1232,7 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
         //   `git_file_diff` is the exception — it reads a caller-chosen file raw from the
         //   filesystem, independent of repo status — and is therefore gated above.
         // - `save_pasted_image`: writes only into a temp directory it picks itself — no caller path.
+        // - `save_board_image`: writes only a fresh name into `<data dir>/board-images/` — no caller path.
         "list_dir" => to_value(files::list_dir(&req_str(args, "path")?)?),
         // Drive letters or `/` plus the OS name; no paths below the roots.
         "list_roots" => to_value(files::list_roots()),
@@ -1310,6 +1314,13 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
         // pairing, replaces the old cookie-only `/api/upload` path. Base64 is smaller than number[] and
         // shares `files::save_pasted_image` with the identically named desktop command.
         "save_pasted_image" => to_value(files::save_pasted_image(
+            &b64_bytes(args, "bytesB64")?,
+            &req_str(args, "ext")?,
+        )?),
+        // Images pasted into a board card description persist under `<data dir>/board-images/` with a name
+        // the app picks, like `save_pasted_image`: no caller path. Returns the absolute path for the Markdown.
+        "save_board_image" => to_value(crate::board::images::save(
+            &crate::board::images::dir(&app.data_dir()?),
             &b64_bytes(args, "bytesB64")?,
             &req_str(args, "ext")?,
         )?),

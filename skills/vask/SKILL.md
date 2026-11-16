@@ -30,7 +30,7 @@ unique substring. Quote names containing spaces. If several sessions match, sele
 candidate list and retry rather than guessing.
 
 By default the answering agent receives the complete transcript. If the user enabled **Summarize first**
-in Settings → Agents, VelaTerm compresses the transcript with the one globally selected Agent, model,
+in Settings → Agents, mTerm compresses the transcript with the one globally selected Agent, model,
 and reasoning effort, adds relevant original full-text search excerpts from the same session, and then
 asks the answering agent. This setting is automatic; the skill command and `--ask` syntax do not change.
 

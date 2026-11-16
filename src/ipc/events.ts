@@ -341,7 +341,6 @@ export function onCloneProgress(
  */
 export type MenuAction =
   | "settings"
-  | "check-update"
   | "share"
   | "clear-badges"
   | "split-right"

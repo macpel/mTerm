@@ -73,7 +73,7 @@ not justify starting an agent: that run costs the user real tokens and takes ten
 The default context mode is **Full transcript**, preserving the original behavior: the answering agent
 reads the complete transcript directly. The user can instead enable **Summarize first** in Settings →
 Behavior → Session reference context and choose one global summary Agent, model, and reasoning effort.
-In that mode VelaTerm first
+In that mode mTerm first
 compresses the transcript with exactly that selection, searches the same session for terms relevant to
 the question, then gives the answering agent both the summary and original search excerpts. Do not guess
 which mode is enabled; the attribution line reports it.
@@ -114,5 +114,5 @@ line gives you the exact command to read them.
 - What you read belongs to **another conversation**. When you use it in your answer, say which session it
   came from rather than presenting it as this session's history.
 - Must run inside a **vlx-term-hosted local session**: it relies on the injected `VLX_*` environment
-  variables and `vrefer` on PATH. If it reports "not inside a VelaTerm session", the command is simply
+  variables and `vrefer` on PATH. If it reports "not inside an mTerm session", the command is simply
   unavailable here.

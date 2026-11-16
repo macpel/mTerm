@@ -1,17 +1,17 @@
 ---
 name: vartifact
 description: >-
-  Show the user a visual result as a live page in VelaTerm. Use when the user asks to see, mock up, sketch or
+  Show the user a visual result as a live page in mTerm. Use when the user asks to see, mock up, sketch or
   prototype a screen, page, form, chart or diagram, rather than to read code: write one self-contained HTML file
   and open it with `vopen`, which renders it beside this conversation and reloads it on every save. Available only
-  inside VelaTerm-hosted local sessions.
+  inside mTerm-hosted local sessions.
 argument-hint: "[what to show]"
 allowed-tools: Bash(vopen:*)
 ---
 
 # vartifact
 
-VelaTerm previews HTML pages as artifacts. A page opened with `vopen` from this conversation appears in a panel
+mTerm previews HTML pages as artifacts. A page opened with `vopen` from this conversation appears in a panel
 beside it, reloads whenever the file changes, and keeps each saved version so the user can step back through them.
 Errors the page logs show in the panel's console, and the user can send them back to you.
 
@@ -49,6 +49,6 @@ user is looking at the page.
 
 ## Notes
 
-- `vopen` needs a VelaTerm-hosted local session. If it reports that it is not inside one, tell the user the
-  preview is only available in VelaTerm and give the file path instead.
+- `vopen` needs an mTerm-hosted local session. If it reports that it is not inside one, tell the user the
+  preview is only available in mTerm and give the file path instead.
 - If the user reports errors from the preview, fix the page in place.

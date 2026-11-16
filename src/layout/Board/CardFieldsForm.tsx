@@ -1,0 +1,171 @@
+//! Card fields shared by the Add card dialog and the card panel: type, priority, colour, description, tags.
+//! The title stays with each caller, which decides its focus and Enter behaviour.
+import { useRef, useState, type ClipboardEvent } from "react";
+import { useT } from "../../i18n";
+import { boardImageSave, CARD_COLORS, CARD_TYPES, PRIORITIES, type CardFields } from "../../ipc/board";
+import { env } from "../../platform/env";
+import { extOf, imageFromNativeClipboard, imagesFromClipboard } from "../../terminal/imageInput";
+import { Markdown, MarkdownImageRenderer } from "../CenterPane/session/markdown";
+import { renderBoardImage } from "./BoardImage";
+import "../CenterPane/session/session-view.css";
+
+export const EMPTY_FIELDS: CardFields = { title: "", type: "task", priority: "medium", description: "", tags: [], color: null };
+
+export function CardFieldsForm({
+  fields,
+  onChange,
+  preview = false,
+}: {
+  fields: CardFields;
+  onChange: <K extends keyof CardFields>(key: K, value: CardFields[K]) => void;
+  /** Open the description rendered rather than in the editor. */
+  preview?: boolean;
+}) {
+  const t = useT();
+  const [tagDraft, setTagDraft] = useState("");
+  const [showPreview, setShowPreview] = useState(preview);
+  const [pasteError, setPasteError] = useState(false);
+  const input = useRef<HTMLTextAreaElement>(null);
+  // Uploads finish after the paste event, by which time the description may have changed.
+  const description = useRef(fields.description);
+  description.current = fields.description;
+  /** Save the pasted images and link them at the cursor. */
+  const pasteImages = async (load: () => Promise<File[]>) => {
+    setPasteError(false);
+    try {
+      const files = await load();
+      const paths = await Promise.all(files.map(async (file) => boardImageSave(new Uint8Array(await file.arrayBuffer()), extOf(file))));
+      if (!paths.length) return;
+      const text = description.current;
+      const start = input.current?.selectionStart ?? text.length;
+      const end = input.current?.selectionEnd ?? start;
+      const links = paths.map((path) => `![image](<${path}>)`).join("\n");
+      onChange("description", text.slice(0, start) + links + text.slice(end));
+      const caret = start + links.length;
+      requestAnimationFrame(() => input.current?.setSelectionRange(caret, caret));
+    } catch {
+      setPasteError(true);
+    }
+  };
+  const onPaste = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    const files = imagesFromClipboard(event.clipboardData);
+    if (files.length) {
+      event.preventDefault();
+      void pasteImages(async () => files);
+    } else if (env.isTauri && !event.clipboardData?.getData("text/plain")) {
+      // The Tauri WebView can leave a copied image out of the paste event; read the system clipboard instead.
+      event.preventDefault();
+      void pasteImages(() => imageFromNativeClipboard().then((file) => [file]).catch(() => []));
+    }
+  };
+  const addTag = () => {
+    const tag = tagDraft.trim().toLowerCase();
+    if (tag && !fields.tags.includes(tag)) onChange("tags", [...fields.tags, tag]);
+    setTagDraft("");
+  };
+  return (
+    <>
+      <div className="board-field-row">
+        <label className="board-field">
+          <span>{t("board.fieldType")}</span>
+          <select aria-label={t("board.fieldType")} value={fields.type} onChange={(e) => onChange("type", e.target.value as CardFields["type"])}>
+            {CARD_TYPES.map((type) => (
+              <option key={type} value={type}>{t(`board.type.${type}`)}</option>
+            ))}
+          </select>
+        </label>
+        <label className="board-field">
+          <span>{t("board.fieldPriority")}</span>
+          <select
+            aria-label={t("board.fieldPriority")}
+            value={fields.priority}
+            onChange={(e) => onChange("priority", e.target.value as CardFields["priority"])}
+          >
+            {PRIORITIES.map((p) => (
+              <option key={p} value={p}>{t(`board.priority.${p}`)}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="board-field">
+        <span>{t("board.fieldColour")}</span>
+        <div className="board-swatches" role="radiogroup" aria-label={t("board.fieldColour")}>
+          {([null, ...CARD_COLORS] as const).map((color) => (
+            <button
+              key={color ?? "none"}
+              type="button"
+              role="radio"
+              aria-checked={fields.color === color}
+              aria-label={t(`board.colour.${color ?? "none"}`)}
+              title={t(`board.colour.${color ?? "none"}`)}
+              className={`board-swatch board-swatch-${color ?? "none"}`}
+              onClick={() => onChange("color", color)}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="board-field">
+        <div className="board-desc-head">
+          <span>{t("board.fieldDescription")}</span>
+          <div className="board-desc-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected={!showPreview} onClick={() => setShowPreview(false)}>
+              {t("board.write")}
+            </button>
+            <button type="button" role="tab" aria-selected={showPreview} onClick={() => setShowPreview(true)}>
+              {t("board.preview")}
+            </button>
+          </div>
+        </div>
+        {showPreview ? (
+          <div className="board-desc-preview" onDoubleClick={() => setShowPreview(false)}>
+            {fields.description.trim() ? (
+              <MarkdownImageRenderer.Provider value={renderBoardImage}>
+                <Markdown text={fields.description} />
+              </MarkdownImageRenderer.Provider>
+            ) : (
+              <span className="board-muted">{t("board.noDescription")}</span>
+            )}
+          </div>
+        ) : (
+          <textarea
+            ref={input}
+            aria-label={t("board.fieldDescription")}
+            className="board-desc-input"
+            rows={14}
+            value={fields.description}
+            placeholder={t("board.markdownHint")}
+            onChange={(e) => onChange("description", e.target.value)}
+            onPaste={onPaste}
+          />
+        )}
+        {pasteError && <span className="board-error">{t("board.imagePasteFailed")}</span>}
+      </div>
+      <div className="board-field">
+        <span>{t("board.fieldTags")}</span>
+        {fields.tags.length > 0 && (
+          <div className="board-tags">
+            {fields.tags.map((tag) => (
+              <button key={tag} type="button" className="board-tag" onClick={() => onChange("tags", fields.tags.filter((x) => x !== tag))}>
+                #{tag} ×
+              </button>
+            ))}
+          </div>
+        )}
+        <input
+          aria-label={t("board.fieldTags")}
+          value={tagDraft}
+          placeholder={t("board.tagHint")}
+          onChange={(e) => setTagDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === ",") {
+              e.preventDefault();
+              e.stopPropagation();
+              addTag();
+            }
+          }}
+          onBlur={addTag}
+        />
+      </div>
+    </>
+  );
+}

@@ -3,7 +3,7 @@
 //! saved per-agent choices can still override it.
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { COMPOSER_CHIP_IDS, DEFAULT_COMPOSER_INLINE_CHIPS, SETTINGS_KEY, defaultEngineFor, loadSettings, sanitizeComposerInlineChips } from "./settings";
+import { COMPOSER_CHIP_IDS, DEFAULT_BROWSER_SHORTCUTS, DEFAULT_COMPOSER_INLINE_CHIPS, SETTINGS_KEY, defaultEngineFor, loadSettings, sanitizeBrowserShortcuts, sanitizeComposerInlineChips } from "./settings";
 import { useTermStore } from "./termStore";
 
 describe("dark palette preference", () => {
@@ -239,5 +239,44 @@ describe("composer inline chips", () => {
     useTermStore.setState({ composerInlineChips: [] });
     useTermStore.getState().hydrateSettingsFromCache();
     expect(useTermStore.getState().composerInlineChips).toEqual(["permission", "model", "mcp"]);
+  });
+});
+
+describe("browser shortcuts", () => {
+  beforeEach(() => localStorage.clear());
+
+  it("defaults to the four built-in sites", () => {
+    expect(loadSettings().browserShortcuts).toEqual(DEFAULT_BROWSER_SHORTCUTS);
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ termFontSize: 18 }));
+    expect(loadSettings().browserShortcuts).toEqual(DEFAULT_BROWSER_SHORTCUTS);
+  });
+
+  it("keeps valid entries in order, drops bad ones and duplicates, and accepts an empty list", () => {
+    const saved = [
+      { id: "a", label: " Docs ", url: "https://docs.example.com/" },
+      { id: "a", label: "Dup", url: "https://dup.example.com/" },
+      { id: "b", label: "", url: "https://empty-name.example.com/" },
+      { id: "c", label: "Script", url: "javascript:alert(1)" },
+      { id: "d", label: "x".repeat(60), url: "http://localhost:3000/" },
+      "junk",
+    ];
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ browserShortcuts: saved }));
+    expect(loadSettings().browserShortcuts).toEqual([
+      { id: "a", label: "Docs", url: "https://docs.example.com/" },
+      { id: "d", label: "x".repeat(40), url: "http://localhost:3000/" },
+    ]);
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ browserShortcuts: [] }));
+    expect(loadSettings().browserShortcuts).toEqual([]);
+    expect(sanitizeBrowserShortcuts(null)).toEqual(DEFAULT_BROWSER_SHORTCUTS);
+  });
+
+  it("round-trips through the store setter and the cache hydration", () => {
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    const list = [{ id: "x", label: "Example", url: "https://example.com/" }];
+    useTermStore.getState().setBrowserShortcuts(list);
+    expect(loadSettings().browserShortcuts).toEqual(list);
+    useTermStore.setState({ browserShortcuts: [] });
+    useTermStore.getState().hydrateSettingsFromCache();
+    expect(useTermStore.getState().browserShortcuts).toEqual(list);
   });
 });

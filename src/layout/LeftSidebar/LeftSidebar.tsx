@@ -534,10 +534,13 @@ export function LeftSidebar() {
     if (renaming && name) {
       const id = renaming.id;
       // Rename temporary session/browser/document drafts in memory; persist formal nodes through renameNode.
-      if (ephemeralSessions[id] || browserTabs[id] || docTabs[id]) {
+      // A saved browser node's open tab shares the node ID, so it is persisted and its tab title kept in step.
+      const saved = renaming.kind !== "session" || useTermStore.getState().sessions.some((s) => s.id === id);
+      if (!saved && (ephemeralSessions[id] || browserTabs[id] || docTabs[id])) {
         renameScratch(id, name);
       } else {
         void renameNode(renaming.kind, id, name);
+        if (browserTabs[id]) renameScratch(id, name);
       }
     }
     setRenaming(null);
@@ -709,6 +712,12 @@ export function LeftSidebar() {
         }]),
         buildMarkItem("project", node.id),
         ...(moveToCollection ? [moveToCollection] : []),
+        // A collection only groups projects, so it has no board of its own.
+        ...(virtual ? [] : [{
+          label: t("tree.openBoard"),
+          icon: <Icons.board size={14} />,
+          onClick: () => useTermStore.getState().openBoardTab(node.projectId),
+        }]),
         {
           label: t("common.experimental"),
           submenu: [

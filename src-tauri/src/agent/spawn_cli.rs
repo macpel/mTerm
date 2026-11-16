@@ -28,6 +28,7 @@ const SHIMS: &[(&str, &str)] = &[
     ("vstat", "--stat"),
     ("vself", "--self"),
     ("vkb", "--knowledge"),
+    ("vboard", "--board"),
     ("vflow", "--flow"),
     ("vtell", "--tell"),
     ("vrun", "--run"),
@@ -72,6 +73,7 @@ const SKILLS: &[(&str, &str)] = &[
     ("vflow", include_str!("../../../skills/vflow/SKILL.md")),
     ("vtell", include_str!("../../../skills/vtell/SKILL.md")),
     ("vkb", include_str!("../../../skills/vkb/SKILL.md")),
+    ("vboard", include_str!("../../../skills/vboard/SKILL.md")),
 ];
 
 /// Bin directory prepended to session PATH: `<data_dir>/bin`.
@@ -139,7 +141,7 @@ pub fn install_user_cli() -> std::io::Result<UserCliStatus> {
     if cfg!(debug_assertions) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Unsupported,
-            "install the packaged VelaTerm app before adding its shell command to PATH",
+            "install the packaged mTerm app before adding its shell command to PATH",
         ));
     }
     let before = user_cli_status();

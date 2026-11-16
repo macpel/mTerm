@@ -531,6 +531,16 @@ fn serve_with_app(
             }
             continue;
         }
+        if url == "/board" {
+            if let Some(app) = &app {
+                let app = app.clone();
+                let token = token.to_string();
+                std::thread::spawn(move || crate::board::agent::handle(app, request, token));
+            } else {
+                let _ = request.respond(tiny_http::Response::empty(404));
+            }
+            continue;
+        }
         if url == "/knowledge" {
             if let Some(app) = &app {
                 let app = app.clone();

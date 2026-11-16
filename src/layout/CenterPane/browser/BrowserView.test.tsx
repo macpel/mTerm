@@ -16,6 +16,8 @@ const h = vi.hoisted(() => ({
     setActiveTab: vi.fn(),
     browserTabs: {} as Record<string, unknown>,
     openTabs: [] as string[],
+    browserShortcuts: [{ id: "chatgpt", label: "ChatGPT", url: "https://chatgpt.com/" }],
+    setBrowserShortcuts: vi.fn(),
   },
 }));
 
@@ -42,12 +44,14 @@ vi.mock("../../../platform", () => ({
   platform: { opener: { openPath: vi.fn(), revealPath: vi.fn(), openExternal: vi.fn() } },
 }));
 vi.mock("../../../store/termStore", () => ({
-  useTermStore: {
-    getState: () => h.store,
-  },
+  useTermStore: Object.assign(
+    (selector: (s: typeof h.store) => unknown) => selector(h.store),
+    { getState: () => h.store },
+  ),
 }));
 vi.mock("../../../hooks/nativeViewSuspend", () => ({
   useNativeViewSuspended: () => false,
+  useSuspendNativeViews: () => {},
 }));
 
 import { BrowserView } from "./BrowserView";

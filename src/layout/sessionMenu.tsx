@@ -118,6 +118,10 @@ export type Dialog =
       groupId: string | null;
       parentSessionId: string | null;
       initialWtMode?: "none" | "new" | "existing";
+      /** Starting values for the dialog's fields, e.g. from a board card; all stay editable. */
+      prefill?: { name: string; worktreeName: string; permissionMode: string };
+      /** Runs with the created session before it opens, e.g. to hand it its first message. */
+      onCreated?: (session: Session) => Promise<void>;
     }
   | {
       type: "resumeSession";
@@ -400,6 +404,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
       agentPath?: string | null;
       /** How the agent is driven from the start; absent means its own terminal interface. */
       engine?: SessionEngine | null;
+      onCreated?: (session: Session) => Promise<void>;
     },
   ) => {
     const st = useTermStore.getState();
@@ -479,7 +484,9 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
           ? { cwd: opts.cwd.trim() }
           : {}),
     });
-    if (created) openSession(created.id);
+    if (!created) return;
+    await opts?.onCreated?.(created);
+    openSession(created.id);
   };
 
 
@@ -544,6 +551,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
       agentPresetId?: string | null;
       agentPath?: string | null;
       engine?: SessionEngine | null;
+      onCreated?: (session: Session) => Promise<void>;
     },
   ) => {
     const st = useTermStore.getState();
@@ -570,7 +578,9 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
       agentPath: payload.agentPath ?? null,
       engine: payload.engine ?? null,
     });
-    if (created) openSession(created.id);
+    if (!created) return;
+    await payload.onCreated?.(created);
+    openSession(created.id);
   };
 
   // Existing-worktree creation points cwd/path at the selection. Its historical base cannot be reconstructed, so
@@ -588,6 +598,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
       agentPresetId?: string | null;
       agentPath?: string | null;
       engine?: SessionEngine | null;
+      onCreated?: (session: Session) => Promise<void>;
     },
   ) => {
     const created = await addSession({
@@ -605,7 +616,9 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
       agentPath: payload.agentPath ?? null,
       engine: payload.engine ?? null,
     });
-    if (created) openSession(created.id);
+    if (!created) return;
+    await payload.onCreated?.(created);
+    openSession(created.id);
   };
 
   // New Terminal creates a center-only eph- draft, never a tree child. Multiple detected shells produce a submenu;
@@ -1370,6 +1383,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
           projectId={dialog.projectId}
           parentSessionId={dialog.parentSessionId}
           initialWtMode={dialog.initialWtMode}
+          prefill={dialog.prefill}
           onCancel={() => setDialog(null)}
           onConfirm={async ({
             kind,
@@ -1413,6 +1427,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
                   agentPresetId: presetId,
                   agentPath: execPath,
                   engine,
+                  onCreated: dialog.onCreated,
                 },
               );
             } else if (worktree.mode === "existing") {
@@ -1429,6 +1444,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
                   agentPresetId: presetId,
                   agentPath: execPath,
                   engine,
+                  onCreated: dialog.onCreated,
                 },
               );
             } else {
@@ -1446,6 +1462,7 @@ export function useSessionMenu(opts?: { groupNavigation?: boolean }): SessionMen
                   agentPresetId: presetId,
                   agentPath: execPath,
                   engine,
+                  onCreated: dialog.onCreated,
                 },
               );
             }

@@ -87,6 +87,7 @@ fn main() {
         Some("--stat") => velaterm_lib::run_stat(&args),
         Some("--self") => velaterm_lib::run_self(&args),
         Some("--knowledge") => velaterm_lib::run_knowledge(&args),
+        Some("--board") => velaterm_lib::run_board(&args),
         _ => {}
     }
     // Raise the process's open-file soft limit on paths that can launch PTY sessions: --serve and the

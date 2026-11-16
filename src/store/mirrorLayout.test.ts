@@ -82,6 +82,7 @@ function source(over: Partial<MirrorLayoutSource> = {}): MirrorLayoutSource {
     docTabs: {},
     browserTabs: {},
     taskTabs: {},
+    boardTabs: {},
     selection: [{ id: "A", kind: "session" }],
     inspectTarget: { id: "A", kind: "session" },
     leftCollapsed: false,

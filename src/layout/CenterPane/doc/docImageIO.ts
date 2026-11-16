@@ -13,7 +13,7 @@ const IMG_MIME: Record<string, string> = {
   svg: "image/svg+xml",
   tiff: "image/tiff",
 };
-function mimeFromPath(p: string): string {
+export function mimeFromPath(p: string): string {
   const ext = p.split(".").pop()?.toLowerCase() ?? "";
   return IMG_MIME[ext] ?? "application/octet-stream";
 }

@@ -30,7 +30,7 @@ $ARGUMENTS
 ## Planning and execution mode
 
 When the user requests this workflow or supplies `--plan-execute`, keep the
-current session as the initiator. Pass the expanded task to `vspawn --plan-execute`; VelaTerm creates a new
+current session as the initiator. Pass the expanded task to `vspawn --plan-execute`; mTerm creates a new
 planner, which later dispatches work to its persistent executor. Independent review is disabled by default. Pass `--review` when the user requests review; it then runs in a separate Review session. Plan only collects context, coordinates and summarizes in both modes. Add `--split-tasks` when the user requests automatic decomposition into multiple tasks. The new planner then proposes the split for a separate user review; do not split or execute the task in the initiating conversation. Do not perform the planning
 or execution here, and do not use in-process subagents.
 

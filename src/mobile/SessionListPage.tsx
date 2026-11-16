@@ -373,9 +373,9 @@ export function SessionListPage({ onOpen, loading=false, error=null, onRefresh }
     <div className="m-page">
       <header className="m-header">
         <span className="m-brand">
-          <img className="m-logo" src={apiUrl("/velaterm-light.svg")} alt="" draggable={false}
-            style={{"--brand-logo-light":`url("${apiUrl("/velaterm-light.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/velaterm-dark.svg")}")`} as CSSProperties} />
-          VelaTerm
+          <img className="m-logo" src={apiUrl("/mterm.svg")} alt="" draggable={false}
+            style={{"--brand-logo-light":`url("${apiUrl("/mterm.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/mterm.svg")}")`} as CSSProperties} />
+          mTerm
         </span>
         <span className="m-sp" />
         <details className="m-menu">

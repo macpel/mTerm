@@ -1360,6 +1360,18 @@ export function ProjectTree(h: TreeHandlers) {
   // Hover create controls: session/group for projects and groups, child session for sessions.
   const metaButtons = (ref: TreeNodeRef, canAddGroup: boolean, collection = false) => (
     <span className="meta">
+      {ref.kind === "project" && !collection && (
+        <span
+          className="add"
+          title={t("tree.openBoard")}
+          onClick={(e) => {
+            e.stopPropagation();
+            useTermStore.getState().openBoardTab(ref.projectId);
+          }}
+        >
+          <Icons.board size={12} />
+        </span>
+      )}
       <span
         className="add"
         title={collection ? t("common.create") : ref.kind === "session" ? t("tree.newChildSession") : t("tree.newSession")}

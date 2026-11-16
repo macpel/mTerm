@@ -221,6 +221,41 @@ export interface PersistedSettings {
   /** The revision of the default inline set that the saved list has been brought up to. A list saved
    * before a revision gains that revision's chips once; removing them again in the settings sticks. */
   composerInlineChipsRevision: number;
+  /** Quick-access shortcuts under the browser address bar, in display order. An empty list is kept. */
+  browserShortcuts: BrowserShortcut[];
+}
+
+/** One quick-access browser shortcut. Built-in ids (`chatgpt`, `claude`, `gemini`, `google`) keep their brand icon. */
+export interface BrowserShortcut {
+  id: string;
+  label: string;
+  url: string;
+}
+
+/** Longest shortcut name accepted, so one entry cannot crowd the bar. */
+export const BROWSER_SHORTCUT_NAME_MAX = 40;
+
+export const DEFAULT_BROWSER_SHORTCUTS: readonly BrowserShortcut[] = [
+  { id: "chatgpt", label: "ChatGPT", url: "https://chatgpt.com/" },
+  { id: "claude", label: "Claude", url: "https://claude.ai/" },
+  { id: "gemini", label: "Gemini", url: "https://gemini.google.com/" },
+  { id: "google", label: "Google", url: "https://www.google.com/" },
+];
+
+/** Keeps entries with a name and an http(s) URL, once per id and in the saved order. A missing or malformed
+ * value falls back to the defaults; an explicit empty list is a valid choice (no shortcuts). */
+export function sanitizeBrowserShortcuts(value: unknown): BrowserShortcut[] {
+  if (!Array.isArray(value)) return DEFAULT_BROWSER_SHORTCUTS.map((s) => ({ ...s }));
+  const result: BrowserShortcut[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== "object") continue;
+    const { id, label, url } = item as Record<string, unknown>;
+    if (typeof id !== "string" || !id || result.some((s) => s.id === id)) continue;
+    if (typeof label !== "string" || !label.trim()) continue;
+    if (typeof url !== "string" || !/^https?:\/\//i.test(url)) continue;
+    result.push({ id, label: label.trim().slice(0, BROWSER_SHORTCUT_NAME_MAX), url });
+  }
+  return result;
 }
 
 /** Every composer chip the toolbar can show, in the order the toolbar used before the list became
@@ -302,6 +337,7 @@ const SETTINGS_DEFAULTS: PersistedSettings = {
   infoCollapsed: {},
   composerInlineChips: DEFAULT_COMPOSER_INLINE_CHIPS,
   composerInlineChipsRevision: COMPOSER_INLINE_CHIPS_REVISION,
+  browserShortcuts: DEFAULT_BROWSER_SHORTCUTS.map((s) => ({ ...s })),
 };
 
 /** Keeps only known chip ids, once each and in the saved order. A missing or malformed value falls back
@@ -396,6 +432,7 @@ export function loadSettings(): PersistedSettings {
     merged.sessionTitlePrefs = sanitizeSessionTitlePrefs(parsed.sessionTitlePrefs);
     merged.referSummary = sanitizeReferSummary(parsed.referSummary);
     merged.composerInlineChips = sanitizeComposerInlineChips(parsed.composerInlineChips);
+    merged.browserShortcuts = sanitizeBrowserShortcuts(parsed.browserShortcuts);
     merged.inputLatencyLog = merged.inputLatencyLog === true;
     merged.inputLatencyThresholdMs = normalizeInputLatencyThreshold(merged.inputLatencyThresholdMs);
     // A list saved before revision 1 gains Tasks at the end. The bumped revision is written with the next

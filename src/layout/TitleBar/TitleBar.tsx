@@ -1,19 +1,18 @@
 //! Vela-style application header with branding, theme toggle, appearance settings, and panel controls.
 //! The window retains native decorations; this row sits below the system title bar.
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import Icons from "../../components/Icons";
-import { getLocale, useT } from "../../i18n";
-import { SharingLink, sharingNavigate, useSharingLocation } from "../../sharing/navigation";
-import { sharingText } from "../../sharing/copy";
+import { useT } from "../../i18n";
+import { sharingNavigate, useSharingLocation } from "../../sharing/navigation";
 import { getBackendVersion } from "../../ipc/commands";
-import { apiUrl, isShareSurface } from "../../ipc/shareBase";
+import { isShareSurface } from "../../ipc/shareBase";
 import { invoke, isTauri } from "../../ipc/transport";
 import { recordRequestError } from "../../ipc/reqLog";
 import { screenshotShortcutGet, screenshotStart, type ScreenshotShortcutStatus } from "../../ipc/screenshot";
 import { formatAccelerator } from "../../screenshot/accelerator";
 import { webServerStatus, type WebServerStatus } from "../../ipc/webServer";
-import { env, platform } from "../../platform";
+import { env } from "../../platform";
 import { useTermStore } from "../../store/termStore";
 import { runAfterInitialSettings } from "../../store/settingsWatch";
 import { navigateTranslation, translationUrl, useTranslationRoute } from "../../translation/navigation";
@@ -24,7 +23,6 @@ import { ConnectRemotePanel } from "./ConnectRemotePanel";
 import { RemoteAccessPanel } from "./RemoteAccessPanel";
 import { SettingsModal } from "./SettingsModal";
 
-const FEEDBACK_URL = "https://velaterm.com/feedback";
 
 /**
  * Format MM-DD HH:mm:ss for the development badge's latest hot-update time.
@@ -135,7 +133,6 @@ export function TitleBar() {
   const [remotePort, setRemotePort] = useState<number | null>(null);
   // Account link state lights the account icon. The relay is authoritative; query it once here and
   // refresh when the account panel reports a link change in this window.
-  const [accountLinked, setAccountLinked] = useState(false);
   const [screenshotStatus, setScreenshotStatus] = useState<ScreenshotShortcutStatus | null>(null);
   // Frontend/backend versions for the mismatch banner; null when equal or not yet checked.
   const [versionMismatch, setVersionMismatch] = useState<{
@@ -209,44 +206,13 @@ export function TitleBar() {
     setRemotePort(s?.port ?? null);
   };
 
-  useEffect(() => {
-    // Browser clients never show the account entry, and the relay status is not part of their session.
-    if (env.isBrowser) return;
-    let alive = true;
-    const refresh = () => {
-      invoke<{ linked: boolean }>("public_account_status")
-        .then((status) => {
-          if (alive) setAccountLinked(status.linked);
-        })
-        .catch(() => {
-          // Keep the last known state while the account service is unreachable; the icon is decoration.
-        });
-    };
-    refresh();
-    window.addEventListener("public-account-changed", refresh);
-    return () => {
-      alive = false;
-      window.removeEventListener("public-account-changed", refresh);
-    };
-  }, []);
-
   const remoteInfo = (window as any).__VLX_REMOTE__ as
     { address: string } | undefined;
 
   return (
     <div className="titlebar">
+      {/* The window title already names the app, so the bar only carries the dev build badge. */}
       <div className="brand">
-        <img
-          className="logo"
-          // CSS content on `.brand .logo` follows data-theme so system-mode changes do not require a
-          // TitleBar rerender. This light src is only a fallback when CSS content is unavailable.
-          src={apiUrl("/velaterm-light.svg")}
-          style={{"--brand-logo-light":`url("${apiUrl("/velaterm-light.svg")}")`,"--brand-logo-dark":`url("${apiUrl("/velaterm-dark.svg")}")`} as CSSProperties}
-          alt="VelaTerm"
-          draggable={false}
-        />
-        <span className="v">Vela</span>
-        <span className="sub">terminal · agents</span>
         {env.isDev || __DEV_BUILD__ ? (
           <span
             // Vite development for Tauri/browser shows HMR time. Electron loads packaged assets without
@@ -544,18 +510,6 @@ export function TitleBar() {
         </button>
       )}
 
-      {/* Share appears on every platform and shares its dialog with the macOS native menu action. Public
-          share windows serve a single grant, so sharing and settings stay hidden there. */}
-      {!isShareSurface && (
-        <button
-          className="tb-btn"
-          title={t("titlebar.share")}
-          onClick={() => setShareOpen(!shareOpen)}
-        >
-          <Icons.share size={15} />
-        </button>
-      )}
-
       {!isShareSurface && (
         <button
           className="tb-btn"
@@ -569,28 +523,6 @@ export function TitleBar() {
           <Icons.gear size={15} />
         </button>
       )}
-
-      {!env.isBrowser && (
-        <SharingLink
-          className={`tb-btn${accountLinked ? " account-on" : ""}`}
-          values={{ publicAccount: "1" }}
-          title={`${sharingText("Account", getLocale())} · ${t("common.experimental")}`}
-          aria-label={`${sharingText("Account", getLocale())} · ${t("common.experimental")}`}
-        >
-          <Icons.account size={15} />
-        </SharingLink>
-      )}
-
-      {/* Feedback opens the feedback page in the system browser on every platform and surface. */}
-      <button
-        className="tb-btn"
-        title={t("titlebar.feedback")}
-        onClick={() => {
-          void platform.opener.openExternal(FEEDBACK_URL).catch(() => {});
-        }}
-      >
-        <Icons.feedback size={15} />
-      </button>
 
       {/* VS Code-style panel toggles sit at the far right and fill their corresponding side when open. */}
       <div className="tb-pair">

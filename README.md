@@ -1,23 +1,16 @@
-# VelaTerm
+# mTerm
 
 English | [简体中文](README.zh-CN.md)
 
 **The best ADE.** Not just a terminal. Not just an IDE.
 
-Manage agent sessions like Codex. Split terminals like iTerm2. VelaTerm keeps both in one native app,
+Manage agent sessions like Codex. Split terminals like iTerm2. mTerm (m terminal) keeps both in one native app,
 and brings them to your browser and your phone.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Website](https://img.shields.io/badge/Website-velaterm.com-0b7285.svg)](https://velaterm.com)
-[![X](https://img.shields.io/badge/X-@vlinx__soft-000000.svg)](https://x.com/vlinx_soft)
-[![YouTube](https://img.shields.io/badge/YouTube-@vlinx__soft-FF0000.svg)](https://www.youtube.com/@vlinx_soft)
-[![Discord](https://img.shields.io/badge/Discord-join-5865F2.svg)](https://discord.gg/gaD4NBzggU)
 
-<a href="https://www.youtube.com/watch?v=X665-GPmaKw"><img src="docs/assets/velaterm-intro-cover-3a-equation-en.jpg" alt="Codex session management plus iTerm2 split panes equals VelaTerm, the agentic development environment. Click to watch the intro video." width="100%"></a>
-
-**[Watch the intro video (2:55)](https://www.youtube.com/watch?v=X665-GPmaKw)** ·
-**[Download](https://velaterm.com/download)** ·
-**[User manual](https://velaterm.com/docs)**
+**[Download](https://github.com/macpel/mTerm/releases)** ·
+**[User manual](docs/manuals/manuals-overview_20260709_2041.md)**
 
 ## Workspace
 
@@ -26,7 +19,7 @@ and brings them to your browser and your phone.
 Claude Code, Codex, OpenCode, Copilot, Cursor, Antigravity, Cline, Pi and more. Each one runs as a
 managed session, with live status, resume and custom launch arguments.
 
-<img src="docs/assets/readme/window.webp" alt="Claude Code, Codex, a dev server and a shell side by side in one VelaTerm window" width="100%">
+<img src="docs/assets/readme/window.webp" alt="Claude Code, Codex, a dev server and a shell side by side in one mTerm window" width="100%">
 
 ### A full agent dev environment
 
@@ -128,13 +121,6 @@ of them work on remote machines too.
 
 <img src="docs/assets/readme/editor-markdown.webp" alt="The WYSIWYG Markdown editor with a file tree" width="100%">
 
-### A little break between tasks
-
-Open Game Center from your workspace and play Pixel Wing with a keyboard, touch controls or a
-controller.
-
-<p align="center"><img src="docs/assets/readme/game.webp" alt="Pixel Wing in Game Center" width="520"></p>
-
 ### Also included
 
 - **Code audits.** Bundled Codex Security workflows using your logged-in local Codex or Claude Code,
@@ -182,12 +168,12 @@ Tauri 2: a small install that stays smooth under heavy terminal load.
 | Windows | x64, arm64 | PowerShell, Git Bash, WSL |
 | Linux | x86_64, aarch64 | bash |
 
-<p><img src="docs/assets/readme/platform-macos.webp" alt="VelaTerm on macOS" width="32%"> <img src="docs/assets/readme/platform-windows.webp" alt="VelaTerm on Windows with Git Bash" width="32%"> <img src="docs/assets/readme/platform-linux.webp" alt="VelaTerm on Linux" width="32%"></p>
+<p><img src="docs/assets/readme/platform-macos.webp" alt="mTerm on macOS" width="32%"> <img src="docs/assets/readme/platform-windows.webp" alt="mTerm on Windows with Git Bash" width="32%"> <img src="docs/assets/readme/platform-linux.webp" alt="mTerm on Linux" width="32%"></p>
 
 ## Download
 
-From the first command to the final review. Get the installer for your platform at
-[velaterm.com/download](https://velaterm.com/download), then start with the
+From the first command to the final review. Get the installer for your platform from the
+[releases page](https://github.com/macpel/mTerm/releases), then start with the
 [getting started guide](docs/manuals/getting-started_20260709_2041.md).
 
 ## Documentation
@@ -197,13 +183,6 @@ From the first command to the final review. Get the installer for your platform 
 - [AI agent sessions](docs/manuals/ai-agent-sessions_20260709_2041.md)
 - [Remote development guide](docs/manuals/remote-development-guide_20260709_2041.md)
 - [Changelog](docs/changelog.md)
-
-## Community
-
-- **[X](https://x.com/vlinx_soft)** — release announcements and short demos.
-- **[YouTube](https://www.youtube.com/@vlinx_soft)** — demos and guided tours of the application.
-- **[Discord](https://discord.gg/gaD4NBzggU)** — questions, bug reports and everyday discussion.
-- **[velaterm.com](https://velaterm.com)** — downloads, manuals and the changelog.
 
 ## Development
 
@@ -271,7 +250,7 @@ src-tauri/src/    Rust backend
   web/            embedded web server and command dispatch
   git.rs          git status probing
 electron/         Electron shell
-skills/           agent skills exposed inside VelaTerm sessions
+skills/           agent skills exposed inside mTerm sessions
 docs/manuals/     user manuals
 ```
 
@@ -294,5 +273,5 @@ run on the main thread and freeze the UI.
 
 Copyright (c) 2026 VLINX Software. Released under the [MIT License](LICENSE).
 
-You may use, copy, modify, merge, publish, distribute, sublicense and sell copies of VelaTerm, for
+You may use, copy, modify, merge, publish, distribute, sublicense and sell copies of mTerm, for
 any purpose, as long as the copyright notice and the licence text travel with it.

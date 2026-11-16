@@ -438,7 +438,6 @@ const de: typeof en = {
   "titlebar.themeDark": "Dunkel", // Dark
   "titlebar.themeClassicDark": "Dunkel (klassisch)", // Classic Dark
   "titlebar.themeLight": "Hell", // Light
-  "titlebar.gameCenter": "Spielecenter",
   "titlebar.browser": "Integrierter Browser", // Built-in Browser
   "titlebar.remoteAccess": "Fernzugriff (Browser)", // Remote Access (Browser)
   "titlebar.connectRemote": "Mit Remote-Server verbinden", // Connect to Remote Server
@@ -451,15 +450,12 @@ const de: typeof en = {
   "titlebar.clientsTitle": "Verbundene Clients", // Attached clients
   "titlebar.clientUnnamed": "Unbenannter Client", // Unnamed client
   "titlebar.clientSince": (time: string) => `seit ${time}`, // since {time}
-  "titlebar.feedback": "Feedback", // Feedback
-  "titlebar.share": "Teilen", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "Datei", // File
   "menubar.terminal": "Terminal",
   "menubar.help": "Hilfe", // Help
   "menubar.newTerminal": "Neues Terminal", // New Terminal
   "menubar.visitWebsite": "Website besuchen", // Visit Website
-  "menubar.sendFeedback": "Feedback senden", // Send Feedback
   "menubar.clearBadges": "Benachrichtigungsmarkierungen löschen", // Clear Notification Badges
   "share.title": "VelaTerm teilen", // Share VelaTerm
   "share.subtitle":
@@ -507,7 +503,7 @@ const de: typeof en = {
   "settings.cliUninstall": "‘vela’-Befehl deinstallieren",
   "settings.cliInstalledAt": (path: string) => `Installiert unter ${path}`,
   "settings.cliConflict": (path: string) =>
-    `Unter ${path} existiert bereits ein anderer ‘vela’-Befehl. VelaTerm überschreibt ihn nicht.`,
+    `Unter ${path} existiert bereits ein anderer ‘vela’-Befehl. mTerm überschreibt ihn nicht.`,
   "settings.cliHint":
     "Fügt `vela <Projektpfad>` wie den VS-Code-Befehl `code` zum PATH hinzu.",
   "settings.agentArgsHint":
@@ -857,7 +853,7 @@ const de: typeof en = {
   "settings.sound": "Benachrichtigungston", // Notification sound
   "settings.language": "Sprache", // Language
   "settings.langAuto": "Auto (System)", // Auto (system)
-  "settings.skillLabel": "Vela Skills",
+  "settings.skillLabel": "mTerm Skills",
   "settings.skillInstall": "Install", // Install
   "settings.skillInstalled": "Reinstall", // Reinstall
   "settings.skillInvokeHint":
@@ -867,14 +863,14 @@ const de: typeof en = {
   "settings.notifyGranted": "Enabled", // TODO translate
   "settings.notifyAllow": "Allow notifications", // TODO translate
   "settings.notifyOffHint":
-    "Allow VelaTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
+    "Allow mTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
   "settings.notifyDeniedHint": "Notifications are blocked. To turn them on:", // TODO translate
   "settings.notifyStepsMac":
-    "open System Settings ▸ Notifications ▸ VelaTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
+    "open System Settings ▸ Notifications ▸ mTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
   "settings.notifyStepsWin":
-    "open Settings ▸ System ▸ Notifications, enable VelaTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
+    "open Settings ▸ System ▸ Notifications, enable mTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
   "settings.notifyStepsLinux":
-    "open your desktop's Settings ▸ Notifications and allow VelaTerm.", // TODO translate
+    "open your desktop's Settings ▸ Notifications and allow mTerm.", // TODO translate
   "settings.notifyStepsBrowser":
     "click the site-permission icon in the address bar and set Notifications to Allow.", // TODO translate
   "settings.notifyUnsupported":
@@ -901,7 +897,7 @@ const de: typeof en = {
   "settings.scScreenshot": "Bildschirmfoto aufnehmen",
   "settings.scOff": "Aus",
   "settings.scScreenshotHint":
-    "Funktioniert in jeder App, auch wenn VelaTerm im Hintergrund läuft. Zum Ausschalten klicke das Kürzel an und drücke Entf.",
+    "Funktioniert in jeder App, auch wenn mTerm im Hintergrund läuft. Zum Ausschalten klicke das Kürzel an und drücke Entf.",
   "settings.scConflictTabs": "Bereits für den Tab-Wechsel belegt",
   "settings.scInUse": "Dieses Kürzel wird bereits von einer anderen App verwendet",
   "settings.scReset": "Standard wiederherstellen", // Restore defaults
@@ -983,14 +979,14 @@ const de: typeof en = {
   "connect.wslDistribution": "Linux-Distribution",
   "connect.wslSelect": "Distribution auswählen",
   "connect.wslMissing": "Diese Distribution ist nicht mehr verfügbar. Wählen Sie eine andere aus.",
-  "connect.wslSetup": "Bei Bedarf wird beim Verbinden die passende Version des VelaTerm-Servers in WSL heruntergeladen und gestartet. Eine SSH-Konfiguration ist nicht erforderlich.",
+  "connect.wslSetup": "Bei Bedarf wird beim Verbinden die passende Version des mTerm-Servers in WSL heruntergeladen und gestartet. Eine SSH-Konfiguration ist nicht erforderlich.",
   "conn.wslReconnecting": "Verbindung zum WSL-Arbeitsbereich wird wiederhergestellt…",
   "conn.wslDown": "Der WSL-Arbeitsbereich ist nicht verfügbar. Klicken Sie auf „Jetzt neu verbinden“, um es erneut zu versuchen.",
   "connect.title": "Mit Remote-Server verbinden", // Connect to Remote Server
   "connect.pairingPlaceholder": "Kopplungslink einfügen", // Paste pairing link
   "connect.confirmConnect": "Fingerabdruck korrekt, verbinden", // Fingerprint matches, connect
   "connect.desc":
-    "Adresse und Passwort eines entfernten VelaTerm eingeben, um es in einem neuen Fenster zu verbinden und zu steuern.", // Enter the address and password…
+    "Adresse und Passwort eines entfernten mTerm eingeben, um es in einem neuen Fenster zu verbinden und zu steuern.", // Enter the address and password…
   "connect.addressPlaceholder": "IP-Adresse, z. B. 192.168.1.100", // IP address, e.g. 192.168.1.100
   "connect.portPlaceholder": "Port", // Port
   "connect.connecting": "Verbinde…", // Connecting…
@@ -1033,6 +1029,70 @@ const de: typeof en = {
   "tree.newAgentSessionCustom": "Neu mit Startargumenten…", // New with launch args…
   "tree.resumeSession": "Sitzung fortsetzen…", // Resume Session…
   "tree.newGroup": "Neue Gruppe", // New Group
+  "tree.openBoard": "Board", // Board
+  "board.title": "Board", // Board
+  "board.column.backlog": "Backlog", // Backlog
+  "board.column.todo": "Zu erledigen", // To Do
+  "board.column.in_progress": "In Arbeit", // In Progress
+  "board.column.review": "Review", // Review
+  "board.column.done": "Erledigt", // Done
+  "board.type.task": "Aufgabe", // Task
+  "board.type.bug": "Fehler", // Bug
+  "board.type.feature": "Funktion", // Feature
+  "board.type.epic": "Epic", // Epic
+  "board.priority.low": "Niedrig", // Low
+  "board.priority.medium": "Mittel", // Medium
+  "board.priority.high": "Hoch", // High
+  "board.priority.urgent": "Dringend", // Urgent
+  "board.search": "Karten suchen", // Search cards
+  "board.empty": "Noch keine Karten. Füge eine hinzu oder lass Claude die Arbeit mit vboard planen.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "Du", // You
+  "board.takenBy": (name: string) => `Übernommen von ${name}`, // Taken by {}
+  "board.cardMenu": "Kartenaktionen", // Card actions
+  "board.fieldColour": "Farbe", // Colour
+  "board.colour.none": "Keine Farbe", // No colour
+  "board.colour.red": "Rot", // Red
+  "board.colour.orange": "Orange", // Orange
+  "board.colour.yellow": "Gelb", // Yellow
+  "board.colour.green": "Grün", // Green
+  "board.colour.blue": "Blau", // Blue
+  "board.colour.purple": "Lila", // Purple
+  "board.colour.pink": "Pink", // Pink
+  "board.add": "Hinzufügen", // Add
+  "board.addColumn": "Spalte hinzufügen", // Add column
+  "board.customColumn": "Eigene Spalte…", // Custom column…
+  "board.columnName": "Spaltenname", // Column name
+  "board.renameColumn": "Umbenennen", // Rename
+  "board.deleteColumn": "Spalte löschen", // Delete column
+  "board.addCardHere": "Karte", // Card
+  "board.addCardMenu": "Karte hinzufügen", // Add card
+  "board.noCards": "Keine Karten", // No cards
+  "board.nothingQueued": "Nichts eingeplant", // Nothing queued
+  "board.dragColumn": "Ziehen zum Sortieren", // Drag to reorder
+  "board.columnMenu": "Spaltenaktionen", // Column actions
+  "board.fieldTitle": "Titel", // Title
+  "board.fieldType": "Typ", // Type
+  "board.fieldPriority": "Priorität", // Priority
+  "board.fieldDescription": "Beschreibung", // Description
+  "board.fieldTags": "Tags", // Tags
+  "board.tagHint": "Tag eingeben und Enter drücken", // Type a tag and press Enter
+  "board.save": "Speichern", // Save
+  "board.delete": "Löschen", // Delete
+  "board.deleteConfirm": "Zum Löschen erneut klicken", // Click again to delete
+  "board.write": "Schreiben", // Write
+  "board.preview": "Vorschau", // Preview
+  "board.noDescription": "Keine Beschreibung.", // No description.
+  "board.markdownHint": "Markdown möglich: # Überschrift, **fett**, - Liste, `Code`. Bilder können eingefügt werden.", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "Das eingefügte Bild konnte nicht gespeichert werden.", // The pasted image could not be saved.
+  "board.history": "Verlauf", // History
+  "board.sendToClaude": "An Claude senden", // Send to Claude
+  "board.newSession": "Neue Claude-Sitzung", // New Claude session
+  "board.action.created": "erstellt", // created
+  "board.action.moved": "verschoben nach", // moved to
+  "board.action.edited": "bearbeitet", // edited
+  "board.action.tagged": "Tags geändert", // changed tags
+  "board.action.noted": "Notiz hinzugefügt", // added a note
+  "board.action.claimed": "übernommen", // took
   "tree.newSubgroup": "Neue Untergruppe", // New Subgroup
   "tree.newChildSession": "Neue Untersitzung", // New Child Session
   "tree.openSelected": "Ausgewählte Sitzungen öffnen", // Open Selected Sessions
@@ -1394,9 +1454,18 @@ const de: typeof en = {
   "browser.openExternal": "Im System-Browser öffnen", // Open in system browser
   "browser.addressPlaceholder": "URL oder Suchbegriffe eingeben", // Enter URL or search terms
   "browser.quickAccess": "Schnellzugriff", // Quick access
+  "browser.shortcutAdd": "Verknüpfung hinzufügen", // Add shortcut
+  "browser.shortcutAddCurrent": "Aktuelle Seite hinzufügen", // Add current page
+  "browser.shortcutRename": "Verknüpfung umbenennen", // Rename shortcut
+  "browser.shortcutEdit": "Verknüpfung bearbeiten", // Edit shortcut
+  "browser.shortcutDelete": "Verknüpfung löschen", // Delete shortcut
+  "browser.shortcutReset": "Standardverknüpfungen wiederherstellen", // Reset to default shortcuts
+  "browser.shortcutName": "Name", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "Geben Sie eine gültige http://- oder https://-Adresse ein.", // Enter a valid http:// or https:// address.
   "browser.loading": "Lädt…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "VelaTerm beenden?", // Quit VelaTerm?
+  "quit.title": "mTerm beenden?", // Quit mTerm?
   "quit.body": "Alle laufenden Terminal- und Agent-Sitzungen werden beendet.", // Any running terminal and agent sessions will be stopped.
   "quit.remoteWindows": "Geöffnete Remote-Fenster werden ebenfalls geschlossen.", // Open remote windows will also be closed.
   "quit.saveWorkspace": "Arbeitsbereich speichern", // Save workspace
@@ -1449,7 +1518,7 @@ const de: typeof en = {
   "agentVersion.checkFailed": "Updates konnten nicht geprüft werden.",
   "agentInstall.title": (label) => `${label} ist nicht installiert`, // {label} is not installed
   "agentInstall.desc": (label) =>
-    `VelaTerm hat ${label} nicht in Ihrem PATH gefunden. Installieren Sie es, um diese Sitzung zu starten.`, // couldn't find {label} on PATH
+    `mTerm hat ${label} nicht in Ihrem PATH gefunden. Installieren Sie es, um diese Sitzung zu starten.`, // couldn't find {label} on PATH
   "agentInstall.install": "Jetzt installieren", // Install now
   "agentInstall.retry": "Erneut starten", // Retry launch
   "agentInstall.dismiss": "Mache ich selbst", // I'll do it myself
@@ -1796,7 +1865,7 @@ const de: typeof en = {
   "mobile.scopeProject": "Projekt", // Project
   "mobile.scopeSession": "Sitzung", // Session
   "mobile.sharingNotReady": "Die freigegebenen Inhalte sind noch nicht bereit. Prüfen Sie die Freigabeeinstellungen auf dem betreffenden Gerät.", // Shared content is not ready yet. Check the sharing settings on that device.
-  "mobile.deviceOffline": "Das Gerät ist offline. Öffnen Sie VelaTerm auf diesem Gerät und lassen Sie es mit dem Netzwerk verbunden.", // The device is offline. Open VelaTerm on that device and keep it connected to the network.
+  "mobile.deviceOffline": "Das Gerät ist offline. Öffnen Sie mTerm auf diesem Gerät und lassen Sie es mit dem Netzwerk verbunden.", // The device is offline. Open mTerm on that device and keep it connected to the network.
   "mobile.viewShared": "Freigegebene Inhalte anzeigen →", // View shared content →
   "mobile.devicesUnavailable": "Die Geräteliste konnte nicht geladen werden. Bitte versuchen Sie es erneut.", // Could not load the device list. Please try again.
   "mobile.accountUnavailable": "Der Kontostatus konnte nicht geladen werden. Prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.", // Could not load the account status. Check your network and try again.
@@ -1847,11 +1916,11 @@ const de: typeof en = {
   "mobile.keepPassphrase": "Leer lassen, um die aktuelle Passphrase beizubehalten", // Leave empty to keep the current passphrase
   "mobile.sshSecretSavedHint": "Die SSH-Zugangsdaten sind im sicheren Speicher des Smartphones abgelegt. Lassen Sie die Felder beim Bearbeiten leer, um sie beizubehalten.", // SSH credentials are kept in the phone’s secure storage. Leave the fields empty while editing to keep them.
   "mobile.remoteService": "Remote-Dienst", // Remote service
-  "mobile.serviceAuto": "VelaTerm-Dienst automatisch suchen", // Find the VelaTerm service automatically
+  "mobile.serviceAuto": "mTerm-Dienst automatisch suchen", // Find the mTerm service automatically
   "mobile.serviceManual": "Port eines vorhandenen Dienstes verwenden", // Use an existing service port
   "mobile.remotePort": "Loopback-HTTP-Port des Remote-Dienstes", // Remote loopback HTTP port
   "mobile.webPasswordAutoHint": "Das Zugangspasswort ist gespeichert und wird beim erneuten Verbinden automatisch verwendet.", // The access password is saved and used automatically when you reconnect.
-  "mobile.prepareService": "VelaTerm-Dienst herunterladen und starten, wenn keiner verfügbar ist", // Download and start the VelaTerm service when none is available
+  "mobile.prepareService": "mTerm-Dienst herunterladen und starten, wenn keiner verfügbar ist", // Download and start the mTerm service when none is available
   "mobile.prepareServiceHint": "Die automatische Vorbereitung legt ein signaturgeprüftes Programm sowie Konfiguration und Protokolldateien unter ~/.velaterm/ auf dem Remote-Host ab und lässt den Dienst weiterlaufen. Dafür sind Python 3 und OpenSSL mit Ed25519-Unterstützung erforderlich. Wenn Sie einen vorhandenen Dienst verwenden oder dessen Port angeben, benötigen Sie diese Werkzeuge nicht.", // Automatic preparation writes a signature-verified binary, configuration, and logs to ~/.velaterm/ on the remote host and keeps the service running. It needs Python 3 and an OpenSSL with Ed25519 support; reusing an existing service or specifying its port does not.
   "mobile.saveConnection": "Verbindung speichern", // Save connection
   "mobile.saveAndConnect": "Speichern und verbinden", // Save and connect
@@ -1951,21 +2020,21 @@ const de: typeof en = {
   "updater.downloadManually": "Download manually", // TODO translate
   "updater.downloadManuallyHint": "Open the download page in your browser.", // TODO translate
   "updater.windowsNotice":
-    "VelaTerm will close while the installer runs, then reopen on its own.", // TODO translate
+    "mTerm will close while the installer runs, then reopen on its own.", // TODO translate
   "updater.installingWindows":
-    "Installing… VelaTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
+    "Installing… mTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
   "statusbar.updateAvailable": (version) => `Update ${version}`, // TODO translate
   "statusbar.updateDownloading": (pct) => `Updating… ${pct}%`, // TODO translate
   "statusbar.updateInstalling": "Installing…", // TODO translate
   "statusbar.updateReady": "Restart to update", // TODO translate
   "statusbar.updateFailed": "Update failed", // TODO translate
   "statusbar.updateTooltip": "Click for details", // TODO translate
-  "statusbar.skillsAvailable": "Vela Skills installieren",
-  "skills.title": "Vela Skills installieren",
-  "skills.subtitle": "Nach der Installation können Claude Code und Codex die folgenden VelaTerm-Funktionen in einer Konversation nutzen, etwa mit /vspawn in Claude Code oder $vspawn in Codex.",
+  "statusbar.skillsAvailable": "mTerm Skills installieren",
+  "skills.title": "mTerm Skills installieren",
+  "skills.subtitle": "Nach der Installation können Claude Code und Codex die folgenden mTerm-Funktionen in einer Konversation nutzen, etwa mit /vspawn in Claude Code oder $vspawn in Codex.",
   "skills.vspawn": "Erstellt eine Untersitzung, die eine Aufgabe bearbeitet.",
   "skills.vspawnTree": "Erstellt eine Untersitzung mit eigenem Worktree.",
-  "skills.vopen": "Öffnet eine Datei oder Webseite in VelaTerm.",
+  "skills.vopen": "Öffnet eine Datei oder Webseite in mTerm.",
   "skills.vartifact": "Zeigt visuelle Ergebnisse als live aktualisierte HTML-Seite neben der Sitzung.", // Show visual work as a live HTML page beside the conversation.
   "skills.vrefer": "Liest die Konversation einer anderen Sitzung.",
   "skills.vask": "Stellt eine Frage zu einer anderen Sitzung und liefert eine knappe Antwort.",
@@ -1973,6 +2042,7 @@ const de: typeof en = {
   "skills.vstat": "Zeigt, welche Sitzungen arbeiten oder auf eine Eingabe warten.",
   "skills.vtell": "Sendet eine Nachricht an eine andere Sitzung.",
   "skills.vkb": "Fragt CodeGraph und die Wissensbasis des Projekts ab.",
+  "skills.vboard": "Arbeit auf dem Kanban-Board des Projekts planen und verfolgen.",
   "skills.settingsHint": "Sie können sie auch später unter Einstellungen > Erweitert installieren.",
   "skills.installFailed": (err) => `Installation fehlgeschlagen: ${err}`,
   "skills.dontRemind": "Nicht mehr erinnern",
@@ -2263,7 +2333,7 @@ const de: typeof en = {
   "chat.mcp.codexScope": "Dadurch wird Ihre Codex-Benutzerkonfiguration geändert. Dies betrifft auch andere Unterhaltungen, die diese Konfiguration verwenden. Fortfahren?",
   "chat.mcp.tooltip": "MCP-Server",
   "chat.mcp.loading": "Serverliste wird gelesen …",
-  "chat.mcp.backendUnsupported": "Das verbundene VelaTerm-Backend unterstützt die MCP-Verwaltung nicht. Aktualisieren Sie dieses Backend, starten Sie es neu und versuchen Sie es erneut.",
+  "chat.mcp.backendUnsupported": "Das verbundene mTerm-Backend unterstützt die MCP-Verwaltung nicht. Aktualisieren Sie dieses Backend, starten Sie es neu und versuchen Sie es erneut.",
   "chat.mcp.none": "Keine MCP-Server konfiguriert",
   "chat.mcp.tools": (n: number) => (n === 1 ? "1 Werkzeug" : `${n} Werkzeuge`),
   "chat.mcp.reconnect": "Neu verbinden",
@@ -2355,7 +2425,7 @@ const de: typeof en = {
   "mobile.native.scanUnavailable": "Der Scanner konnte nicht geöffnet werden. Kehren Sie zur Verbindungsliste zurück und versuchen Sie es erneut.",
   "mobile.native.scannerNotReady": "Der Scanner ist noch nicht bereit.",
   "mobile.native.scanCancelled": "Der Scan wurde abgebrochen.",
-  "mobile.native.cameraPermissionDenied": "Der Kamerazugriff ist nicht erlaubt. Erlauben Sie VelaTerm in den Systemeinstellungen die Nutzung der Kamera.",
+  "mobile.native.cameraPermissionDenied": "Der Kamerazugriff ist nicht erlaubt. Erlauben Sie mTerm in den Systemeinstellungen die Nutzung der Kamera.",
   "mobile.native.cameraUnavailable": "Die Kamera kann nicht verwendet werden. Prüfen Sie das Gerät und die Kameraberechtigung.",
   "mobile.native.cameraBusy": "Die Kamera ist nicht verfügbar. Schließen Sie andere Apps, die die Kamera verwenden, und versuchen Sie es erneut.",
   "mobile.native.qrOutputUnavailable": "Dieses Gerät kann keine QR-Codes lesen.",
@@ -2410,8 +2480,8 @@ const de: typeof en = {
   "mobile.native.healthCheckFailed": "Der Remote-Dienst hat die Zustandsprüfung nicht bestanden.",
   "mobile.native.connectionClosed": "Die Verbindung wurde geschlossen.",
   "mobile.native.responseTooLarge": "Die Remote-Antwort ist zu groß.",
-  "mobile.native.cameraUsageDescription": "VelaTerm verwendet die Kamera, um QR-Codes mit Dienstadressen zu scannen.",
-  "mobile.native.localNetworkUsageDescription": "VelaTerm stellt Verbindungen zu VelaTerm-Diensten und SSH-Hosts in Ihrem lokalen Netzwerk her.",
+  "mobile.native.cameraUsageDescription": "mTerm verwendet die Kamera, um QR-Codes mit Dienstadressen zu scannen.",
+  "mobile.native.localNetworkUsageDescription": "mTerm stellt Verbindungen zu mTerm-Diensten und SSH-Hosts in Ihrem lokalen Netzwerk her.",
 
 
   "term.runs.label": "Hintergrundbefehle",

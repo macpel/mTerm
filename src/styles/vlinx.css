@@ -155,23 +155,15 @@ button { font-family: inherit; color: inherit; background: none; border: none; c
 .tb-dots { display: flex; gap: 7px; }
 .tb-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; background: var(--border-strong); }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: 0.5px; }
-.brand .logo { width: 18px; height: 18px; border-radius: 4px; display: block; object-fit: contain; user-select: none; }
-/* Select the logo through CSS content based on documentElement data-theme. System theme changes update
-   data-theme without rerendering TitleBar, so a JS-derived image src could retain the old light logo. */
-.brand .logo { content: var(--brand-logo-light, url(/velaterm-light.svg)); }
-:root[data-theme="dark"] .brand .logo { content: var(--brand-logo-dark, url(/velaterm-dark.svg)); }
-.brand .v { color: var(--text); }
-.brand .sub { color: var(--text-dim); font-weight: 400; font-size: 11px; }
 .tb-spacer { flex: 1; }
 .tb-btn { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 4px; border-radius: var(--r-sm); color: var(--tb-icon, var(--text-mid)); border: 1px solid transparent; }
 .tb-pair { display: flex; gap: 0; }
 .tb-btn:hover { background: var(--bg-hover); color: var(--tb-icon-hover, var(--text)); }
 .tb-btn.on { color: var(--accent); }
-/* While remote access runs, light the globe with the same accent glow as the panel's running indicator.
-   A linked account lights the account icon the same way. */
-.tb-btn.remote-on, .tb-btn.account-on { color: var(--accent); }
-.tb-btn.remote-on:hover, .tb-btn.account-on:hover { color: var(--accent); background: var(--bg-hover); }
-.tb-btn.remote-on svg, .tb-btn.account-on svg { filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent) 60%, transparent)); }
+/* While remote access runs, light the globe with the same accent glow as the panel's running indicator. */
+.tb-btn.remote-on { color: var(--accent); }
+.tb-btn.remote-on:hover { color: var(--accent); background: var(--bg-hover); }
+.tb-btn.remote-on svg { filter: drop-shadow(0 0 4px color-mix(in oklch, var(--accent) 60%, transparent)); }
 .tb-seg { display: flex; border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
 .tb-seg button { padding: 0 9px; height: 24px; color: var(--text-dim); }
 .tb-seg button.on { background: var(--accent-soft); color: var(--accent); }

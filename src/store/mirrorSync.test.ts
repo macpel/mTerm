@@ -159,6 +159,7 @@ function snapshotSource(tab: string): Parameters<typeof buildMirrorLayout>[0] {
     docTabs: {},
     browserTabs: {},
     taskTabs: {},
+    boardTabs: {},
     selection: [],
     inspectTarget: null,
     leftCollapsed: false,

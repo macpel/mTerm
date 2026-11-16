@@ -51,6 +51,7 @@ vi.mock("../notify", () => ({
 
 import type { Session } from "../types";
 import { useTermStore } from "./termStore";
+import { loadDrafts, saveDraft } from "./docDrafts";
 
 function mkSession(id: string): Session {
   return {
@@ -262,6 +263,36 @@ describe("core regression: a session never overwrites a document tab", () => {
     expect(s.activeTabId).toBe(docId);
     expect(s.activeSessionId).toBeNull();
     expect(s.focusedPaneId).toBeNull();
+  });
+});
+
+// Must run before any other loadTree in this file: drafts are restored on the store's first load only.
+describe("unsaved drafts survive a restart", () => {
+  it("the first loadTree reopens stored drafts as Untitled tabs", async () => {
+    seed();
+    saveDraft("doc-x", { title: "Untitled", content: "hello", mode: "source" });
+    await useTermStore.getState().loadTree();
+
+    const s = useTermStore.getState();
+    expect(s.openTabs).toContain("doc-x");
+    expect(s.activeTabId).toBe("doc-x");
+    expect(s.docTabs["doc-x"]).toMatchObject({ path: "", title: "Untitled", mode: "source", isNew: true });
+  });
+
+  it("closing a draft forgets it, so it does not come back", () => {
+    seed();
+    useTermStore.getState().newDocTab();
+    const id = soleDocId();
+    saveDraft(id, { title: "Untitled", content: "hello", mode: "source" });
+
+    useTermStore.getState().closeTab(id);
+    expect(loadDrafts()[id]).toBeUndefined();
+  });
+
+  it("an empty draft is not stored", () => {
+    saveDraft("doc-y", { title: "Untitled", content: "hi", mode: "source" });
+    saveDraft("doc-y", { title: "Untitled", content: "", mode: "source" });
+    expect(loadDrafts()).toEqual({});
   });
 });
 

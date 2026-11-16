@@ -31,6 +31,7 @@ mod models;
 mod memory;
 mod kb;
 mod knowledge;
+mod board;
 // GUI-only: remote windows download files through the local host, with a save dialog and progress.
 #[cfg(feature = "gui")]
 mod local_download;
@@ -440,6 +441,10 @@ pub fn run_knowledge(args: &[String]) -> ! {
     knowledge::agent::run(args)
 }
 
+pub fn run_board(args: &[String]) -> ! {
+    board::agent::run(args)
+}
+
 /// Build-time Git commit, or unknown, used by --version and SSH remote version pinning.
 pub const GIT_COMMIT: &str = match option_env!("VLX_GIT_COMMIT") {
     Some(c) => c,
@@ -690,8 +695,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .version(Some(app.package_info().version.to_string()))
                     .copyright(Some("A product by VLINX"))
                     .build();
-                let check_update_item =
-                    MenuItemBuilder::with_id("check-update", "Check for Updates…").build(app)?;
                 let settings_item = MenuItemBuilder::with_id("settings", "Settings…")
                     .accelerator("CmdOrCtrl+,")
                     .build(app)?;
@@ -717,7 +720,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .build(app)?;
                 let app_menu = SubmenuBuilder::new(app, &app_name)
                     .about(Some(about_meta))
-                    .item(&check_update_item)
                     .separator()
                     .item(&settings_item)
                     .item(&clear_badges_item)
@@ -756,19 +758,11 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     .item(&split_right_item)
                     .item(&split_down_item)
                     .build()?;
-                // Omit redundant View/Window menus; title-bar controls remain. Help items open the website,
-                // feedback page, or emit the shared frontend share action.
+                // Omit redundant View/Window menus; title-bar controls remain. Help opens the website.
                 let visit_website_item =
                     MenuItemBuilder::with_id("visit-website", "Visit Website").build(app)?;
-                let send_feedback_item =
-                    MenuItemBuilder::with_id("send-feedback", "Send Feedback…").build(app)?;
-                let share_item =
-                    MenuItemBuilder::with_id("share", "❤️ Share us…").build(app)?;
                 let help_menu = SubmenuBuilder::new(app, "Help")
                     .item(&visit_website_item)
-                    .item(&send_feedback_item)
-                    .separator()
-                    .item(&share_item)
                     .build()?;
                 let menu = MenuBuilder::new(app)
                     .items(&[&app_menu, &edit_menu, &terminal_menu, &help_menu])
@@ -781,8 +775,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                     match id {
                         // Forward custom application and terminal commands to the frontend.
                         "settings"
-                        | "check-update"
-                        | "share"
                         | "clear-badges"
                         | "split-right"
                         | "split-down" => {
@@ -858,11 +850,6 @@ fn run_with_builder(builder: tauri::Builder<tauri::Wry>, initial_open_project: O
                             let _ = app_handle
                                 .opener()
                                 .open_url("https://velaterm.com", None::<&str>);
-                        }
-                        "send-feedback" => {
-                            let _ = app_handle
-                                .opener()
-                                .open_url("https://velaterm.com/feedback", None::<&str>);
                         }
                         _ => {}
                     }
@@ -1421,7 +1408,7 @@ fn native_quit_confirmation(app: &tauri::AppHandle) {
     app.clone()
         .dialog()
         .message(message)
-        .title("Quit VelaTerm?")
+        .title("Quit mTerm?")
         .kind(MessageDialogKind::Info)
         .buttons(MessageDialogButtons::OkCancelCustom(
             "Quit".to_string(),

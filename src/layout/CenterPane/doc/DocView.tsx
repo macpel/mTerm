@@ -14,6 +14,7 @@ import { env, platform } from "../../../platform";
 import { DOC_EXPORT_PDF_EVENT, DOC_SAVE_EVENT } from "../../../hooks/useKeyboardShortcuts";
 import { labelWithCombo } from "../../../hooks/shortcutRegistry";
 import { useTermStore, type DocTab } from "../../../store/termStore";
+import { loadDrafts, removeDraft, saveDraft } from "../../../store/docDrafts";
 import Icons from "../../../components/Icons";
 import { ContextMenu, type MenuItem } from "../../../components/ContextMenu";
 import { Splitter } from "../../../components/Splitter";
@@ -47,6 +48,9 @@ const OUTLINE_DEBOUNCE_MS = 600;
 
 /** Debounce status-bar statistics while typing; counting serializes the visual document. */
 const STATS_DEBOUNCE_MS = 500;
+
+/** Debounce storing an unsaved draft's text while typing. */
+const DRAFT_DEBOUNCE_MS = 500;
 
 /** Routes images to ImageViewer, HTML pages to the artifact preview, and markdown/code to TextDocView. */
 export function DocView({ tab, hidden }: { tab: DocTab; hidden: boolean }) {
@@ -249,10 +253,13 @@ function TextDocView({ tab, hidden, artifact }: { tab: DocTab; hidden: boolean; 
 
   useEffect(() => {
     if (tab.path === "") {
-      // Start a new draft empty without reading disk; first save supplies its real path through Save As.
+      // Start a new draft without reading disk, from its stored text when restored after a restart; first save
+      // supplies its real path through Save As. Restored text is unsaved, so the close prompt still applies.
+      const restored = loadDrafts()[tab.id]?.content ?? "";
       baselineMtimeRef.current = null;
       editedRef.current = false;
-      setText("");
+      setText(restored);
+      if (restored) setDocTabDirty(tab.id, true);
       setLoading(false);
     } else {
       void load();
@@ -372,6 +379,7 @@ function TextDocView({ tab, hidden, artifact }: { tab: DocTab; hidden: boolean; 
           setText(content);
           setExternalMtime(null);
           setDocTabPath(tab.id, dest); // Fill path/title/kind and clear isNew.
+          removeDraft(tab.id); // Now a real file; stop restoring it as a draft.
           setDocTabDirty(tab.id, false);
           setEditorEpoch((n) => n + 1); // Rebuild so SourceEditor selects highlighting for the new filename.
           if (opts?.thenClose) closeTab(tab.id);
@@ -523,8 +531,35 @@ function TextDocView({ tab, hidden, artifact }: { tab: DocTab; hidden: boolean; 
     return () => window.removeEventListener(DOC_EXPORT_PDF_EVENT, onExportPdf);
   }, [tab.id, exportPdf]);
 
+  // Drafts keep their text in local storage so they come back after a restart. The timer re-checks isNew, so a
+  // write still pending when the draft is closed or saved does nothing.
+  const draftTimerRef = useRef<number | null>(null);
+  const flushDraft = useCallback(() => {
+    if (draftTimerRef.current != null) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = null;
+    const cur = useTermStore.getState().docTabs[tab.id];
+    const content = pullText();
+    if (!cur?.isNew || content == null) return;
+    saveDraft(tab.id, { title: cur.title, content, mode: cur.mode });
+  }, [tab.id, pullText]);
+  useEffect(() => {
+    // Write the last keystrokes before the app quits.
+    const onUnload = () => {
+      if (draftTimerRef.current != null) flushDraft();
+    };
+    window.addEventListener("beforeunload", onUnload);
+    return () => {
+      window.removeEventListener("beforeunload", onUnload);
+      if (draftTimerRef.current != null) clearTimeout(draftTimerRef.current);
+    };
+  }, [flushDraft]);
+
   const onEdited = useCallback(() => {
     editedRef.current = true;
+    if (tab.path === "") {
+      if (draftTimerRef.current != null) clearTimeout(draftTimerRef.current);
+      draftTimerRef.current = window.setTimeout(flushDraft, DRAFT_DEBOUNCE_MS);
+    }
     const cur = useTermStore.getState().docTabs[tab.id];
     if (cur && !cur.dirty) setDocTabDirty(tab.id, true);
     // Refresh the visible outline after the edit debounce expires.
@@ -536,7 +571,7 @@ function TextDocView({ tab, hidden, artifact }: { tab: DocTab; hidden: boolean; 
       if (statsTimerRef.current != null) clearTimeout(statsTimerRef.current);
       statsTimerRef.current = window.setTimeout(refreshStats, STATS_DEBOUNCE_MS);
     }
-  }, [tab.id, tab.kind, setDocTabDirty, refreshOutline, refreshStats]);
+  }, [tab.id, tab.kind, tab.path, setDocTabDirty, refreshOutline, refreshStats, flushDraft]);
 
   // Code files keep the existing clipboard menu. Markdown editors keep their native editing menus.
   const editableEl = () => rootRef.current?.querySelector<HTMLElement>(".cm-content") ?? null;

@@ -438,7 +438,6 @@ const ko: typeof en = {
   "titlebar.themeDark": "다크", // Dark
   "titlebar.themeClassicDark": "클래식 다크", // Classic Dark
   "titlebar.themeLight": "라이트", // Light
-  "titlebar.gameCenter": "게임 센터",
   "titlebar.browser": "내장 브라우저", // Built-in Browser
   "titlebar.remoteAccess": "원격 접속 (브라우저)", // Remote Access (Browser)
   "titlebar.connectRemote": "원격 서버에 연결", // Connect to Remote Server
@@ -451,15 +450,12 @@ const ko: typeof en = {
   "titlebar.clientsTitle": "연결된 클라이언트", // Attached clients
   "titlebar.clientUnnamed": "이름 없는 클라이언트", // Unnamed client
   "titlebar.clientSince": (time: string) => `${time}부터`, // since {time}
-  "titlebar.feedback": "피드백", // Feedback
-  "titlebar.share": "공유", // Share
   // ── Alt-triggered menu bar (Windows/Linux) ──
   "menubar.file": "파일", // File
   "menubar.terminal": "터미널", // Terminal
   "menubar.help": "도움말", // Help
   "menubar.newTerminal": "새 터미널", // New Terminal
   "menubar.visitWebsite": "웹사이트 방문", // Visit Website
-  "menubar.sendFeedback": "피드백 보내기", // Send Feedback
   "menubar.clearBadges": "알림 배지 지우기", // Clear Notification Badges
   "share.title": "VelaTerm 공유", // Share VelaTerm
   "share.subtitle":
@@ -507,7 +503,7 @@ const ko: typeof en = {
   "settings.cliUninstall": "‘vela’ 명령 제거",
   "settings.cliInstalledAt": (path: string) => `${path}에 설치됨`,
   "settings.cliConflict": (path: string) =>
-    `${path}에 다른 ‘vela’ 명령이 있습니다. VelaTerm은 덮어쓰지 않습니다.`,
+    `${path}에 다른 ‘vela’ 명령이 있습니다. mTerm은 덮어쓰지 않습니다.`,
   "settings.cliHint":
     "VS Code의 `code`처럼 `vela <project-path>`를 PATH에 추가합니다.",
   "settings.agentArgsHint":
@@ -856,7 +852,7 @@ const ko: typeof en = {
   "settings.sound": "알림음", // Notification sound
   "settings.language": "언어", // Language
   "settings.langAuto": "자동 (시스템)", // Auto (system)
-  "settings.skillLabel": "Vela Skills",
+  "settings.skillLabel": "mTerm Skills",
   "settings.skillInstall": "Install", // Install
   "settings.skillInstalled": "Reinstall", // Reinstall
   "settings.skillInvokeHint":
@@ -866,14 +862,14 @@ const ko: typeof en = {
   "settings.notifyGranted": "Enabled", // TODO translate
   "settings.notifyAllow": "Allow notifications", // TODO translate
   "settings.notifyOffHint":
-    "Allow VelaTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
+    "Allow mTerm to alert you when an agent needs your input or finishes a task.", // TODO translate
   "settings.notifyDeniedHint": "Notifications are blocked. To turn them on:", // TODO translate
   "settings.notifyStepsMac":
-    "open System Settings ▸ Notifications ▸ VelaTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
+    "open System Settings ▸ Notifications ▸ mTerm and turn on Allow Notifications (Banners or Alerts recommended).", // TODO translate
   "settings.notifyStepsWin":
-    "open Settings ▸ System ▸ Notifications, enable VelaTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
+    "open Settings ▸ System ▸ Notifications, enable mTerm, and make sure Focus assist / Do not disturb isn't blocking it.", // TODO translate
   "settings.notifyStepsLinux":
-    "open your desktop's Settings ▸ Notifications and allow VelaTerm.", // TODO translate
+    "open your desktop's Settings ▸ Notifications and allow mTerm.", // TODO translate
   "settings.notifyStepsBrowser":
     "click the site-permission icon in the address bar and set Notifications to Allow.", // TODO translate
   "settings.notifyUnsupported":
@@ -899,7 +895,7 @@ const ko: typeof en = {
   "settings.scScreenshot": "스크린샷 찍기",
   "settings.scOff": "끔",
   "settings.scScreenshotHint":
-    "VelaTerm이 백그라운드에 있어도 모든 앱에서 사용할 수 있습니다. 끄려면 단축키를 클릭한 다음 Delete 키를 누르세요.",
+    "mTerm이 백그라운드에 있어도 모든 앱에서 사용할 수 있습니다. 끄려면 단축키를 클릭한 다음 Delete 키를 누르세요.",
   "settings.scConflictTabs": "이미 탭 전환에 사용 중",
   "settings.scInUse": "다른 앱에서 이미 사용 중인 단축키입니다",
   "settings.scReset": "기본값 복원", // Restore defaults
@@ -980,14 +976,14 @@ const ko: typeof en = {
   "connect.wslDistribution": "Linux 배포판",
   "connect.wslSelect": "배포판 선택",
   "connect.wslMissing": "이 배포판은 더 이상 사용할 수 없습니다. 다른 배포판을 선택하세요.",
-  "connect.wslSetup": "연결 시 필요한 경우 해당 버전의 VelaTerm 서버를 WSL에 다운로드하고 시작합니다. SSH 설정은 필요하지 않습니다.",
+  "connect.wslSetup": "연결 시 필요한 경우 해당 버전의 mTerm 서버를 WSL에 다운로드하고 시작합니다. SSH 설정은 필요하지 않습니다.",
   "conn.wslReconnecting": "WSL 작업 공간에 다시 연결하는 중…",
   "conn.wslDown": "WSL 작업 공간을 사용할 수 없습니다. ‘지금 다시 연결’을 선택하여 다시 시도하세요.",
   "connect.title": "원격 서버에 연결", // Connect to Remote Server
   "connect.pairingPlaceholder": "페어링 링크 붙여넣기", // Paste pairing link
   "connect.confirmConnect": "지문 확인 후 연결", // Fingerprint matches, connect
   "connect.desc":
-    "원격 VelaTerm의 주소와 비밀번호를 입력하면 새 창에서 연결·조작합니다.", // Enter the address and password…
+    "원격 mTerm의 주소와 비밀번호를 입력하면 새 창에서 연결·조작합니다.", // Enter the address and password…
   "connect.addressPlaceholder": "IP 주소 (예: 192.168.1.100)", // IP address, e.g. 192.168.1.100
   "connect.portPlaceholder": "포트", // Port
   "connect.connecting": "연결 중…", // Connecting…
@@ -1029,6 +1025,70 @@ const ko: typeof en = {
   "tree.newAgentSessionCustom": "실행 인자 지정 후 생성…", // New with launch args…
   "tree.resumeSession": "세션 재개…", // Resume Session…
   "tree.newGroup": "새 그룹", // New Group
+  "tree.openBoard": "보드", // Board
+  "board.title": "보드", // Board
+  "board.column.backlog": "백로그", // Backlog
+  "board.column.todo": "할 일", // To Do
+  "board.column.in_progress": "진행 중", // In Progress
+  "board.column.review": "리뷰", // Review
+  "board.column.done": "완료", // Done
+  "board.type.task": "작업", // Task
+  "board.type.bug": "버그", // Bug
+  "board.type.feature": "기능", // Feature
+  "board.type.epic": "에픽", // Epic
+  "board.priority.low": "낮음", // Low
+  "board.priority.medium": "보통", // Medium
+  "board.priority.high": "높음", // High
+  "board.priority.urgent": "긴급", // Urgent
+  "board.search": "카드 검색", // Search cards
+  "board.empty": "아직 카드가 없습니다. 카드를 추가하거나 vboard로 Claude에게 작업 계획을 맡기세요.", // No cards yet. Add one, or ask Claude to plan the work with vboard.
+  "board.byYou": "나", // You
+  "board.takenBy": (name: string) => `${name} 담당`, // Taken by {}
+  "board.cardMenu": "카드 작업", // Card actions
+  "board.fieldColour": "색상", // Colour
+  "board.colour.none": "색상 없음", // No colour
+  "board.colour.red": "빨강", // Red
+  "board.colour.orange": "주황", // Orange
+  "board.colour.yellow": "노랑", // Yellow
+  "board.colour.green": "초록", // Green
+  "board.colour.blue": "파랑", // Blue
+  "board.colour.purple": "보라", // Purple
+  "board.colour.pink": "분홍", // Pink
+  "board.add": "추가", // Add
+  "board.addColumn": "열 추가", // Add column
+  "board.customColumn": "사용자 지정 열…", // Custom column…
+  "board.columnName": "열 이름", // Column name
+  "board.renameColumn": "이름 바꾸기", // Rename
+  "board.deleteColumn": "열 삭제", // Delete column
+  "board.addCardHere": "카드", // Card
+  "board.addCardMenu": "카드 추가", // Add card
+  "board.noCards": "카드 없음", // No cards
+  "board.nothingQueued": "대기 항목 없음", // Nothing queued
+  "board.dragColumn": "드래그하여 순서 변경", // Drag to reorder
+  "board.columnMenu": "열 작업", // Column actions
+  "board.fieldTitle": "제목", // Title
+  "board.fieldType": "유형", // Type
+  "board.fieldPriority": "우선순위", // Priority
+  "board.fieldDescription": "설명", // Description
+  "board.fieldTags": "태그", // Tags
+  "board.tagHint": "태그를 입력하고 Enter", // Type a tag and press Enter
+  "board.save": "저장", // Save
+  "board.delete": "삭제", // Delete
+  "board.deleteConfirm": "한 번 더 클릭하면 삭제", // Click again to delete
+  "board.write": "작성", // Write
+  "board.preview": "미리 보기", // Preview
+  "board.noDescription": "설명이 없습니다.", // No description.
+  "board.markdownHint": "Markdown 지원: # 제목, **굵게**, - 목록, `코드` · 이미지 붙여넣기 가능", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "붙여넣은 이미지를 저장하지 못했습니다.", // The pasted image could not be saved.
+  "board.history": "기록", // History
+  "board.sendToClaude": "Claude에게 보내기", // Send to Claude
+  "board.newSession": "새 Claude 세션", // New Claude session
+  "board.action.created": "생성", // created
+  "board.action.moved": "이동:", // moved to
+  "board.action.edited": "편집", // edited
+  "board.action.tagged": "태그 변경", // changed tags
+  "board.action.noted": "메모 추가", // added a note
+  "board.action.claimed": "담당", // took
   "tree.newSubgroup": "새 하위 그룹", // New Subgroup
   "tree.newChildSession": "새 하위 세션", // New Child Session
   "tree.openSelected": "선택한 세션 열기", // Open Selected Sessions
@@ -1379,9 +1439,18 @@ const ko: typeof en = {
   "browser.openExternal": "시스템 브라우저에서 열기", // Open in system browser
   "browser.addressPlaceholder": "URL 또는 검색어 입력", // Enter URL or search terms
   "browser.quickAccess": "빠른 실행", // Quick access
+  "browser.shortcutAdd": "바로 가기 추가", // Add shortcut
+  "browser.shortcutAddCurrent": "현재 페이지 추가", // Add current page
+  "browser.shortcutRename": "바로 가기 이름 바꾸기", // Rename shortcut
+  "browser.shortcutEdit": "바로 가기 편집", // Edit shortcut
+  "browser.shortcutDelete": "바로 가기 삭제", // Delete shortcut
+  "browser.shortcutReset": "기본 바로 가기로 재설정", // Reset to default shortcuts
+  "browser.shortcutName": "이름", // Name
+  "browser.shortcutUrl": "URL", // URL
+  "browser.shortcutInvalidUrl": "올바른 http:// 또는 https:// 주소를 입력하세요.", // Enter a valid http:// or https:// address.
   "browser.loading": "로드 중…", // Loading…
   // Application-exit confirmation and dormant restored sessions.
-  "quit.title": "VelaTerm을 종료할까요?", // Quit VelaTerm?
+  "quit.title": "mTerm을 종료할까요?", // Quit mTerm?
   "quit.body": "실행 중인 터미널과 에이전트 세션이 모두 중지됩니다.", // Any running terminal and agent sessions will be stopped.
   "quit.remoteWindows": "열려 있는 원격 창도 함께 닫힙니다.", // Open remote windows will also be closed.
   "quit.saveWorkspace": "작업 공간 저장", // Save workspace
@@ -1435,7 +1504,7 @@ const ko: typeof en = {
   "agentVersion.checkFailed": "업데이트를 확인할 수 없습니다.",
   "agentInstall.title": (label) => `${label}이(가) 설치되어 있지 않습니다`, // {label} is not installed
   "agentInstall.desc": (label) =>
-    `VelaTerm이 PATH에서 ${label}을(를) 찾지 못했습니다. 설치하면 이 세션을 시작할 수 있습니다.`, // couldn't find {label} on PATH
+    `mTerm이 PATH에서 ${label}을(를) 찾지 못했습니다. 설치하면 이 세션을 시작할 수 있습니다.`, // couldn't find {label} on PATH
   "agentInstall.install": "지금 설치", // Install now
   "agentInstall.retry": "다시 시작", // Retry launch
   "agentInstall.dismiss": "직접 설치", // I'll do it myself
@@ -1776,7 +1845,7 @@ const ko: typeof en = {
   "mobile.scopeProject": "프로젝트",
   "mobile.scopeSession": "세션",
   "mobile.sharingNotReady": "공유 콘텐츠가 아직 준비되지 않았습니다. 해당 기기의 공유 설정을 확인하세요.",
-  "mobile.deviceOffline": "기기가 오프라인입니다. 해당 기기에서 VelaTerm을 열고 네트워크 연결을 유지하세요.",
+  "mobile.deviceOffline": "기기가 오프라인입니다. 해당 기기에서 mTerm을 열고 네트워크 연결을 유지하세요.",
   "mobile.viewShared": "공유 콘텐츠 보기 →",
   "mobile.devicesUnavailable": "기기 목록을 불러오지 못했습니다. 다시 시도하세요.",
   "mobile.accountUnavailable": "계정 상태를 불러오지 못했습니다. 네트워크 연결을 확인한 후 다시 시도하세요.",
@@ -1827,11 +1896,11 @@ const ko: typeof en = {
   "mobile.keepPassphrase": "비워 두면 현재 키 암호 유지",
   "mobile.sshSecretSavedHint": "SSH 인증 정보는 휴대폰의 보안 저장소에 보관됩니다. 편집할 때 입력란을 비워 두면 저장된 정보가 유지됩니다.",
   "mobile.remoteService": "원격 서비스",
-  "mobile.serviceAuto": "VelaTerm 서비스 자동 검색",
+  "mobile.serviceAuto": "mTerm 서비스 자동 검색",
   "mobile.serviceManual": "기존 서비스 포트 사용",
   "mobile.remotePort": "원격 호스트의 루프백 HTTP 포트",
   "mobile.webPasswordAutoHint": "접근 비밀번호가 저장되어 있으며 다시 연결할 때 자동으로 사용됩니다.",
-  "mobile.prepareService": "사용 가능한 서비스가 없으면 VelaTerm 서비스 다운로드 및 시작",
+  "mobile.prepareService": "사용 가능한 서비스가 없으면 mTerm 서비스 다운로드 및 시작",
   "mobile.prepareServiceHint": "자동 준비는 서명이 검증된 실행 파일, 설정 및 로그를 원격 호스트의 ~/.velaterm/에 저장하고 서비스를 계속 실행합니다. Python 3과 Ed25519를 지원하는 OpenSSL이 필요합니다. 기존 서비스를 재사용하거나 해당 포트를 지정하는 경우에는 이 도구들이 필요하지 않습니다.",
   "mobile.saveConnection": "연결 저장",
   "mobile.saveAndConnect": "저장 후 연결",
@@ -1931,21 +2000,21 @@ const ko: typeof en = {
   "updater.downloadManually": "Download manually", // TODO translate
   "updater.downloadManuallyHint": "Open the download page in your browser.", // TODO translate
   "updater.windowsNotice":
-    "VelaTerm will close while the installer runs, then reopen on its own.", // TODO translate
+    "mTerm will close while the installer runs, then reopen on its own.", // TODO translate
   "updater.installingWindows":
-    "Installing… VelaTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
+    "Installing… mTerm is about to close. The installer will finish the update and reopen it.", // TODO translate
   "statusbar.updateAvailable": (version) => `Update ${version}`, // TODO translate
   "statusbar.updateDownloading": (pct) => `Updating… ${pct}%`, // TODO translate
   "statusbar.updateInstalling": "Installing…", // TODO translate
   "statusbar.updateReady": "Restart to update", // TODO translate
   "statusbar.updateFailed": "Update failed", // TODO translate
   "statusbar.updateTooltip": "Click for details", // TODO translate
-  "statusbar.skillsAvailable": "Vela Skills 설치",
-  "skills.title": "Vela Skills 설치",
-  "skills.subtitle": "설치하면 Claude Code와 Codex의 대화에서 다음 VelaTerm 기능을 사용할 수 있습니다. Claude Code에서는 /vspawn, Codex에서는 $vspawn처럼 입력합니다.",
+  "statusbar.skillsAvailable": "mTerm Skills 설치",
+  "skills.title": "mTerm Skills 설치",
+  "skills.subtitle": "설치하면 Claude Code와 Codex의 대화에서 다음 mTerm 기능을 사용할 수 있습니다. Claude Code에서는 /vspawn, Codex에서는 $vspawn처럼 입력합니다.",
   "skills.vspawn": "하위 세션을 만들어 작업을 맡깁니다.",
   "skills.vspawnTree": "독립된 워크트리를 사용하는 하위 세션을 만듭니다.",
-  "skills.vopen": "파일이나 웹 페이지를 VelaTerm에서 엽니다.",
+  "skills.vopen": "파일이나 웹 페이지를 mTerm에서 엽니다.",
   "skills.vartifact": "시각적인 결과물을 세션 옆에 실시간 HTML 페이지로 보여 줍니다.", // Show visual work as a live HTML page beside the conversation.
   "skills.vrefer": "다른 세션의 대화 내용을 읽습니다.",
   "skills.vask": "다른 세션에 관해 질문하고 간결한 답변을 받습니다.",
@@ -1953,6 +2022,7 @@ const ko: typeof en = {
   "skills.vstat": "작업 중이거나 입력을 기다리는 세션을 확인합니다.",
   "skills.vtell": "다른 세션에 메시지를 보냅니다.",
   "skills.vkb": "프로젝트의 CodeGraph와 지식 베이스를 조회합니다.",
+  "skills.vboard": "프로젝트의 칸반 보드에서 작업을 계획하고 추적합니다.",
   "skills.settingsHint": "나중에 설정 > 고급에서도 설치할 수 있습니다.",
   "skills.installFailed": (err) => `설치하지 못했습니다: ${err}`,
   "skills.dontRemind": "다시 알리지 않음",
@@ -2239,7 +2309,7 @@ const ko: typeof en = {
   "chat.mcp.codexScope": "Codex 사용자 설정이 변경되며, 이 설정을 사용하는 다른 대화에도 영향을 줍니다. 계속하시겠습니까?",
   "chat.mcp.tooltip": "MCP 서버",
   "chat.mcp.loading": "서버 목록을 읽는 중…",
-  "chat.mcp.backendUnsupported": "현재 연결된 VelaTerm 백엔드는 MCP 관리를 지원하지 않습니다. 해당 백엔드를 업데이트하고 다시 시작한 후 재시도하세요.",
+  "chat.mcp.backendUnsupported": "현재 연결된 mTerm 백엔드는 MCP 관리를 지원하지 않습니다. 해당 백엔드를 업데이트하고 다시 시작한 후 재시도하세요.",
   "chat.mcp.none": "구성된 MCP 서버가 없습니다",
   "chat.mcp.tools": (n: number) => `도구 ${n}개`,
   "chat.mcp.reconnect": "다시 연결",
@@ -2331,7 +2401,7 @@ const ko: typeof en = {
   "mobile.native.scanUnavailable": "스캔 화면을 열 수 없습니다. 연결 목록으로 돌아간 후 다시 시도하세요.",
   "mobile.native.scannerNotReady": "스캐너가 아직 준비되지 않았습니다.",
   "mobile.native.scanCancelled": "스캔이 취소되었습니다.",
-  "mobile.native.cameraPermissionDenied": "카메라 접근이 허용되지 않았습니다. 시스템 설정에서 VelaTerm의 카메라 사용을 허용하세요.",
+  "mobile.native.cameraPermissionDenied": "카메라 접근이 허용되지 않았습니다. 시스템 설정에서 mTerm의 카메라 사용을 허용하세요.",
   "mobile.native.cameraUnavailable": "카메라를 사용할 수 없습니다. 기기와 카메라 접근 권한을 확인하세요.",
   "mobile.native.cameraBusy": "카메라를 사용할 수 없습니다. 카메라를 사용하는 다른 앱을 닫은 후 다시 시도하세요.",
   "mobile.native.qrOutputUnavailable": "이 기기는 QR 코드를 읽을 수 없습니다.",
@@ -2386,8 +2456,8 @@ const ko: typeof en = {
   "mobile.native.healthCheckFailed": "원격 서비스 상태 확인에 실패했습니다.",
   "mobile.native.connectionClosed": "연결이 닫혔습니다.",
   "mobile.native.responseTooLarge": "원격 응답이 너무 큽니다.",
-  "mobile.native.cameraUsageDescription": "VelaTerm은 서비스 주소의 QR 코드를 스캔하기 위해 카메라를 사용합니다.",
-  "mobile.native.localNetworkUsageDescription": "VelaTerm은 로컬 네트워크의 VelaTerm 서비스 및 SSH 호스트에 연결합니다.",
+  "mobile.native.cameraUsageDescription": "mTerm은 서비스 주소의 QR 코드를 스캔하기 위해 카메라를 사용합니다.",
+  "mobile.native.localNetworkUsageDescription": "mTerm은 로컬 네트워크의 mTerm 서비스 및 SSH 호스트에 연결합니다.",
 
 
   "term.runs.label": "백그라운드 명령",

@@ -8,7 +8,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ContextMenu, type MenuItem } from "../../components/ContextMenu";
 import Icons from "../../components/Icons";
-import { GameCenterLink } from "../../components/GameCenterLink";
 import { StatusIndicator } from "../../components/StatusIndicator";
 import { useT } from "../../i18n";
 import { DOC_EXPORT_PDF_EVENT } from "../../hooks/useKeyboardShortcuts";
@@ -83,6 +82,7 @@ export function TabBar() {
   const docTabs = useTermStore((s) => s.docTabs);
   const browserTabs = useTermStore((s) => s.browserTabs);
   const taskTabs = useTermStore((s) => s.taskTabs);
+  const boardTabs = useTermStore((s) => s.boardTabs);
   const setActiveTab = useTermStore((s) => s.setActiveTab);
   const closeTab = useTermStore((s) => s.closeTab);
   const requestCloseDocTab = useTermStore((s) => s.requestCloseDocTab);
@@ -467,6 +467,40 @@ export function TabBar() {
             </div>
           );
         }
+        // Board tab: the project's Kanban board.
+        const board = boardTabs[tabId];
+        if (board) {
+          const isActive = tabId === activeTabId;
+          const label = `${t("board.title")} · ${projects.find((p) => p.id === board.projectId)?.name ?? ""}`;
+          return (
+            <div
+              key={tabId}
+              ref={(el) => { tabRefs.current[tabId] = el; }}
+              className={tabClass(tabId, isActive)}
+              onClick={() => setActiveTab(tabId)}
+              onContextMenu={(e) => openTabMenu(e, tabId)}
+              onMouseEnter={(e) => onTabEnter(e, label)}
+              onMouseLeave={onTabLeave}
+              {...dragProps(tabId)}
+              {...middleCloseProps(tabId)}
+            >
+              <span style={{ color: "var(--text-dim)", display: "grid", flex: "none" }}>
+                <Icons.board size={13} />
+              </span>
+              <span className="tnm">{label}</span>
+              <span
+                className="x"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Every board change is saved as it happens; nothing to confirm.
+                  closeTab(tabId);
+                }}
+              >
+                <Icons.x size={12} />
+              </span>
+            </div>
+          );
+        }
         const session = sessions.find((s) => s.id === tabId) ?? ephemeralSessions[tabId];
         if (!session) return null;
         const isAgent = session.kind !== "terminal";
@@ -554,7 +588,6 @@ export function TabBar() {
             <Icons.compass size={14} />
           </button>
         )}
-        <GameCenterLink />
       </div>}
       {tip && (
         // Early tooltip uses fixed positioning, ignores pointer events, and uses theme raised-panel color.
@@ -637,8 +670,8 @@ export function TabBar() {
                   ]
                 : [];
             items = [...headItems, ...mdItems, { label: "", separator: true }, ...closeItems];
-          } else if (taskTabs[tabId]) {
-            // A task tab has no session, file or node behind it: close actions only.
+          } else if (taskTabs[tabId] || boardTabs[tabId]) {
+            // A task or board tab has no session, file or node behind it: close actions only.
             items = closeItems;
           } else {
             // Persisted sessions receive full operations; draft terminals/browsers receive temporary actions
