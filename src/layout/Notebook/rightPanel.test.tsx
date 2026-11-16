@@ -10,6 +10,7 @@ import { memoryNavigate, memoryUrl } from "../Memory/navigation";
 vi.mock("../RightPanel/FilesTab",()=>({FilesTab:()=> <div>File explorer</div>}));
 vi.mock("../RightPanel/InfoTab",()=>({InfoTab:()=> <div>Session info</div>}));
 vi.mock("../RightPanel/git/GitTab",()=>({GitTab:()=> <div>Git changes</div>}));
+vi.mock("../RightPanel/NotesTab",()=>({NotesTab:()=> <div>Notes board</div>}));
 vi.mock("../../ipc/notebook",()=>({notebookOverview:async()=>({vaults:[{id:"local",name:"Personal",root:"/notes"}],limits:{},defaultRoot:"/Notes"}),notebookTree:async()=>({vault:{id:"local",name:"Personal",root:"/notes"},nodes:[{kind:"note",path:"Hello.md",absolutePath:"/notes/Hello.md",name:"Hello.md"}],entries:[],trash:[]})}));
 const original=useTermStore.getState().setInspectorTab;
 beforeEach(()=>{
@@ -18,10 +19,15 @@ beforeEach(()=>{
 });
 afterEach(()=>{cleanup();useTermStore.setState({setInspectorTab:original});});
 
-it("keeps Info as the default and exposes four labeled icons",()=>{
+it("keeps Info as the default and exposes five labeled icons",()=>{
   localStorage.removeItem(SETTINGS_KEY);expect(loadSettings().inspectorTab).toBe("info");render(<RightPanel/>);
-  for(const name of ["Files","Info","Git","Knowledge Base"]){const link=screen.getByRole("link",{name});expect(link.textContent).toBe("");expect(link.getAttribute("title")).toBe(name);}
+  for(const name of ["Files","Info","Git","Knowledge Base","Notes"]){const link=screen.getByRole("link",{name});expect(link.textContent).toBe("");expect(link.getAttribute("title")).toBe(name);}
   expect(screen.getByRole("link",{name:"Info"}).getAttribute("aria-current")).toBe("page");
+});
+
+it("opens the notes board from its tab",async()=>{
+  render(<RightPanel/>);fireEvent.click(screen.getByRole("link",{name:"Notes"}));
+  await screen.findByText("Notes board");expect(new URLSearchParams(location.search).get("inspector")).toBe("notes");
 });
 
 it("opens knowledge through its right tab URL and keeps the directory in that panel",async()=>{

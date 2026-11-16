@@ -305,6 +305,8 @@ const es: typeof en = {
   "memory.collapseAllProjects": "Contraer todos los proyectos",
   "memory.expandAllProjects": "Expandir todos los proyectos",
   "memory.title": "Base de conocimientos",
+  "notes.title": "Notas",
+  "notes.loadFailed": "No se pudieron cargar las notas.",
   "memory.add": "Añadir a la base de conocimientos",
   "memory.intro": "Organiza el conocimiento por proyecto y sesión. Los artículos guardados son independientes de sus fuentes y se pueden editar manualmente.",
   "memory.entries": "Artículos de conocimiento",

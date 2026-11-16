@@ -467,7 +467,7 @@ export function sanitizeMirrorLayout(raw: unknown): MirrorLayout | null {
   const openTabs = strArray(center.openTabs);
   const activeTabId = strOrNull(center.activeTabId);
   const inspectorTab =
-    right.inspectorTab === "files" || right.inspectorTab === "info" || right.inspectorTab === "git" || right.inspectorTab === "knowledge"
+    right.inspectorTab === "files" || right.inspectorTab === "info" || right.inspectorTab === "git" || right.inspectorTab === "knowledge" || right.inspectorTab === "notes"
       ? right.inspectorTab
       : "files";
   return {

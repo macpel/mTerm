@@ -305,6 +305,8 @@ const vi: typeof en = {
   "memory.collapseAllProjects": "Thu gọn tất cả dự án",
   "memory.expandAllProjects": "Mở rộng tất cả dự án",
   "memory.title": "Kho kiến thức",
+  "notes.title": "Ghi chú",
+  "notes.loadFailed": "Không thể tải ghi chú.",
   "memory.add": "Thêm vào kho kiến thức",
   "memory.intro": "Sắp xếp kiến thức theo dự án và phiên. Các bài viết đã lưu không tự cập nhật theo nguồn và có thể chỉnh sửa thủ công.",
   "memory.entries": "Bài viết kiến thức",

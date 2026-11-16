@@ -305,6 +305,8 @@ const de: typeof en = {
   "memory.collapseAllProjects": "Alle Projekte einklappen",
   "memory.expandAllProjects": "Alle Projekte ausklappen",
   "memory.title": "Wissensdatenbank",
+  "notes.title": "Notizen",
+  "notes.loadFailed": "Notizen konnten nicht geladen werden.",
   "memory.add": "Zur Wissensdatenbank hinzufügen",
   "memory.intro": "Wissen nach Projekt und Sitzung organisieren. Gespeicherte Einträge bleiben unabhängig von ihren Quellen und können manuell bearbeitet werden.",
   "memory.entries": "Wissenseinträge",

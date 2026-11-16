@@ -305,6 +305,8 @@ const ja: typeof en = {
   "memory.collapseAllProjects": "すべてのプロジェクトを折りたたむ",
   "memory.expandAllProjects": "すべてのプロジェクトを展開する",
   "memory.title": "ナレッジベース",
+  "notes.title": "メモ",
+  "notes.loadFailed": "メモを読み込めませんでした。",
   "memory.add": "ナレッジベースに追加",
   "memory.intro": "プロジェクトとセッションごとに知識を整理します。保存された記事は元の情報の変更に連動せず、手動で編集できます。",
   "memory.entries": "ナレッジ記事",
