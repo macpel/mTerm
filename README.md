@@ -1,7 +1,5 @@
 # mTerm
 
-English | [简体中文](README.zh-CN.md)
-
 **The best ADE.** Not just a terminal. Not just an IDE.
 
 Manage agent sessions like Codex. Split terminals like iTerm2. mTerm (m terminal) keeps both in one native app,
@@ -19,14 +17,10 @@ and brings them to your browser and your phone.
 Claude Code, Codex, OpenCode, Copilot, Cursor, Antigravity, Cline, Pi and more. Each one runs as a
 managed session, with live status, resume and custom launch arguments.
 
-<img src="docs/assets/readme/window.webp" alt="Claude Code, Codex, a dev server and a shell side by side in one mTerm window" width="100%">
-
 ### A full agent dev environment
 
 Follow an agent's plan, edits, commands and test results as a conversation, or switch the same
 session to the terminal view and work in its TUI.
-
-<img src="docs/assets/readme/views-conversation.webp" alt="An agent session in the conversation view, with the plan, edits, commands and test results" width="100%">
 
 ### Sessions in a tree
 
@@ -95,8 +89,6 @@ one part in its own worktree and report back.
 
 <img src="docs/assets/readme/pe-team.webp" alt="A planner session dispatching two executor sessions" width="100%">
 
-<img src="docs/assets/readme/parallel.webp" alt="Executor sessions working in parallel under the planner" width="100%">
-
 ### Keep what your sessions learn
 
 Organize a session into the Session Knowledge Base, keep Markdown notes in local knowledge bases, and
@@ -109,8 +101,6 @@ search both at once. With `vkb`, an agent looks things up before it acts:
 | `vkb explore` | The code graph, queried locally without calling a model |
 
 See the [notebook guide](docs/manuals/knowledge-notebooks_20260910.md).
-
-<img src="docs/assets/readme/kb-sources.webp" alt="A knowledge base entry with its source sessions" width="100%">
 
 <img src="docs/assets/readme/vkb.webp" alt="An agent looking up knowledge, notes and the code graph with vkb" width="100%">
 
@@ -160,8 +150,6 @@ People see its changes live, marked with the session's name.
 A WYSIWYG Markdown editor, a code editor and an image viewer, plus a built-in browser on desktop. All
 of them work on remote machines too.
 
-<img src="docs/assets/readme/editor-markdown.webp" alt="The WYSIWYG Markdown editor with a file tree" width="100%">
-
 Unsaved Untitled documents come back after a restart.
 
 ### Notes
@@ -192,22 +180,20 @@ Remote access is built in: connect over SSH, or serve the app over HTTPS with en
   inside the app.
 - **Browser.** Open a URL on any machine. No install needed. Served over HTTPS with end-to-end
   encryption; no readable data crosses the network.
-- **Phone.** A native app for iOS and Android. Scan a QR code to carry the same session tree with you.
+- **Phone.** Scan a QR code to open the same session tree in your phone's browser.
 
-<p><img src="docs/assets/readme/anywhere-desktop.webp" alt="The desktop app connected over SSH" width="42%"> <img src="docs/assets/readme/anywhere-browser.webp" alt="The same workspace in a browser" width="42%"> <img src="docs/assets/readme/anywhere-phone.webp" alt="The same session tree on a phone" width="13%"></p>
+<img src="docs/assets/readme/anywhere-browser.webp" alt="The workspace in a browser" width="100%">
 
-### Connect remotely, three ways
+### Connect remotely, two ways
 
-Connect over SSH, open a pairing link, or sign in to your account and pick one of your devices.
+Connect over SSH, or open a pairing link.
 
 <img src="docs/assets/readme/remote-ssh.webp" alt="Connecting to a remote server over SSH" width="100%">
 
 ### Your sessions, in your pocket
 
-Scan a QR code to connect. Browse the tree, read agent replies as they stream and answer them, and get
-a push notification when an agent needs you.
-
-<p align="center"><img src="docs/assets/readme/mobile.webp" alt="The iOS and Android app showing the session tree and an agent reply" width="560"></p>
+Scan a QR code to open mTerm in your phone's browser.
+Browse the tree, read agent replies as they stream and answer them.
 
 ### macOS, Windows and Linux
 
@@ -219,8 +205,6 @@ Tauri 2: a small install that stays smooth under heavy terminal load.
 | macOS | Apple Silicon, Intel | zsh |
 | Windows | x64, arm64 | PowerShell, Git Bash, WSL |
 | Linux | x86_64, aarch64 | bash |
-
-<p><img src="docs/assets/readme/platform-macos.webp" alt="mTerm on macOS" width="32%"> <img src="docs/assets/readme/platform-windows.webp" alt="mTerm on Windows with Git Bash" width="32%"> <img src="docs/assets/readme/platform-linux.webp" alt="mTerm on Linux" width="32%"></p>
 
 ## Download
 

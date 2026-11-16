@@ -31,7 +31,7 @@ Choose "Create and start" to start the planner. It creates the executor when the
 
 ## 3. Starting from a session
 
-Inside any session that VelaTerm starts, run:
+Inside any session that mTerm starts, run:
 
 ```bash
 vspawn --plan-execute \
@@ -40,7 +40,7 @@ vspawn --plan-execute \
   "Implement the agreed changes and verify all acceptance criteria"
 ```
 
-In Claude Code, `/vspawn --plan-execute <task>` does the same; in Codex, use `$vspawn --plan-execute <task>`. The skill writes a self-contained task from the current conversation before starting the workflow. These skills require Vela Skills (Settings ▸ General).
+In Claude Code, `/vspawn --plan-execute <task>` does the same; in Codex, use `$vspawn --plan-execute <task>`. The skill writes a self-contained task from the current conversation before starting the workflow. These skills require mTerm Skills (Settings ▸ General).
 
 The new planner is created under the session that ran the command. The request first opens the confirmation card described in [Session Spawning & Git Collaboration](session-spawning-and-git_20260709_2041.md) §4, where you can review and change the task and both roles' settings.
 

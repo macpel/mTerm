@@ -4,11 +4,11 @@ Created: 2026-07-09 20:41
 
 Updated: 2026-09-30 21:12
 
-> This chapter covers how VelaTerm hosts AI coding agents as typed sessions: supported agents, live status, automatic conversation resume, importing and forking conversations, permission modes, launch settings, install guidance and the Info panel. The conversation view has its own chapter: [Conversation View](conversation-view_20260925_1012.md).
+> This chapter covers how mTerm hosts AI coding agents as typed sessions: supported agents, live status, automatic conversation resume, importing and forking conversations, permission modes, launch settings, install guidance and the Info panel. The conversation view has its own chapter: [Conversation View](conversation-view_20260925_1012.md).
 
 ## 1. Supported agents
 
-VelaTerm can start these agents: **Claude Code** (shown as "Claude"), **Codex**, **OpenCode**, **Copilot**, **Cursor**, **Antigravity**, **Cline**, **Pi**, **OMP**, **Crush**, **Kimi Code**, **Kiro**, **Grok Build** and **Zoo Code**. Each agent's own CLI must be installed and signed in.
+mTerm can start these agents: **Claude Code** (shown as "Claude"), **Codex**, **OpenCode**, **Copilot**, **Cursor**, **Antigravity**, **Cline**, **Pi**, **OMP**, **Crush**, **Kimi Code**, **Kiro**, **Grok Build** and **Zoo Code**. Each agent's own CLI must be installed and signed in.
 
 Capabilities differ by agent:
 
@@ -29,10 +29,10 @@ Capabilities differ by agent:
 | Grok Build | Reported by the agent | ✅ | ✅ | ✗ | Skip switch | ✗ |
 | Zoo Code | Read from the screen | ✅ | ✅ | ✗ | Skip switch | ✗ |
 
-- **Reported by the agent** means the agent itself tells VelaTerm when it starts working, needs you and finishes, so the status is exact. Codex reports every stage when its version supports lifecycle hooks; older Codex versions only report when a turn ends. Where a column shows ✗ under "Needs you", the agent does not report questions or permission prompts, so the session shows "working" until the turn ends.
-- **Read from the screen** means VelaTerm recognizes the agent's state from its terminal interface.
-- For Copilot, Cursor, Antigravity, Kimi Code, Kiro and Grok Build, VelaTerm adds its own entries to the agent's user configuration the first time you start such a session. These entries do nothing when the agent runs outside VelaTerm.
-- Agents you start yourself in a plain terminal are not affected; status reporting applies only to agent sessions that VelaTerm starts.
+- **Reported by the agent** means the agent itself tells mTerm when it starts working, needs you and finishes, so the status is exact. Codex reports every stage when its version supports lifecycle hooks; older Codex versions only report when a turn ends. Where a column shows ✗ under "Needs you", the agent does not report questions or permission prompts, so the session shows "working" until the turn ends.
+- **Read from the screen** means mTerm recognizes the agent's state from its terminal interface.
+- For Copilot, Cursor, Antigravity, Kimi Code, Kiro and Grok Build, mTerm adds its own entries to the agent's user configuration the first time you start such a session. These entries do nothing when the agent runs outside mTerm.
+- Agents you start yourself in a plain terminal are not affected; status reporting applies only to agent sessions that mTerm starts.
 
 ## 2. Creating an agent session
 
@@ -66,13 +66,13 @@ The status bar's "Working", "Pending" and "Viewed" counters filter the sidebar t
 
 The mental model in one line: **each agent session node in the tree is one ongoing conversation.**
 
-- On the first run, VelaTerm remembers the agent's own conversation ID.
-- After that, whether you closed the tab or quit the app, opening the node again continues the same conversation. Before resuming, VelaTerm checks that the conversation still exists; if it was deleted, the session starts fresh instead of failing.
+- On the first run, mTerm remembers the agent's own conversation ID.
+- After that, whether you closed the tab or quit the app, opening the node again continues the same conversation. Before resuming, mTerm checks that the conversation still exists; if it was deleted, the session starts fresh instead of failing.
 - For a fresh conversation, create a new session node. In the conversation view, `/clear` replaces the session with a new empty one in the same place.
 
 **Resume Session…** at the end of the New Session menu adds a conversation you already have, for example one you ran in a plain terminal. Pick the "Agent type", paste the agent's conversation ID, and choose "Resume & Open". Every agent type in §1 can be resumed this way.
 
-**Import Sessions…** in a project's context menu lists existing Codex, Claude, OpenCode and Kiro conversations whose working directory is exactly the project directory. Search by title, agent or session ID ("Search by title, agent or session ID"), select rows, and choose "Import". The conversations join the project tree; open one to continue it. Importing does not copy or change the agent's own history. Conversations already in VelaTerm, including archived ones, are marked "Already imported". Conversations in subdirectories or separate worktrees appear only when that directory is opened as its own project. Kiro history can be viewed for text-only records. When connected to a remote VelaTerm, the list comes from the remote computer.
+**Import Sessions…** in a project's context menu lists existing Codex, Claude, OpenCode and Kiro conversations whose working directory is exactly the project directory. Search by title, agent or session ID ("Search by title, agent or session ID"), select rows, and choose "Import". The conversations join the project tree; open one to continue it. Importing does not copy or change the agent's own history. Conversations already in mTerm, including archived ones, are marked "Already imported". Conversations in subdirectories or separate worktrees appear only when that directory is opened as its own project. Kiro history can be viewed for text-only records. When connected to a remote mTerm, the list comes from the remote computer.
 
 ## 5. Fork: branch off a conversation
 
@@ -91,7 +91,7 @@ Where to change it:
 - **Per session**: the session's "Edit" form ("Permission", or the "Skip all permission confirmations" checkbox); in the terminal view, the permission item in the status bar ("Perms: Ask" / "Perms: Skip", or the current mode name); in the conversation view, the permission control under the message box.
 - **Default for new sessions**: Settings ▸ Agents ▸ "Permission". The status bar and conversation view menus also offer "Set as default".
 
-Some changes apply only after the agent restarts. VelaTerm then offers "Restart now" or "Later"; restarting resumes the conversation but interrupts a running task. "Bypass", "Full Access" and "Skip all permission confirmations" skip every confirmation, so use them with care.
+Some changes apply only after the agent restarts. mTerm then offers "Restart now" or "Later"; restarting resumes the conversation but interrupts a running task. "Bypass", "Full Access" and "Skip all permission confirmations" skip every confirmation, so use them with care.
 
 ## 7. Launch settings and install guidance
 
@@ -131,5 +131,5 @@ With an agent session open, the Info tab of the right panel shows:
 
 - **Automatic names**: a session you did not name takes its name from your first message.
 - **Theme changes**: switching between light and dark updates running Claude sessions in the terminal view without a restart.
-- **Vela Skills**: Settings ▸ General ▸ "Vela Skills" installs skills for Claude Code and Codex that start child sessions, open files, and read or message other sessions; see [Session Commands](session-commands_20260925_1012.md).
+- **mTerm Skills**: Settings ▸ General ▸ "mTerm Skills" installs skills for Claude Code and Codex that start child sessions, open files, and read or message other sessions; see [Session Commands](session-commands_20260925_1012.md).
 - **Windows**: Claude Code and Codex are fully supported (they run in PowerShell); the other agents are provided on a best-effort basis.

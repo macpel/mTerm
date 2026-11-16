@@ -4,11 +4,11 @@ Created: 2026-09-25 10:12
 
 Updated: 2026-10-18 09:28
 
-> VelaTerm adds a set of short commands to every session it starts. You and your agents use them to start other sessions, open files, read and search other conversations, check which sessions are busy, send messages between sessions, and wait for long commands. This chapter is a reference for each command and for the matching agent skills.
+> mTerm adds a set of short commands to every session it starts. You and your agents use them to start other sessions, open files, read and search other conversations, check which sessions are busy, send messages between sessions, and wait for long commands. This chapter is a reference for each command and for the matching agent skills.
 
 ## 1. Where the commands work
 
-The commands are on the PATH of every session that VelaTerm starts: plain terminals and agent sessions, in both the terminal view and the conversation view, including sessions on a remote VelaTerm server. They need no installation. Outside such a session they stop with "not inside a VelaTerm session".
+The commands are on the PATH of every session that mTerm starts: plain terminals and agent sessions, in both the terminal view and the conversation view, including sessions on a remote mTerm server. They need no installation. Outside such a session they stop with "not inside an mTerm session".
 
 Run a command with `--help` to print its usage.
 
@@ -26,9 +26,9 @@ Run a command with `--help` to print its usage.
 
 Several commands take a **session reference**: a full session ID, an ID prefix of at least 8 characters, the exact session name, or a unique part of the name. Put names that contain spaces in quotes. When a reference matches several sessions, the command lists the candidates.
 
-## 2. Agent skills (Vela Skills)
+## 2. Agent skills (mTerm Skills)
 
-Settings ▸ General ▸ "Vela Skills" installs matching skills into Claude Code and Codex; "Reinstall" refreshes them. Start a new Claude or Codex conversation afterwards so the agent picks them up. In Claude Code a skill is called with `/name`, in Codex with `$name`.
+Settings ▸ General ▸ "mTerm Skills" installs matching skills into Claude Code and Codex; "Reinstall" refreshes them. Start a new Claude or Codex conversation afterwards so the agent picks them up. In Claude Code a skill is called with `/name`, in Codex with `$name`.
 
 | Skill | Called by | What it does |
 |-------|-----------|--------------|
@@ -99,7 +99,7 @@ Conversations can be read for Claude Code, Codex, OpenCode, Pi, OMP, Grok Build 
 vsearch <words...> [--session <session>] [--all|--archived] [--limit N] [--json]
 ```
 
-Searches the conversations of all sessions on the connected VelaTerm. All words must match, in any order.
+Searches the conversations of all sessions on the connected mTerm. All words must match, in any order.
 
 | Option | Meaning |
 |--------|---------|
@@ -126,7 +126,7 @@ Shows the state of each session: `working`, `asking` (waiting for a permission o
 | `--timeout N` | Seconds one wait may take (default 60, maximum 300) |
 | `--json` | Machine-readable output |
 
-An optional first argument filters by an orchestration ID from older VelaTerm versions; planning and execution workflows use `vflow status` instead.
+An optional first argument filters by an orchestration ID from older mTerm versions; planning and execution workflows use `vflow status` instead.
 
 ## 8. vtell
 
@@ -168,7 +168,7 @@ vkb explore <query> | search <query> | node <symbol-id> | callers <id> [depth] |
     | memories <query> | memory <entry-id> | notes <query> | note <vault-id> <path> | status
 ```
 
-Queries the code graph of the current checkout and the knowledge base of the connected VelaTerm. Code queries need indexing to be enabled on the project's Code Graph page. `vkb` only reads; it does not change any knowledge entry. See [Code Graph & Knowledge Base](codegraph_20260905_2027.md), [Session Knowledge Base](global-memory_20260905_2027.md) and [Local Knowledge Bases](knowledge-notebooks_20260910.md).
+Queries the code graph of the current checkout and the knowledge base of the connected mTerm. Code queries need indexing to be enabled on the project's Code Graph page. `vkb` only reads; it does not change any knowledge entry. See [Code Graph & Knowledge Base](codegraph_20260905_2027.md), [Session Knowledge Base](global-memory_20260905_2027.md) and [Local Knowledge Bases](knowledge-notebooks_20260910.md).
 
 ## 11. vflow
 
@@ -183,4 +183,4 @@ Controls planning and execution workflows. The planner uses `propose`, `dispatch
 
 ## 12. The `vela` command
 
-On macOS, Settings ▸ General ▸ "Shell command" offers "Install 'vela' command". It adds `vela <project-path>` to your shell, similar to the `code` command of VS Code. Running it in any terminal opens the project in VelaTerm, or switches to it if it is already open. VelaTerm does not overwrite an existing `vela` command that it did not install.
+On macOS, Settings ▸ General ▸ "Shell command" offers "Install 'vela' command". It adds `vela <project-path>` to your shell, similar to the `code` command of VS Code. Running it in any terminal opens the project in mTerm, or switches to it if it is already open. mTerm does not overwrite an existing `vela` command that it did not install.

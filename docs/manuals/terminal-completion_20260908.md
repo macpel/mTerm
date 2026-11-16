@@ -12,11 +12,11 @@ Suggestions are available on macOS and Linux. On Windows the feature is currentl
 
 Settings ▸ Terminal ▸ "Command suggestions" offers three modes:
 
-- **Automatic** (default): VelaTerm collects your input for about 25 ms and then asks the shell for suggestions; typing more does not restart that wait. If you keep typing while a request is running, only your latest input is used for the next request, and outdated results are discarded. An exact match stays in the list.
+- **Automatic** (default): mTerm collects your input for about 25 ms and then asks the shell for suggestions; typing more does not restart that wait. If you keep typing while a request is running, only your latest input is used for the next request, and outdated results are discarded. An exact match stays in the list.
 - **On Tab**: suggestions appear only when you press Tab.
 - **Off**: no suggestion list is shown, and Tab keeps the shell's native behavior.
 
-A change takes effect in open terminals immediately, and the choice is shared by every client connected to the same VelaTerm backend.
+A change takes effect in open terminals immediately, and the choice is shared by every client connected to the same mTerm backend.
 
 Keys and mouse:
 
@@ -31,7 +31,7 @@ Candidates are ordered as exact matches, prefix matches, substring matches and t
 
 The list highlights the part of each candidate that matches what you typed and shows the shell's description when one is available; hover over a candidate to read a long description. The list keeps its position and selection while results refresh. Accepting a suggestion closes the list, including when the candidate is a directory ending in `/`. Press Tab again to see the next directory level. In Automatic mode, further typing opens the list again.
 
-If you change the input while an insertion is pending, VelaTerm waits for a fresh result from the shell and inserts the candidate only if it is still offered.
+If you change the input while an insertion is pending, mTerm waits for a fresh result from the shell and inserts the candidate only if it is still offered.
 
 ## Shell support
 
@@ -49,13 +49,13 @@ Suggestions are available only in plain terminal sessions. Agent sessions are no
 
 ## How the integration is loaded
 
-VelaTerm loads its shell integration when a terminal starts. Your shell startup files are never modified, and a custom startup command still runs after the integration is loaded. Terminals that were already running before you installed a version with this feature need to be restarted.
+mTerm loads its shell integration when a terminal starts. Your shell startup files are never modified, and a custom startup command still runs after the integration is loaded. Terminals that were already running before you installed a version with this feature need to be restarted.
 
 - **Zsh** loads the integration through temporary startup files after your own login files, and restores `ZDOTDIR` afterwards. Nothing is typed into the terminal.
 - **Bash** starts with a temporary `--rcfile` that first reads your login files in Bash's usual order (`/etc/profile`, then the first of `~/.bash_profile`, `~/.bash_login` and `~/.profile`) and then loads the integration. Nothing is typed into the terminal. Two differences from a normal login shell remain: `shopt -q login_shell` reports false, and `~/.bash_logout` does not run when the shell exits.
-- **Fish** and **PowerShell** have no comparable startup hook, so VelaTerm sends one command that loads the integration when the shell starts; that line appears at the top of the new terminal.
+- **Fish** and **PowerShell** have no comparable startup hook, so mTerm sends one command that loads the integration when the shell starts; that line appears at the top of the new terminal.
 
-PowerShell's execution policy still applies to the integration script; VelaTerm does not bypass it.
+PowerShell's execution policy still applies to the integration script; mTerm does not bypass it.
 
 Suggestions pause while a command is running, while a full-screen program is open, during input method (IME) composition and during history navigation (Ctrl+R, Ctrl+S and the arrow keys). The arrow keys never start an automatic request, so repeated Up presses keep moving through earlier commands. When no integration is active or no candidates were found, Tab keeps its native behavior.
 
@@ -67,7 +67,7 @@ On Windows no integration is loaded, whatever the setting says, and the "Command
 
 ## Limits
 
-- Candidates depend on the completion definitions installed for your shell. VelaTerm does not provide its own command catalog or history-based predictions.
+- Candidates depend on the completion definitions installed for your shell. mTerm does not provide its own command catalog or history-based predictions.
 - Some complex Bash completion scripts rely on Readline internals that the integration cannot reproduce exactly.
 - Completion functions can run external programs and may be slow. The list stops waiting after two seconds, but a shell function that is still running is not killed; press Ctrl+C to interrupt it as usual.
 - The integration reserves Ctrl+F12 for collecting candidates and Ctrl+F11 for inserting a selection. A shell configuration that rebinds these keys after the terminal starts can disable suggestions. With Bash 4.0 to 4.3, the integration also wraps Enter and Ctrl+J.

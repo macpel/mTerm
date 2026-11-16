@@ -8,7 +8,7 @@ Updated: 2026-09-25 10:21
 
 A code audit is a security review of a project that runs through your local coding agent. Right-click a project in the sidebar and choose "Experimental" → "Code audit", then "New audit". Under "Local agent", choose "Codex" or "Claude"; then choose a "Model", a "Thinking effort" and the "Scope", and click "Start audit". The report page shows the scan's current phase. "Agent session" shows the agent's original tool calls, analysis and pending permission requests; answer requests there to let the audit continue. The report appears when Codex Security seals its results.
 
-The audit runs on the machine that hosts the project and uses the selected agent's installed CLI with its existing login, configuration and permission handling ("Uses this machine's agent login and configuration. No separate model API setup is needed."). VelaTerm adds a Codex Security MCP server for the audit session only; your other MCP servers stay as they are, and VelaTerm does not call a model API itself. The CLI must be installed, signed in and within its account limits. The CLI's own configuration may select a model provider; VelaTerm does not change it.
+The audit runs on the machine that hosts the project and uses the selected agent's installed CLI with its existing login, configuration and permission handling ("Uses this machine's agent login and configuration. No separate model API setup is needed."). mTerm adds a Codex Security MCP server for the audit session only; your other MCP servers stay as they are, and mTerm does not call a model API itself. The CLI must be installed, signed in and within its account limits. The CLI's own configuration may select a model provider; mTerm does not change it.
 
 The "Code audit" item also appears for collections. A collection without a root folder cannot be audited.
 
@@ -20,13 +20,13 @@ New audits ask for the analysis in the interface language. Protocol fields, path
 
 ## Codex Security integration
 
-VelaTerm bundles the public Apache-2.0 release `@openai/codex-security@0.1.26`, whose plugin manifest is version `0.1.95`; the new-audit page shows both versions. The original skills, references, schemas, scripts, runtime and license are kept under `src-tauri/resources/codex-security/`, and `UPSTREAM.json` records the package source, integrity value and file hashes.
+mTerm bundles the public Apache-2.0 release `@openai/codex-security@0.1.26`, whose plugin manifest is version `0.1.95`; the new-audit page shows both versions. The original skills, references, schemas, scripts, runtime and license are kept under `src-tauri/resources/codex-security/`, and `UPSTREAM.json` records the package source, integrity value and file hashes.
 
 Every new audit registers a real upstream workbench scan. The agent reads the bundled entry skill and uses the upstream MCP tools and result format. Records from the earlier, independently implemented batch workflow remain readable and are labeled "Legacy audit · This record did not use the Codex Security workflow."
 
-Both agents use the same upstream workflow. The public TypeScript SDK drives the Codex runtime and does not offer a Claude Code executor, so VelaTerm integrates through the upstream MCP server and local workbench. Support for Claude Code is a VelaTerm adapter, not an upstream claim of official Claude support.
+Both agents use the same upstream workflow. The public TypeScript SDK drives the Codex runtime and does not offer a Claude Code executor, so mTerm integrates through the upstream MCP server and local workbench. Support for Claude Code is an mTerm adapter, not an upstream claim of official Claude support.
 
-The runtime needs Node.js on PATH, in a version supported by the upstream package, and Python 3.10 or later; Python 3.10 also needs the `tomli` package, which Python 3.11 and later replace with the built-in `tomllib`. VelaTerm checks the bundled resources and unpacks them into its data directory. It does not install them into your Codex or Claude configuration.
+The runtime needs Node.js on PATH, in a version supported by the upstream package, and Python 3.10 or later; Python 3.10 also needs the `tomli` package, which Python 3.11 and later replace with the built-in `tomllib`. mTerm checks the bundled resources and unpacks them into its data directory. It does not install them into your Codex or Claude configuration.
 
 ## Scope and workflow
 
@@ -44,17 +44,17 @@ The audit instructions forbid source edits, fixes, publication and changes to th
 
 ## Reports, coverage and cancellation
 
-The authoritative results are the upstream `scan-manifest.json`, `findings.json` and `coverage.json`. The upstream finalizer validates and seals them and then generates the readable report. VelaTerm imports these files and checks each finding's location and exact source lines, treating LF and CRLF line endings as equal. A valid structure and matching source lines do not by themselves prove that a finding can be exploited. If the source evidence does not match, the audit stays "Failed" and its findings are not accepted as validated. The sealed upstream report remains available, and Markdown exports put the validation failure first without rewriting the report.
+The authoritative results are the upstream `scan-manifest.json`, `findings.json` and `coverage.json`. The upstream finalizer validates and seals them and then generates the readable report. mTerm imports these files and checks each finding's location and exact source lines, treating LF and CRLF line endings as equal. A valid structure and matching source lines do not by themselves prove that a finding can be exploited. If the source evidence does not match, the audit stays "Failed" and its findings are not accepted as validated. The sealed upstream report remains available, and Markdown exports put the validation failure first without rewriting the report.
 
-Before sealing, VelaTerm checks the draft's paths, line ranges and excerpts with the same verifier used during import. If the evidence does not match, the scan stays unsealed and the agent is told which locations to correct. The Codex Security completion tool then generates and seals the report. This check never rewrites excerpts, removes findings or changes sealed results. Import repeats the check, so later source changes cannot silently turn invalid evidence into a successful result.
+Before sealing, mTerm checks the draft's paths, line ranges and excerpts with the same verifier used during import. If the evidence does not match, the scan stays unsealed and the agent is told which locations to correct. The Codex Security completion tool then generates and seals the report. This check never rewrites excerpts, removes findings or changes sealed results. Import repeats the check, so later source changes cannot silently turn invalid evidence into a successful result.
 
 Coverage comes from the upstream review receipts and decisions, not from the number of files the agent claims to have read. Unresolved candidates, deferred work, exclusions and completion warnings stay visible. A sealed scan with incomplete coverage is shown as "Partial coverage". Even complete coverage does not guarantee that every vulnerability was found.
 
-When the agent ends a turn while the scan still has work to do, VelaTerm continues the same session and scan, keeping existing findings and worker results. Permission requests stay pending ("Permission or input required"), and cancellation or a provider error stops the automatic continuation. If three turns in a row end without any change in the upstream review progress, findings or coverage, the audit stops with an incomplete-scan error and keeps its checkpoints.
+When the agent ends a turn while the scan still has work to do, mTerm continues the same session and scan, keeping existing findings and worker results. Permission requests stay pending ("Permission or input required"), and cancellation or a provider error stops the automatic continuation. If three turns in a row end without any change in the upstream review progress, findings or coverage, the audit stops with an incomplete-scan error and keeps its checkpoints.
 
 The "Report" tab shows the retained findings, source evidence and coverage limits. Each finding has its own URL and shows its attack path, how it was validated and the conclusion (when supplied), remediation advice and the reported source excerpts; check the audit status before treating these excerpts as verified. The "Report artifacts" tab keeps the complete report generated upstream and the scan ID. A running scan shows the upstream package and plugin versions, the actual phase and progress, and warnings; until a sealed report exists, progress and checkpoint information are shown instead of an empty assessment. In the "Agent session", the normal message box and rewind are disabled so that an unrelated turn cannot replace the audit; permission requests remain usable.
 
-"Cancel" stops the upstream scan and the agent. Saved checkpoints remain available when the upstream workbench can seal them, and they keep their canceled or failed status. Late results cannot revive a canceled audit. After a restart, VelaTerm reconciles the upstream state: a completed, sealed result can be imported, and an unfinished run is marked "Interrupted", with its retained files kept distinguishable from a completed result.
+"Cancel" stops the upstream scan and the agent. Saved checkpoints remain available when the upstream workbench can seal them, and they keep their canceled or failed status. Late results cannot revive a canceled audit. After a restart, mTerm reconciles the upstream state: a completed, sealed result can be imported, and an unfinished run is marked "Interrupted", with its retained files kept distinguishable from a completed result.
 
 "Start audit" on an existing record creates a new scan of the current target with the saved agent and selections. It does not resume a stopped model turn or reuse an old verdict.
 
@@ -62,7 +62,7 @@ The audit history, the new-audit form, report details and the agent session each
 
 ## Exports and limits
 
-"Export report" offers Markdown and JSON. Markdown exports contain the upstream report when one exists; otherwise they clearly identify themselves as the record of an incomplete scan. JSON exports keep all imported data together with VelaTerm's own metadata. The upstream scan folder also keeps its generated SARIF and other files. Exports can contain source excerpts and vulnerability details, so share them carefully.
+"Export report" offers Markdown and JSON. Markdown exports contain the upstream report when one exists; otherwise they clearly identify themselves as the record of an incomplete scan. JSON exports keep all imported data together with mTerm's own metadata. The upstream scan folder also keeps its generated SARIF and other files. Exports can contain source excerpts and vulnerability details, so share them carefully.
 
 This interface offers Standard and working-tree diff audits. Other bundled skills, such as deep scans, remediation, fix verification and external issue tracking, are kept as upstream resources but are not available as separate actions. An audit does not apply fixes, publish findings, create issues or open pull requests.
 

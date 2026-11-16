@@ -12,7 +12,7 @@ Updated: 2026-09-25 10:21
 
 A document tab opens when you:
 
-- run `vopen <file>` in any session (inside Claude Code the `/vopen` skill does the same once "Vela Skills" is installed in Settings ▸ General);
+- run `vopen <file>` in any session (inside Claude Code the `/vopen` skill does the same once "mTerm Skills" is installed in Settings ▸ General);
 - double-click a file in the right panel's Files tab, or choose "Open in Editor";
 - open a note from the knowledge base (see [Local Knowledge Bases](knowledge-notebooks_20260910.md));
 - click "New document" at the right end of the tab bar.
@@ -52,7 +52,7 @@ The view is chosen by file type:
 
 ## 2. Browser tabs (desktop app only)
 
-Browser tabs show real web pages inside VelaTerm, which is useful for keeping documentation, issue pages or a local preview next to your sessions. They are available only in the desktop app, not in browser clients, remote connection windows or the mobile layout.
+Browser tabs show real web pages inside mTerm, which is useful for keeping documentation, issue pages or a local preview next to your sessions. They are available only in the desktop app, not in browser clients, remote connection windows or the mobile layout.
 
 **Opening a browser tab:**
 
@@ -68,11 +68,9 @@ Browser tabs show real web pages inside VelaTerm, which is useful for keeping do
 - **Browser tab**: opened with the button, ⌘⇧B or `vopen <URL>`. It is not saved in the project tree and does not survive a restart.
 - **Browser page node**: created with "New Browser Page". It is a node in the project tree that remembers its address and is still there after a restart.
 
-**Links that open new windows:** when a page opens a link in a new window (for example a `target="_blank"` link), VelaTerm opens it in a new browser tab.
+**Links that open new windows:** when a page opens a link in a new window (for example a `target="_blank"` link), mTerm opens it in a new browser tab.
 
-**Standalone pages:** the "Game Center" button at the right end of the tab bar opens the VelaTerm game center as a standalone page. A standalone page has no address bar or quick access row, only "Back", "Forward" and "Reload"; links it opens stay in the same tab.
-
-**Security boundary:** an embedded page is treated as an ordinary external website. It receives no VelaTerm permissions or credentials, and only `http` and `https` addresses can be opened.
+**Security boundary:** an embedded page is treated as an ordinary external website. It receives no mTerm permissions or credentials, and only `http` and `https` addresses can be opened.
 
 ## 3. How the tab kinds coexist
 

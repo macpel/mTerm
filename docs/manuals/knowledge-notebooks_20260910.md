@@ -4,7 +4,7 @@ Created: 2026-09-10
 
 Updated: 2026-09-25 10:21
 
-A local knowledge base is an ordinary folder of Markdown files that you write and organize in VelaTerm. Notes and attachments stay in that folder, so you can keep editing them with other editors. Some menu items call a local knowledge base a "notebook"; both words refer to the same folder.
+A local knowledge base is an ordinary folder of Markdown files that you write and organize in mTerm. Notes and attachments stay in that folder, so you can keep editing them with other editors. Some menu items call a local knowledge base a "notebook"; both words refer to the same folder.
 
 The built-in "Session Knowledge Base" sits next to your local knowledge bases. It holds knowledge that agents organize from your sessions and keeps its own entries, sources and revision history; see [Session Knowledge Base](global-memory_20260905_2027.md).
 
@@ -24,11 +24,11 @@ Notes open in ordinary document tabs, with the same editing, saving, search and 
 ## Opening or creating a local knowledge base
 
 - **Open:** click "Open knowledge base" and choose a folder. The desktop app shows the system folder picker; a browser client shows a folder browser for the connected computer. An existing Obsidian vault can be opened directly: files stay where they are, and hidden folders such as `.obsidian` are neither indexed nor changed.
-- **Create:** click "Create knowledge base", enter a "Name", choose a "Folder" (or "Browse"; the suggestion is `~/Notes`), and confirm. VelaTerm creates the folder and opens it. The parent folder must exist, and a folder with the same name must not; otherwise VelaTerm shows "The destination already exists. Choose another name or folder." To use an existing folder, choose "Open knowledge base" instead.
+- **Create:** click "Create knowledge base", enter a "Name", choose a "Folder" (or "Browse"; the suggestion is `~/Notes`), and confirm. mTerm creates the folder and opens it. The parent folder must exist, and a folder with the same name must not; otherwise mTerm shows "The destination already exists. Choose another name or folder." To use an existing folder, choose "Open knowledge base" instead.
 - **Rename:** right-click a knowledge base in the tree and choose "Rename". This renames the folder on disk.
 - **Close:** click "Close notebook" in the knowledge base toolbar, or right-click it in the tree. Closing removes the folder from the list; its files remain on disk. When you open the same folder again, its trash and import history are still there.
 
-"Local" means the computer that runs the VelaTerm backend you are connected to. In a browser client, "Open knowledge base" browses that computer's folders, and importing uploads the files you choose in the browser to that computer.
+"Local" means the computer that runs the mTerm backend you are connected to. In a browser client, "Open knowledge base" browses that computer's folders, and importing uploads the files you choose in the browser to that computer.
 
 ## Importing files and folders
 
@@ -67,11 +67,11 @@ Knowledge base pages, dialogs, the import history, searches, search scope, tags,
 
 Several words must all match. Each result shows its knowledge base or session group, a snippet, the line number, the number of matches and the "Related notes" the note links to; click any of them to open it. Use Up and Down to select a result, Enter to open it and Esc to clear the search. Results are ordered by matches in the name or path, then by the number of matches, then by the most recent update. Up to 100 results are listed; when there are more, the list ends with "Only the first results are listed. Narrow the search to see the rest."
 
-VelaTerm looks for exact matches first and falls back to approximate matches only when there are none, showing "No exact matches. Showing approximate results." Approximate matching applies to words made of Latin letters and digits: letters in order (`knwl` finds `knowledge`), initials (`kb` finds `knowledge base`), and small typing errors (one error in words of four or more characters, two in words of eight or more; `knoledge` finds `knowledge`). Chinese and other non-Latin text is matched exactly.
+mTerm looks for exact matches first and falls back to approximate matches only when there are none, showing "No exact matches. Showing approximate results." Approximate matching applies to words made of Latin letters and digits: letters in order (`knwl` finds `knowledge`), initials (`kb` finds `knowledge base`), and small typing errors (one error in words of four or more characters, two in words of eight or more; `knoledge` finds `knowledge`). Chinese and other non-Latin text is matched exactly.
 
 ## Links and compatibility with existing files
 
-VelaTerm recognizes the common `[[note]]`, `[[folder/note|label]]` and `[[note#heading]]` forms, standard relative Markdown links, and `![[image.png]]`. It uses them to update links when notes move, to list "Related notes" in search results, and for the `vkb` commands below. In the editor, `[[…]]` links are shown as plain text. When several files share a name, a short link is resolved only if the target is unique; otherwise write the folder path.
+mTerm recognizes the common `[[note]]`, `[[folder/note|label]]` and `[[note#heading]]` forms, standard relative Markdown links, and `![[image.png]]`. It uses them to update links when notes move, to list "Related notes" in search results, and for the `vkb` commands below. In the editor, `[[…]]` links are shown as plain text. When several files share a name, a short link is resolved only if the target is unique; otherwise write the folder path.
 
 Files remain plain Markdown, and YAML front matter stays in the file; Source mode in the editor shows it exactly. Markdown files that are not UTF-8 or larger than 5 MiB are not listed as notes and are counted under "Skipped". A knowledge base can contain up to 50,000 files and folders; a larger folder cannot be opened and shows "The file or selection exceeds the notebook limits." Symbolic links are not followed.
 
@@ -81,7 +81,7 @@ These features cover everyday work with local files, folders, Markdown, links an
 
 Open an entry in the Session Knowledge Base, choose "Copy to a local notebook", then pick the target knowledge base and file name. The copy is an independent Markdown note; the original entry, its source snapshots and its revision history stay where they are.
 
-In a VelaTerm session, you or an agent can read registered local knowledge bases with `vkb`:
+In an mTerm session, you or an agent can read registered local knowledge bases with `vkb`:
 
 ```sh
 vkb notes "reading notes"
@@ -93,7 +93,7 @@ vkb search "architecture decision"
 - `note` returns a note's text, outline, links, backlinks and tags.
 - `search` returns matches from the Session Knowledge Base, local notes and, when a code index exists, the code graph (see [Code Graph & Knowledge Base](codegraph_20260905_2027.md)).
 
-These commands are read-only. They never change notes, and VelaTerm does not add knowledge base content to sessions automatically.
+These commands are read-only. They never change notes, and mTerm does not add knowledge base content to sessions automatically.
 
 ## Storage and logs
 
