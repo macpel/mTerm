@@ -1011,6 +1011,27 @@ pub fn set_app_settings(
     Ok(())
 }
 
+// ─────────────────────────── Notes board ───────────────────────────
+
+/// Read the notes board's Markdown, or an empty string when nothing has been saved yet.
+pub fn get_note_board(conn: &Connection) -> Result<String, String> {
+    conn.query_row("SELECT body FROM note_board WHERE id = 1", [], |row| row.get(0))
+        .optional()
+        .map(Option::unwrap_or_default)
+        .map_err(|e| format!("Failed to read note board: {e}"))
+}
+
+/// Replace the notes board's Markdown, creating its single row on first save.
+pub fn set_note_board(conn: &Connection, body: &str) -> Result<(), String> {
+    conn.execute(
+        "INSERT INTO note_board(id, body, updated_at) VALUES(1, ?1, ?2) \
+         ON CONFLICT(id) DO UPDATE SET body = excluded.body, updated_at = excluded.updated_at",
+        params![body, now_secs()],
+    )
+    .map_err(|e| format!("Failed to save note board: {e}"))?;
+    Ok(())
+}
+
 // ─────────────────────────── SSH connection history ───────────────────────────
 
 /// List SSH hosts most-recent-first with target, label, timestamp, and the prior shared-db and mirror
@@ -2630,6 +2651,25 @@ mod tests {
         conn.execute_batch("PRAGMA foreign_keys = ON;").unwrap();
         conn.execute_batch(crate::db::schema::SCHEMA).unwrap();
         conn
+    }
+
+    #[test]
+    fn note_board_starts_empty() {
+        let conn = mem_conn();
+        assert_eq!(get_note_board(&conn).unwrap(), "");
+    }
+
+    #[test]
+    fn note_board_round_trips_and_overwrites() {
+        let conn = mem_conn();
+        set_note_board(&conn, "# Todo\n\n- first").unwrap();
+        assert_eq!(get_note_board(&conn).unwrap(), "# Todo\n\n- first");
+        set_note_board(&conn, "second").unwrap();
+        assert_eq!(get_note_board(&conn).unwrap(), "second");
+        let rows: i64 = conn
+            .query_row("SELECT COUNT(*) FROM note_board", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(rows, 1);
     }
 
     /// Build a `SessionBrief` list for resolution tests without touching a database.
