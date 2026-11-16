@@ -93,8 +93,28 @@ export const boardClaim = (projectId: string, number: number, sessionId: string)
 /** Saves an image pasted into a card description and returns its absolute path (forward slashes). */
 export const boardImageSave = (bytes: Uint8Array, ext: string) => invoke<string>("save_board_image", { bytesB64: bytesToB64(bytes), ext });
 
-/** Whether `href` is an image pasted into a card description (see `board/images.rs`). */
-export const isBoardImage = (href: string) => /[/\\]board-images[/\\][A-Za-z0-9-]+\.[A-Za-z0-9]+$/.test(href);
+/** The only file names `save_board_image` produces: a lowercase uuid and a short extension. */
+const BOARD_IMAGE_NAME = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.[a-z0-9]{1,8}$/;
+
+/**
+ * The file name of an image pasted into a card description, or null when `href` is anything else.
+ *
+ * Only a local absolute path ending in `board-images/<name>` qualifies. Network shares (`\\server`, `//server`),
+ * device paths (`\\?\`) and `..` never do, so a description cannot make the app touch them. Even then only the
+ * name is used: `read_board_image` resolves it inside the app's own board-images folder.
+ */
+export function boardImageName(href: string): string | null {
+  if (!/^(?:[A-Za-z]:[/\\]|\/(?![/\\]))/.test(href) || href.includes("..")) return null;
+  const parts = href.split(/[/\\]/);
+  const name = parts.pop() ?? "";
+  return parts.pop() === "board-images" && BOARD_IMAGE_NAME.test(name) ? name : null;
+}
+
+/** Whether `href` is an image pasted into a card description (see {@link boardImageName}). */
+export const isBoardImage = (href: string) => boardImageName(href) !== null;
+
+/** Reads a pasted card image by file name (from {@link boardImageName}), as base64. */
+export const boardImageRead = (name: string) => invoke<string>("read_board_image", { name });
 
 /** Calls `cb` whenever this project's board changes, from the app or from a `vboard` command. */
 export function onBoardChanged(projectId: string, cb: () => void): Promise<() => void> {

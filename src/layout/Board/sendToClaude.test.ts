@@ -12,17 +12,16 @@ const h = vi.hoisted(() => ({
 }));
 
 vi.mock("../../store/termStore", () => ({ useTermStore: { getState: () => h.store } }));
-vi.mock("../../ipc/board", () => ({
+const SHOT = "1f2e3d4c-0000-4000-8000-000000000001.png";
+const MISSING = "1f2e3d4c-0000-4000-8000-000000000002.png";
+
+vi.mock("../../ipc/board", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../ipc/board")>()),
   boardClaim: vi.fn((..._args: unknown[]) => {
     h.calls.push("claim");
     return Promise.resolve({});
   }),
-  isBoardImage: (href: string) => /[/]board-images[/][a-z0-9-]+[.]png$/.test(href),
-}));
-vi.mock("../../ipc/info", () => ({
-  loadFileBlob: vi.fn((path: string) =>
-    Promise.resolve(path.includes("missing") ? null : { blob: new Blob(["png"]), mtimeMs: 0 }),
-  ),
+  boardImageRead: vi.fn((name: string) => (name.endsWith("2.png") ? Promise.reject(new Error("gone")) : Promise.resolve(btoa("png")))),
 }));
 vi.mock("../CenterPane/session/attachments", () => ({
   attachImages: vi.fn(async (_current: unknown[], files: File[]) => ({
@@ -47,7 +46,7 @@ vi.mock("../../ipc/commands", () => ({
   }),
 }));
 
-import { boardClaim } from "../../ipc/board";
+import { boardClaim, boardImageRead } from "../../ipc/board";
 import { chatStart } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
 import { createSubmission } from "../CenterPane/session/outbox";
@@ -90,10 +89,19 @@ describe("sendToClaude", () => {
   });
 
   it("lists the pasted images at the end of the card, once each, ignoring other images", () => {
-    const shot = "C:/Users/me/AppData/Roaming/io.vlinx.vlxterm/board-images/1f2e-3d.png";
+    const shot = `C:/Users/me/AppData/Roaming/io.vlinx.vlxterm/board-images/${SHOT}`;
+    const unsafe = [
+      `\\\\attacker\\share\\board-images\\${SHOT}`,
+      `//attacker/share/board-images/${SHOT}`,
+      `\\\\?\\C:\\data\\board-images\\${SHOT}`,
+      `C:/data/board-images/../../Windows/board-images/${SHOT}`,
+      "C:/data/board-images/not-a-uuid.png",
+    ];
     const withImages = {
       ...card,
-      description: `Broken layout:\n\n![image](<${shot}>)\n\n![logo](https://example.com/logo.png) again ![image](<${shot}>)`,
+      description: `Broken layout:\n\n![image](<${shot}>)\n\n![logo](https://example.com/logo.png) again ![image](<${shot}>)${unsafe
+        .map((href) => ` ![x](<${href}>)`)
+        .join("")}`,
     };
     expect(cardImagePaths(withImages)).toEqual([shot]);
     const prompt = cardPrompt(withImages);
@@ -126,10 +134,11 @@ describe("sendToClaude", () => {
   });
 
   it("chat session gets the pasted images attached, skipping any that cannot be read", async () => {
-    const dir = "C:/data/board-images";
-    const withImages = { ...card, description: `![image](<${dir}/a1.png>) ![image](<${dir}/missing.png>)` };
+    const dir = "/home/me/.local/share/io.vlinx.vlxterm/board-images";
+    const withImages = { ...card, description: `![image](<${dir}/${SHOT}>) ![image](<${dir}/${MISSING}>)` };
     await sendCardToSession("p1", withImages, session("s3", "chat"));
-    expect(createSubmission).toHaveBeenCalledWith("s3", cardPrompt(withImages), [{ mimeType: "image/png", data: "a1.png" }], "queue");
+    expect(boardImageRead).toHaveBeenCalledWith(SHOT);
+    expect(createSubmission).toHaveBeenCalledWith("s3", cardPrompt(withImages), [{ mimeType: "image/png", data: SHOT }], "queue");
   });
 
   it("does not take the card when the chat message is not delivered", async () => {
