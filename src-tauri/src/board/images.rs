@@ -26,6 +26,31 @@ pub fn save(dir: &Path, bytes: &[u8], ext: &str) -> Result<String> {
     Ok(path.to_string_lossy().replace('\\', "/"))
 }
 
+/// Whether `name` is a file name [`save`] could have produced: `<lowercase hyphenated uuid>.<1-8 alphanumerics>`.
+/// Anything else (separators, `..`, drive or UNC prefixes) is refused before it can become a path.
+pub fn valid_name(name: &str) -> bool {
+    let Some((stem, ext)) = name.split_once('.') else { return false };
+    stem.len() == 36
+        && uuid::Uuid::parse_str(stem).is_ok_and(|id| id.hyphenated().to_string() == stem)
+        && (1..=8).contains(&ext.len())
+        && ext.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+}
+
+/// Reads one board image by file name, as base64. Only files directly inside `dir` can be read: the name is
+/// checked by [`valid_name`] and the resolved path must still sit in `dir` (no link out of it).
+pub fn read(dir: &Path, name: &str) -> Result<String> {
+    if !valid_name(name) {
+        return Err("Not a board image.".into());
+    }
+    let dir = dir.canonicalize().map_err(|_| "Board image not found.".to_string())?;
+    let path = dir.join(name).canonicalize().map_err(|_| "Board image not found.".to_string())?;
+    if path.parent() != Some(dir.as_path()) || !path.is_file() {
+        return Err("Not a board image.".into());
+    }
+    let bytes = std::fs::read(&path).map_err(|e| format!("Failed to read image: {e}"))?;
+    Ok(crate::agent::inject::base64_encode(&bytes))
+}
+
 /// File names of the board images `text` links to.
 pub fn names(text: &str) -> HashSet<String> {
     let marker = format!("{DIR}/");
