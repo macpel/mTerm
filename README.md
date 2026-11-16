@@ -46,6 +46,8 @@ Command and path suggestions appear as you type. Choose with the arrow keys, the
 
 Session states follow the conversation live, in the session tree and the status bar, with a desktop
 notification when an agent finishes and waits for you.
+Each status dot carries a short word: Working, Needs you, Done, Background.
+A Claude session shows Background, not Done, while its background tasks are still running.
 
 <img src="docs/assets/readme/status.webp" alt="Session states in the session tree, the status bar and a notification" width="100%">
 
@@ -112,6 +114,45 @@ See the [notebook guide](docs/manuals/knowledge-notebooks_20260910.md).
 
 <img src="docs/assets/readme/vkb.webp" alt="An agent looking up knowledge, notes and the code graph with vkb" width="100%">
 
+## Project board
+
+### A Kanban board for every project
+
+Track tasks, bugs, features and epics on a board tab next to your sessions.
+Search, filter by column, type or tag, and drag cards between columns.
+The board stays with its folder, even if you remove the project.
+
+### Your columns, your rules
+
+Rename, reorder, add and delete columns, and give cards a colour.
+Columns keep their role (To Do, In Progress, Review, Done) whatever you call them.
+With a Review column, agents send finished cards to Review and a person moves them to Done.
+
+### Rich cards
+
+Card descriptions are Markdown.
+Paste images or mTerm screenshots straight into a description.
+Every card keeps a history of its changes.
+
+### Send a card to Claude
+
+Send to Claude opens the new-session dialog with the card's text and images filled in.
+Pick the permission mode, such as Plan, before the session starts.
+
+### Agents work the board
+
+With `vboard`, an agent reads and updates the board of its own project.
+People see its changes live, marked with the session's name.
+
+| Command | What it does |
+|---------|--------------|
+| `vboard list` | List cards; filter by column, type, tag or text |
+| `vboard show 12` | One card with its history |
+| `vboard add "title"` | Add a card with type, priority, tags, colour and description |
+| `vboard next` | Take the top To Do card and move it to In Progress |
+| `vboard done 12` | Finish a card: to Review, or Done when there is no Review column |
+| `vboard move 12 "QA"` | Move a card to any column |
+
 ## Built-in tools
 
 ### Editors included
@@ -121,12 +162,23 @@ of them work on remote machines too.
 
 <img src="docs/assets/readme/editor-markdown.webp" alt="The WYSIWYG Markdown editor with a file tree" width="100%">
 
+Unsaved Untitled documents come back after a restart.
+
+### Notes
+
+The Notes tab in the right panel holds one Markdown note for the whole app.
+It saves as you type and survives restarts.
+It is not shown through shared session links.
+
 ### Also included
 
 - **Code audits.** Bundled Codex Security workflows using your logged-in local Codex or Claude Code,
   with source evidence, coverage limits and Markdown/JSON reports. See the
   [code audit guide](docs/manuals/code-audits_20260908.md).
 - **Git integration.** Branch, ahead/behind and change counts per session, plus common actions.
+  The Changes dialog is wide, with a file list you can resize.
+- **Browser shortcuts.** Add, rename, edit and delete the built-in browser's quick-access shortcuts.
+  Right-click the bar to add the current page.
 - **Themes and languages.** Light and dark themes that follow the system, and a fully translated
   interface.
 
