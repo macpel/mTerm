@@ -426,6 +426,14 @@ const es: typeof en = {
   "status.waiting": "Visto", // Viewed
   "status.background": "Tareas en segundo plano activas", // Background tasks running
   "status.unavailable": "Estado no disponible",
+  "status.short.working": "Trabajando",
+  "status.short.asking": "Te necesita",
+  "status.short.unread": "Hecho · nuevo",
+  "status.short.waiting": "Hecho",
+  "status.short.background": "Segundo plano",
+  "status.short.error": "Error",
+  "status.short.unavailable": "Desconocido",
+  "status.short.running": "Disponible",
   "indicator.unread": "No leído · por revisar", // Unread · awaiting review
 
   // ── Title bar ──

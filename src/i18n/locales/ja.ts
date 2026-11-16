@@ -426,6 +426,14 @@ const ja: typeof en = {
   "status.waiting": "確認済み", // Viewed
   "status.background": "バックグラウンドタスク実行中", // Background tasks running
   "status.unavailable": "ステータス取得不可",
+  "status.short.working": "作業中",
+  "status.short.asking": "要対応",
+  "status.short.unread": "完了・新着",
+  "status.short.waiting": "完了",
+  "status.short.background": "バックグラウンド",
+  "status.short.error": "エラー",
+  "status.short.unavailable": "不明",
+  "status.short.running": "待機中",
   "indicator.unread": "未読 · 確認待ち", // Unread · awaiting review
 
   // ── Title bar ──

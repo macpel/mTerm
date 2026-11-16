@@ -426,6 +426,14 @@ const ptBR: typeof en = {
   "status.waiting": "Visto", // Viewed
   "status.background": "Tarefas em segundo plano em execução", // Background tasks running
   "status.unavailable": "Status indisponível",
+  "status.short.working": "Trabalhando",
+  "status.short.asking": "Precisa de você",
+  "status.short.unread": "Concluído · novo",
+  "status.short.waiting": "Concluído",
+  "status.short.background": "Segundo plano",
+  "status.short.error": "Erro",
+  "status.short.unavailable": "Desconhecido",
+  "status.short.running": "Pronto",
   "indicator.unread": "Não lido · a revisar", // Unread · awaiting review
 
   // ── Title bar ──

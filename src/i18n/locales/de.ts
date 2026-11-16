@@ -426,6 +426,14 @@ const de: typeof en = {
   "status.waiting": "Gesehen", // Viewed
   "status.background": "Hintergrundaufgaben laufen", // Background tasks running
   "status.unavailable": "Status nicht verfügbar",
+  "status.short.working": "Arbeitet",
+  "status.short.asking": "Braucht dich",
+  "status.short.unread": "Fertig · neu",
+  "status.short.waiting": "Fertig",
+  "status.short.background": "Hintergrund",
+  "status.short.error": "Fehler",
+  "status.short.unavailable": "Unbekannt",
+  "status.short.running": "Bereit",
   "indicator.unread": "Ungelesen · ausstehend", // Unread · awaiting review
 
   // ── Title bar ──

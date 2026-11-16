@@ -426,6 +426,14 @@ const ko: typeof en = {
   "status.waiting": "확인함", // Viewed
   "status.background": "백그라운드 작업 실행 중", // Background tasks running
   "status.unavailable": "상태 확인 불가",
+  "status.short.working": "작업 중",
+  "status.short.asking": "확인 필요",
+  "status.short.unread": "완료 · 새",
+  "status.short.waiting": "완료",
+  "status.short.background": "백그라운드",
+  "status.short.error": "오류",
+  "status.short.unavailable": "알 수 없음",
+  "status.short.running": "준비됨",
   "indicator.unread": "읽지 않음 · 확인 대기", // Unread · awaiting review
 
   // ── Title bar ──

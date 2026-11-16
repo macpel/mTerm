@@ -78,6 +78,8 @@ struct Registry {
     live: HashMap<String, Vec<RunBrief>>,
     /// Sessions whose agent last reported waiting while their runs kept them on background.
     held: HashSet<String>,
+    /// Terminal Claude sessions whose last turn ended with Claude's own background work still running.
+    claude_tasks: HashSet<String>,
 }
 
 fn registry() -> &'static Mutex<Registry> {
@@ -199,19 +201,41 @@ pub fn has_live(session_id: &str) -> bool {
     registry().lock().unwrap().live.get(session_id).is_some_and(|runs| !runs.is_empty())
 }
 
+/// Record whether a terminal Claude session's turn just ended with background work of its own still in
+/// flight (background shells, subagents, monitors), as its Stop hook lists in `background_tasks`.
+///
+/// Claude wakes the session itself when that work ends, so until it reports again a waiting report means
+/// background, not done. Nothing announces the work ending other than Claude's next report, which clears it.
+pub fn set_claude_background(session_id: &str, live: bool) {
+    let mut registry = registry().lock().unwrap();
+    if live {
+        registry.claude_tasks.insert(session_id.to_string());
+    } else {
+        registry.claude_tasks.remove(session_id);
+    }
+}
+
 /// The state to report for a session whose agent just reported `state`.
 ///
 /// An agent that finished its turn while its runs go on is not done, so waiting becomes background and
 /// the session is remembered as held. Every other report passes through and ends the hold: the agent
-/// has spoken again, and what it says next is what counts.
+/// has spoken again, and what it says next is what counts. A waiting report from a Claude session whose
+/// last turn left its own background work running (see [`set_claude_background`]) is background too;
+/// that includes Claude's idle reminder, which carries no task list of its own.
 pub fn hold(session_id: &str, state: AgentState) -> AgentState {
     let mut registry = registry().lock().unwrap();
     let live = registry.live.get(session_id).is_some_and(|runs| !runs.is_empty());
     if state == AgentState::Waiting && live {
         registry.held.insert(session_id.to_string());
+        return AgentState::Background;
+    }
+    registry.held.remove(session_id);
+    if state != AgentState::Waiting {
+        registry.claude_tasks.remove(session_id);
+        state
+    } else if registry.claude_tasks.contains(session_id) {
         AgentState::Background
     } else {
-        registry.held.remove(session_id);
         state
     }
 }
@@ -389,6 +413,26 @@ mod tests {
         assert_eq!(hold(&sid, AgentState::Working), AgentState::Working, "the agent answers the result");
         std::thread::sleep(DRAIN_GRACE * 4);
         assert!(crate::agent::status_watch::snapshot().1.iter().all(|row| row.session_id != sid));
+    }
+
+    /// Claude's own background work keeps a finished turn on background, including through its idle
+    /// reminder, until Claude reports anything other than waiting or ends a turn with nothing running.
+    #[test]
+    fn claude_background_work_holds_background_until_claude_reports_again() {
+        let _lock = test_lock();
+        let sid = format!("claude-bg-{}", uuid::Uuid::new_v4());
+        assert_eq!(hold(&sid, AgentState::Waiting), AgentState::Waiting, "nothing running: done");
+
+        set_claude_background(&sid, true);
+        assert_eq!(hold(&sid, AgentState::Waiting), AgentState::Background, "turn end with a background shell");
+        assert_eq!(hold(&sid, AgentState::Waiting), AgentState::Background, "the idle reminder does not end it");
+
+        assert_eq!(hold(&sid, AgentState::Working), AgentState::Working, "Claude woke up for the result");
+        assert_eq!(hold(&sid, AgentState::Waiting), AgentState::Waiting, "a later turn end starts fresh");
+
+        set_claude_background(&sid, true);
+        set_claude_background(&sid, false);
+        assert_eq!(hold(&sid, AgentState::Waiting), AgentState::Waiting, "a turn end with nothing left running");
     }
 
     /// Labels name directories under `runs/`, so a path cannot be smuggled through one.
