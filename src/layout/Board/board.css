@@ -95,3 +95,4 @@ textarea.board-desc-input { min-height: 220px; line-height: 1.5; }
 .board-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 16px 14px; border-top: 1px solid var(--border); }
 .board-dialog input, .board-dialog select, .board-dialog textarea { padding: 5px 8px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg-2); color: var(--text); font: inherit; font-size: 12px; resize: vertical; }
 .board-dialog .board-tag { border: none; cursor: pointer; font-family: inherit; }
+.board-desc-img { display: block; max-width: 100%; margin: 4px 0; border-radius: var(--r-sm); }

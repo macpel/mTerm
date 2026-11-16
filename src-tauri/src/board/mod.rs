@@ -4,6 +4,7 @@
 pub mod store;
 pub mod command;
 pub mod agent;
+pub mod images;
 #[cfg(test)]
 mod tests;
 
@@ -47,9 +48,12 @@ pub fn board_key(conn: &Connection, project_id: &str) -> Result<String> {
     }
 }
 
-/// Tell every client that the project's board changed.
+/// Tell every client that the project's board changed, and drop pasted images no card links to any more.
 pub fn announce(app: &AppCtx, project: &str) {
     app.emit(CHANGED_EVENT, json!({ "projectId": project }));
+    if let (Ok(data_dir), Ok(conn)) = (app.data_dir(), app.db().conn.lock()) {
+        let _ = images::sweep(&conn, &images::dir(&data_dir));
+    }
 }
 
 pub fn dispatch(app: &AppCtx, cmd: &str, args: &Value) -> Result<Value> {

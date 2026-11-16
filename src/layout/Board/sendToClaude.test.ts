@@ -17,6 +17,18 @@ vi.mock("../../ipc/board", () => ({
     h.calls.push("claim");
     return Promise.resolve({});
   }),
+  isBoardImage: (href: string) => /[/]board-images[/][a-z0-9-]+[.]png$/.test(href),
+}));
+vi.mock("../../ipc/info", () => ({
+  loadFileBlob: vi.fn((path: string) =>
+    Promise.resolve(path.includes("missing") ? null : { blob: new Blob(["png"]), mtimeMs: 0 }),
+  ),
+}));
+vi.mock("../CenterPane/session/attachments", () => ({
+  attachImages: vi.fn(async (_current: unknown[], files: File[]) => ({
+    attachments: files.map((file) => ({ id: "a", name: file.name, bytes: 3, mimeType: file.type, data: file.name })),
+    rejected: [],
+  })),
 }));
 vi.mock("../../ipc/chat", () => ({ chatStart: vi.fn(() => Promise.resolve()) }));
 vi.mock("../CenterPane/session/outbox", () => ({
@@ -39,7 +51,7 @@ import { boardClaim } from "../../ipc/board";
 import { chatStart } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
 import { createSubmission } from "../CenterPane/session/outbox";
-import { cardPrompt, cardSessionPrefill, sendCardToSession, sendTargets, startCardSession, worktreeName } from "./sendToClaude";
+import { cardImagePaths, cardPrompt, cardSessionPrefill, sendCardToSession, sendTargets, startCardSession, worktreeName } from "./sendToClaude";
 
 const card: BoardCard = {
   id: "c7",
@@ -77,6 +89,18 @@ describe("sendToClaude", () => {
     expect(cardPrompt({ ...card, description: "" })).not.toContain("\n\n\n");
   });
 
+  it("lists the pasted images at the end of the card, once each, ignoring other images", () => {
+    const shot = "C:/Users/me/AppData/Roaming/io.vlinx.vlxterm/board-images/1f2e-3d.png";
+    const withImages = {
+      ...card,
+      description: `Broken layout:\n\n![image](<${shot}>)\n\n![logo](https://example.com/logo.png) again ![image](<${shot}>)`,
+    };
+    expect(cardImagePaths(withImages)).toEqual([shot]);
+    const prompt = cardPrompt(withImages);
+    expect(prompt).toContain(`Attached images:\n${shot}\n\nWhen the work is finished`);
+    expect(cardPrompt(card)).not.toContain("Attached images:");
+  });
+
   it("prefills the new-session dialog from the card, in plan mode", () => {
     expect(cardSessionPrefill({ ...card, title: "Fix: login crash (Windows)!" })).toEqual({
       name: "#7 Fix: login crash (Windows)!",
@@ -99,6 +123,13 @@ describe("sendToClaude", () => {
     expect(createSubmission).toHaveBeenCalledWith("s10", cardPrompt(card), [], "queue");
     expect(chatStart).toHaveBeenCalledWith("s10");
     expect(h.calls).toEqual(["deliver", "claim"]);
+  });
+
+  it("chat session gets the pasted images attached, skipping any that cannot be read", async () => {
+    const dir = "C:/data/board-images";
+    const withImages = { ...card, description: `![image](<${dir}/a1.png>) ![image](<${dir}/missing.png>)` };
+    await sendCardToSession("p1", withImages, session("s3", "chat"));
+    expect(createSubmission).toHaveBeenCalledWith("s3", cardPrompt(withImages), [{ mimeType: "image/png", data: "a1.png" }], "queue");
   });
 
   it("does not take the card when the chat message is not delivered", async () => {

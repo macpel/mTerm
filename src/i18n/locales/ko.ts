@@ -1078,7 +1078,8 @@ const ko: typeof en = {
   "board.write": "작성", // Write
   "board.preview": "미리 보기", // Preview
   "board.noDescription": "설명이 없습니다.", // No description.
-  "board.markdownHint": "Markdown 지원: # 제목, **굵게**, - 목록, `코드`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Markdown 지원: # 제목, **굵게**, - 목록, `코드` · 이미지 붙여넣기 가능", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "붙여넣은 이미지를 저장하지 못했습니다.", // The pasted image could not be saved.
   "board.history": "기록", // History
   "board.sendToClaude": "Claude에게 보내기", // Send to Claude
   "board.newSession": "새 Claude 세션", // New Claude session

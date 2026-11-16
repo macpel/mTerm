@@ -1,9 +1,12 @@
 //! Card fields shared by the Add card dialog and the card panel: type, priority, colour, description, tags.
 //! The title stays with each caller, which decides its focus and Enter behaviour.
-import { useState } from "react";
+import { useRef, useState, type ClipboardEvent } from "react";
 import { useT } from "../../i18n";
-import { CARD_COLORS, CARD_TYPES, PRIORITIES, type CardFields } from "../../ipc/board";
-import { Markdown } from "../CenterPane/session/markdown";
+import { boardImageSave, CARD_COLORS, CARD_TYPES, PRIORITIES, type CardFields } from "../../ipc/board";
+import { env } from "../../platform/env";
+import { extOf, imageFromNativeClipboard, imagesFromClipboard } from "../../terminal/imageInput";
+import { Markdown, MarkdownImageRenderer } from "../CenterPane/session/markdown";
+import { renderBoardImage } from "./BoardImage";
 import "../CenterPane/session/session-view.css";
 
 export const EMPTY_FIELDS: CardFields = { title: "", type: "task", priority: "medium", description: "", tags: [], color: null };
@@ -21,6 +24,40 @@ export function CardFieldsForm({
   const t = useT();
   const [tagDraft, setTagDraft] = useState("");
   const [showPreview, setShowPreview] = useState(preview);
+  const [pasteError, setPasteError] = useState(false);
+  const input = useRef<HTMLTextAreaElement>(null);
+  // Uploads finish after the paste event, by which time the description may have changed.
+  const description = useRef(fields.description);
+  description.current = fields.description;
+  /** Save the pasted images and link them at the cursor. */
+  const pasteImages = async (load: () => Promise<File[]>) => {
+    setPasteError(false);
+    try {
+      const files = await load();
+      const paths = await Promise.all(files.map(async (file) => boardImageSave(new Uint8Array(await file.arrayBuffer()), extOf(file))));
+      if (!paths.length) return;
+      const text = description.current;
+      const start = input.current?.selectionStart ?? text.length;
+      const end = input.current?.selectionEnd ?? start;
+      const links = paths.map((path) => `![image](<${path}>)`).join("\n");
+      onChange("description", text.slice(0, start) + links + text.slice(end));
+      const caret = start + links.length;
+      requestAnimationFrame(() => input.current?.setSelectionRange(caret, caret));
+    } catch {
+      setPasteError(true);
+    }
+  };
+  const onPaste = (event: ClipboardEvent<HTMLTextAreaElement>) => {
+    const files = imagesFromClipboard(event.clipboardData);
+    if (files.length) {
+      event.preventDefault();
+      void pasteImages(async () => files);
+    } else if (env.isTauri && !event.clipboardData?.getData("text/plain")) {
+      // The Tauri WebView can leave a copied image out of the paste event; read the system clipboard instead.
+      event.preventDefault();
+      void pasteImages(() => imageFromNativeClipboard().then((file) => [file]).catch(() => []));
+    }
+  };
   const addTag = () => {
     const tag = tagDraft.trim().toLowerCase();
     if (tag && !fields.tags.includes(tag)) onChange("tags", [...fields.tags, tag]);
@@ -81,18 +118,27 @@ export function CardFieldsForm({
         </div>
         {showPreview ? (
           <div className="board-desc-preview" onDoubleClick={() => setShowPreview(false)}>
-            {fields.description.trim() ? <Markdown text={fields.description} /> : <span className="board-muted">{t("board.noDescription")}</span>}
+            {fields.description.trim() ? (
+              <MarkdownImageRenderer.Provider value={renderBoardImage}>
+                <Markdown text={fields.description} />
+              </MarkdownImageRenderer.Provider>
+            ) : (
+              <span className="board-muted">{t("board.noDescription")}</span>
+            )}
           </div>
         ) : (
           <textarea
+            ref={input}
             aria-label={t("board.fieldDescription")}
             className="board-desc-input"
             rows={14}
             value={fields.description}
             placeholder={t("board.markdownHint")}
             onChange={(e) => onChange("description", e.target.value)}
+            onPaste={onPaste}
           />
         )}
+        {pasteError && <span className="board-error">{t("board.imagePasteFailed")}</span>}
       </div>
       <div className="board-field">
         <span>{t("board.fieldTags")}</span>

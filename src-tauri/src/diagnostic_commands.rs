@@ -250,6 +250,7 @@ const COMMANDS: &[&str] = &[
     "resolve_spawn",
     "run_log_tail",
     "run_stop",
+    "save_board_image",
     "save_doc_image",
     "save_pasted_image",
     "search_session_content",

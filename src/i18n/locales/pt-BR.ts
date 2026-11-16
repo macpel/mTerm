@@ -1083,7 +1083,8 @@ const ptBR: typeof en = {
   "board.write": "Escrever", // Write
   "board.preview": "Visualizar", // Preview
   "board.noDescription": "Sem descrição.", // No description.
-  "board.markdownHint": "Suporta Markdown: # título, **negrito**, - lista, `código`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Suporta Markdown: # título, **negrito**, - lista, `código`. Você pode colar imagens.", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "Não foi possível salvar a imagem colada.", // The pasted image could not be saved.
   "board.history": "Histórico", // History
   "board.sendToClaude": "Enviar ao Claude", // Send to Claude
   "board.newSession": "Nova sessão do Claude", // New Claude session

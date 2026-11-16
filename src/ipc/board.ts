@@ -1,5 +1,6 @@
 //! Client for the per-project Kanban board (`board_*` commands, `board://changed` event).
 import { invoke, listen } from "./transport";
+import { bytesToB64 } from "./wsClient";
 
 /** Roles of the standard columns, in their default order; custom columns have none. */
 export const COLUMN_ROLES = ["backlog", "todo", "in_progress", "review", "done"] as const;
@@ -88,6 +89,12 @@ export const boardColumnMove = (projectId: string, columnId: string, beforeColum
 export const boardColumnDelete = (projectId: string, columnId: string) => invoke<void>("board_column_delete", { projectId, columnId });
 export const boardClaim = (projectId: string, number: number, sessionId: string) =>
   invoke<BoardCard>("board_claim", { projectId, number, sessionId });
+
+/** Saves an image pasted into a card description and returns its absolute path (forward slashes). */
+export const boardImageSave = (bytes: Uint8Array, ext: string) => invoke<string>("save_board_image", { bytesB64: bytesToB64(bytes), ext });
+
+/** Whether `href` is an image pasted into a card description (see `board/images.rs`). */
+export const isBoardImage = (href: string) => /[/\\]board-images[/\\][A-Za-z0-9-]+\.[A-Za-z0-9]+$/.test(href);
 
 /** Calls `cb` whenever this project's board changes, from the app or from a `vboard` command. */
 export function onBoardChanged(projectId: string, cb: () => void): Promise<() => void> {

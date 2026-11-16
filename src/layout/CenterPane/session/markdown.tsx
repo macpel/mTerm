@@ -10,7 +10,7 @@
 
 import { type Token, type Tokens } from "marked";
 import { md } from "../../../markdownEngine";
-import { memo, type ReactNode } from "react";
+import { createContext, memo, useContext, type ReactNode } from "react";
 
 import { highlight } from "../../RightPanel/highlight";
 import { SessionLink } from "./links";
@@ -25,6 +25,15 @@ import {
 
 /** Beyond this length a bubble renders as plain text: parsing megabytes of tool chatter is not worth a frame drop. */
 const PARSE_LIMIT = 200_000;
+
+/** Lets a host draw the images it can load; it returns null for the rest. */
+export const MarkdownImageRenderer = createContext<((image: Tokens.Image) => ReactNode) | null>(null);
+
+function MarkdownImage({ image }: { image: Tokens.Image }): ReactNode {
+  const render = useContext(MarkdownImageRenderer);
+  // Transcript image paths point at local files the WebView cannot load; show the description instead.
+  return render?.(image) ?? <span className="sv-img">{image.text || image.href}</span>;
+}
 
 /** Render a Markdown string as React nodes. */
 export const Markdown = memo(function Markdown({ text }: { text: string }): ReactNode {
@@ -217,15 +226,8 @@ function inline(tokens: Token[] | undefined): ReactNode[] {
           </SessionLink>
         );
       }
-      case "image": {
-        const im = tk as Tokens.Image;
-        // Transcript image paths point at local files the WebView cannot load; show the description instead.
-        return (
-          <span className="sv-img" key={i}>
-            {im.text || im.href}
-          </span>
-        );
-      }
+      case "image":
+        return <MarkdownImage image={tk as Tokens.Image} key={i} />;
       case "escape":
         return <span key={i}>{(tk as Tokens.Escape).text}</span>;
       default:

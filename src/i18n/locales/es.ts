@@ -1085,7 +1085,8 @@ const es: typeof en = {
   "board.write": "Escribir", // Write
   "board.preview": "Vista previa", // Preview
   "board.noDescription": "Sin descripción.", // No description.
-  "board.markdownHint": "Admite Markdown: # título, **negrita**, - lista, `código`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Admite Markdown: # título, **negrita**, - lista, `código`. Puedes pegar imágenes.", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "No se pudo guardar la imagen pegada.", // The pasted image could not be saved.
   "board.history": "Historial", // History
   "board.sendToClaude": "Enviar a Claude", // Send to Claude
   "board.newSession": "Nueva sesión de Claude", // New Claude session

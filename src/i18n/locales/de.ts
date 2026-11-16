@@ -1082,7 +1082,8 @@ const de: typeof en = {
   "board.write": "Schreiben", // Write
   "board.preview": "Vorschau", // Preview
   "board.noDescription": "Keine Beschreibung.", // No description.
-  "board.markdownHint": "Markdown möglich: # Überschrift, **fett**, - Liste, `Code`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Markdown möglich: # Überschrift, **fett**, - Liste, `Code`. Bilder können eingefügt werden.", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "Das eingefügte Bild konnte nicht gespeichert werden.", // The pasted image could not be saved.
   "board.history": "Verlauf", // History
   "board.sendToClaude": "An Claude senden", // Send to Claude
   "board.newSession": "Neue Claude-Sitzung", // New Claude session

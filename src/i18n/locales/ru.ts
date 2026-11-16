@@ -1092,7 +1092,8 @@ const ru: typeof en = {
   "board.write": "Текст", // Write
   "board.preview": "Просмотр", // Preview
   "board.noDescription": "Нет описания.", // No description.
-  "board.markdownHint": "Поддерживается Markdown: # заголовок, **жирный**, - список, `код`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Поддерживается Markdown: # заголовок, **жирный**, - список, `код`. Можно вставлять изображения.", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "Не удалось сохранить вставленное изображение.", // The pasted image could not be saved.
   "board.history": "История", // History
   "board.sendToClaude": "Отправить Claude", // Send to Claude
   "board.newSession": "Новая сессия Claude", // New Claude session

@@ -1082,7 +1082,8 @@ const ja: typeof en = {
   "board.write": "編集", // Write
   "board.preview": "プレビュー", // Preview
   "board.noDescription": "説明はありません。", // No description.
-  "board.markdownHint": "Markdown 対応: # 見出し、**太字**、- リスト、`コード`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "Markdown 対応: # 見出し、**太字**、- リスト、`コード`。画像の貼り付けも可能", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "貼り付けた画像を保存できませんでした。", // The pasted image could not be saved.
   "board.history": "履歴", // History
   "board.sendToClaude": "Claude に送る", // Send to Claude
   "board.newSession": "新しい Claude セッション", // New Claude session

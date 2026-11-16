@@ -6,16 +6,34 @@
 //! Delivery follows the Git panel's handoff (agentHandoff.ts): a conversation-view session gets an ordinary
 //! message through the composer outbox, which starts a stopped agent first; a terminal session gets a
 //! bracketed paste and Enter; a new terminal session gets the card as its first launch prompt.
-import { boardClaim, type BoardCard } from "../../ipc/board";
-import { chatStart } from "../../ipc/chat";
+//!
+//! Images pasted into the description travel too: every session gets their file paths at the end of the card,
+//! which Claude opens itself, and a conversation-view session also gets them attached to the message.
+import { boardClaim, isBoardImage, type BoardCard } from "../../ipc/board";
+import { chatStart, type ChatImage } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
+import { loadFileBlob } from "../../ipc/info";
+import { md } from "../../markdownEngine";
 import { useTermStore } from "../../store/termStore";
 import type { Session } from "../../types";
+import { mimeFromPath } from "../CenterPane/doc/docImageIO";
+import { attachImages } from "../CenterPane/session/attachments";
 import { createSubmission, deliverSubmission } from "../CenterPane/session/outbox";
+
+/** Paths of the images pasted into the card's description, in order, without repeats. */
+export function cardImagePaths(card: BoardCard): string[] {
+  const paths = new Set<string>();
+  md.walkTokens(md.lexer(card.description), (token) => {
+    if (token.type === "image" && isBoardImage(token.href)) paths.add(token.href);
+  });
+  return [...paths];
+}
 
 export function cardPrompt(card: BoardCard): string {
   const parts = [`Board card #${card.number} (${card.type}, ${card.priority}): ${card.title}`];
   if (card.description.trim()) parts.push(card.description.trim());
+  const images = cardImagePaths(card);
+  if (images.length) parts.push(["Attached images:", ...images].join("\n"));
   parts.push(`When the work is finished, run vboard done ${card.number}.`);
   return parts.join("\n\n");
 }
@@ -35,8 +53,19 @@ export function cardSessionPrefill(card: BoardCard) {
   return { name: `#${card.number} ${card.title}`.slice(0, 60), worktreeName: worktreeName(card), permissionMode: "plan" };
 }
 
-async function sendToChat(id: string, prompt: string) {
-  const item = createSubmission(id, prompt, [], "queue");
+/** The card's images as chat attachments. One that cannot be read is left out; its path is still in the prompt. */
+async function cardImages(card: BoardCard): Promise<ChatImage[]> {
+  const files: File[] = [];
+  for (const path of cardImagePaths(card)) {
+    const loaded = await loadFileBlob(path).catch(() => null);
+    if (loaded) files.push(new File([loaded.blob], path.split("/").pop() ?? "image.png", { type: mimeFromPath(path) }));
+  }
+  const { attachments } = await attachImages([], files);
+  return attachments.map(({ mimeType, data }) => ({ mimeType, data }));
+}
+
+async function sendToChat(id: string, card: BoardCard) {
+  const item = createSubmission(id, cardPrompt(card), await cardImages(card), "queue");
   // The outbox records a failure on the message itself and returns no receipt.
   const receipt = await deliverSubmission(id, item, () => chatStart(id));
   if (!receipt) throw new Error("The card could not be delivered to that session.");
@@ -63,13 +92,12 @@ export function sendTargets(sessions: Session[], runtimes: Record<string, { stat
 /** Hand `card` to a session the dialog just created, before it opens. */
 export async function startCardSession(projectId: string, card: BoardCard, session: Session): Promise<void> {
   const store = useTermStore.getState();
-  const prompt = cardPrompt(card);
   if (session.engine === "chat") {
     store.openSession(session.id);
-    await sendToChat(session.id, prompt);
+    await sendToChat(session.id, card);
   } else {
     // The terminal view takes its first message as a launch argument when the session first starts.
-    store.setPendingPrompt(session.id, prompt);
+    store.setPendingPrompt(session.id, cardPrompt(card));
   }
   await boardClaim(projectId, card.number, session.id);
 }
@@ -77,8 +105,7 @@ export async function startCardSession(projectId: string, card: BoardCard, sessi
 /** Hand `card` to an existing session. */
 export async function sendCardToSession(projectId: string, card: BoardCard, session: Session): Promise<void> {
   useTermStore.getState().openSession(session.id);
-  const prompt = cardPrompt(card);
-  if (session.engine === "chat") await sendToChat(session.id, prompt);
-  else await sendToTerminal(session.id, prompt);
+  if (session.engine === "chat") await sendToChat(session.id, card);
+  else await sendToTerminal(session.id, cardPrompt(card));
   await boardClaim(projectId, card.number, session.id);
 }

@@ -1066,7 +1066,8 @@ const zhTW: typeof en = {
   "board.write": "編輯", // Write
   "board.preview": "預覽", // Preview
   "board.noDescription": "尚無描述。", // No description.
-  "board.markdownHint": "支援 Markdown：# 標題、**粗體**、- 清單、`程式碼`", // Markdown supported: # heading, **bold**, - list, `code`
+  "board.markdownHint": "支援 Markdown：# 標題、**粗體**、- 清單、`程式碼`；可貼上圖片", // Markdown supported: # heading, **bold**, - list, `code`. You can paste images.
+  "board.imagePasteFailed": "無法儲存貼上的圖片。", // The pasted image could not be saved.
   "board.history": "歷程", // History
   "board.sendToClaude": "傳送給 Claude", // Send to Claude
   "board.newSession": "新的 Claude 工作階段", // New Claude session

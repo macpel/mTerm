@@ -549,3 +549,51 @@ fn board_key_is_the_canonical_folder() {
     assert_eq!(store::folder_key("C:/no/such/folder"), "C:/no/such/folder");
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+// ── pasted images ──
+
+#[test]
+fn board_images_save_and_link_by_absolute_path() {
+    use super::images;
+    let dir = std::env::temp_dir().join(format!("board-images-test-{}", uuid::Uuid::new_v4())).join("board-images");
+    let path = images::save(&dir, b"png-bytes", "PNG").unwrap();
+    assert!(!path.contains('\\'));
+    assert!(path.ends_with(".png"));
+    assert_eq!(std::fs::read(&path).unwrap(), b"png-bytes");
+    let evil = images::save(&dir, b"x", "../exe").unwrap();
+    assert!(evil.ends_with(".exe") && evil.contains("/board-images/"));
+    let name = path.rsplit('/').next().unwrap().to_string();
+    let text = format!("See ![image](<{path}>) and board-images/../secret and board-images/.hidden");
+    assert_eq!(images::names(&text), std::collections::HashSet::from([name]));
+    let _ = std::fs::remove_dir_all(dir.parent().unwrap());
+}
+
+#[test]
+fn board_images_sweep_keeps_linked_and_recent_files() {
+    use super::images;
+    let conn = db();
+    let dir = std::env::temp_dir().join(format!("board-images-test-{}", uuid::Uuid::new_v4())).join("board-images");
+    let linked = images::save(&dir, b"a", "png").unwrap();
+    let orphan = images::save(&dir, b"b", "png").unwrap();
+    let recent = images::save(&dir, b"c", "png").unwrap();
+    let old = std::time::SystemTime::now() - std::time::Duration::from_secs(2 * 24 * 60 * 60);
+    for path in [&linked, &orphan] {
+        std::fs::File::options().write(true).open(path).unwrap().set_modified(old).unwrap();
+    }
+    store::create_card(
+        &conn,
+        PROJECT,
+        NewCard { title: "shot".into(), description: format!("![image](<{linked}>)"), ..Default::default() },
+        &Actor::User,
+    )
+    .unwrap();
+    assert_eq!(images::sweep(&conn, &dir).unwrap(), 1);
+    assert!(std::path::Path::new(&linked).exists());
+    assert!(!std::path::Path::new(&orphan).exists());
+    assert!(std::path::Path::new(&recent).exists());
+    // Once the card is deleted, its old image goes too.
+    store::delete_card(&conn, PROJECT, 1, &Actor::User).unwrap();
+    assert_eq!(images::sweep(&conn, &dir).unwrap(), 1);
+    assert!(!std::path::Path::new(&linked).exists());
+    let _ = std::fs::remove_dir_all(dir.parent().unwrap());
+}
