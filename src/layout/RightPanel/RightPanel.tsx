@@ -12,6 +12,7 @@ import { projectRoot, type Group, type Project, type Session } from "../../types
 import { FilesTab } from "./FilesTab";
 import { GitTab } from "./git/GitTab";
 import { InfoTab } from "./InfoTab";
+import { NotesTab } from "./NotesTab";
 import { KV, Section } from "./parts";
 import { KnowledgeNavigation } from "../Notebook/KnowledgeNavigation";
 import { MemoryIcon } from "../Memory/shared";
@@ -22,6 +23,7 @@ const INSPECTOR_TABS = [
   { id: "info" as const, label: "Info", Icon: Icons.info },
   { id: "git" as const, label: "Git", Icon: Icons.git },
   { id: "knowledge" as const, label: "", Icon: MemoryIcon },
+  { id: "notes" as const, label: "", Icon: Icons.note },
 ];
 
 
@@ -51,7 +53,7 @@ export function RightPanel() {
   const setInspectorTab = useTermStore((s) => s.setInspectorTab);
   const search=useMemoryLocation();
   const initialInspectorTab = useRef(inspectorTab);
-  useEffect(()=>{const tab=new URLSearchParams(search).get("inspector") ?? initialInspectorTab.current;if((tab==="files"||tab==="info"||tab==="git"||tab==="knowledge")&&useTermStore.getState().inspectorTab!==tab)setInspectorTab(tab);},[search,setInspectorTab]);
+  useEffect(()=>{const tab=new URLSearchParams(search).get("inspector") ?? initialInspectorTab.current;if((tab==="files"||tab==="info"||tab==="git"||tab==="knowledge"||tab==="notes")&&useTermStore.getState().inspectorTab!==tab)setInspectorTab(tab);},[search,setInspectorTab]);
   // Settings and mirror sync can switch the tab without touching the URL. A stale inspector param would
   // make that tab's link equal to the current URL, so clicking it could never switch back. A missing param
   // is written too: otherwise the next unrelated navigation falls back to the initial tab above.
@@ -115,8 +117,8 @@ export function RightPanel() {
         {INSPECTOR_TABS.map(({ id, label, Icon }) => (
           <a
             href={tabUrl(id)}
-            title={id==="knowledge"?t("memory.title"):label}
-            aria-label={id==="knowledge"?t("memory.title"):label}
+            title={id==="knowledge"?t("memory.title"):id==="notes"?t("notes.title"):label}
+            aria-label={id==="knowledge"?t("memory.title"):id==="notes"?t("notes.title"):label}
             aria-current={inspectorTab===id?"page":undefined}
             key={id}
             className={"insp-tab" + (inspectorTab === id ? " on" : "")}
@@ -140,6 +142,7 @@ export function RightPanel() {
             </div>
           ))}
         {inspectorTab === "git" && <GitTab path={cwd} session={session} />}
+        {inspectorTab === "notes" && <NotesTab />}
       </div>
     </aside>
   );

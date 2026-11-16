@@ -304,6 +304,8 @@ const en = {
   "memory.collapseAllProjects": "Collapse all projects",
   "memory.expandAllProjects": "Expand all projects",
   "memory.title": "Knowledge Base",
+  "notes.title": "Notes",
+  "notes.loadFailed": "Could not load notes.",
   "memory.add": "Add to Knowledge Base",
   "memory.intro": "Organize knowledge by project and session. Saved entries remain independent of their sources and can be edited manually.",
   "memory.entries": "Knowledge entries",

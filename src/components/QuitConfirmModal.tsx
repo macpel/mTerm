@@ -11,6 +11,7 @@
 import { useEffect, useState } from "react";
 import { useT } from "../i18n";
 import { flushNow } from "../ipc/settingsSync";
+import { flushNoteBoard } from "../ipc/noteBoard";
 import { platform } from "../platform";
 import { useTermStore } from "../store/termStore";
 import { Backdrop } from "./Backdrop";
@@ -76,7 +77,8 @@ export function QuitConfirmModal() {
     // no way to quit. The bound sits just above the debounce window it replaces. Losing the write is the
     // lesser failure -- localStorage keeps this shell correct, and reconciliation is only wrong when another
     // shell has since changed the same key.
-    await flushNow(FLUSH_TIMEOUT_MS);
+    // The notes board debounces its saves the same way; write the last keystrokes too.
+    await Promise.all([flushNow(FLUSH_TIMEOUT_MS), flushNoteBoard(FLUSH_TIMEOUT_MS)]);
     // Write the snapshot before approving the exit; the shell terminates the process as soon as confirm resolves.
     if (save) saveWorkspaceSnapshot();
     setAsking(false);

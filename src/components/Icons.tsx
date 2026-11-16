@@ -78,6 +78,7 @@ const Icons: Record<string, IconComponent> = {
   branch: I([r("circle", { key: 1, cx: 4, cy: 4, r: 1.4 }), r("circle", { key: 2, cx: 4, cy: 12, r: 1.4 }), r("circle", { key: 3, cx: 12, cy: 4, r: 1.4 }), r("path", { key: 4, d: "M4 5.4v5.2M12 5.4v1.1A3.5 3.5 0 018.5 10H6" })]),
   // Planning and execution workflow: the plan is handed over to run, distinct from the worktree branch icon.
   planExecute: I([r("path", { key: 1, d: "M2.6 4.2h4.2M2.6 7.4h4.2M2.6 10.6h2.6" }), r("path", { key: 2, d: "M8.4 7.4h2.2" }), r("path", { key: 3, d: "M11.4 4.8l3 2.6-3 2.6z" })]),
+  note: I([r("path", { key: 1, d: "M3.5 3h9v6.5L9.5 12.5h-6z" }), r("path", { key: 2, d: "M9.5 12.5V9.5h3M5.5 6h5M5.5 8h3" })]),
   info: I([r("circle", { key: 1, cx: 8, cy: 8, r: 5.5 }), r("path", { key: 2, d: "M8 7.3v3.4M8 5.4h.01" })]),
   rename: I([r("path", { key: 1, d: "M3 11.5l6.4-6.4 2 2L5 13.5H3z" }), r("path", { key: 2, d: "M9.4 5.1l1.5-1.5a1 1 0 011.4 0l.6.6a1 1 0 010 1.4l-1.5 1.5" })]),
   trash: I([r("path", { key: 1, d: "M3.5 4.5h9M6 4.5V3.2A.7.7 0 016.7 2.5h2.6a.7.7 0 01.7.7V4.5M5 4.5l.5 8h5l.5-8" })]),

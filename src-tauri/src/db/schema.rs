@@ -153,6 +153,15 @@ CREATE TABLE IF NOT EXISTS agent_presets (
   created_at      INTEGER NOT NULL
 );
 
+-- The user's notes board: one free-form Markdown note shown in the right panel's Notes tab. The CHECK keeps
+-- it to a single row (id 1); a missing row reads as an empty board. It is a table of its own rather than an
+-- app_settings key because share-link visitors may read app_settings, and these notes are private.
+CREATE TABLE IF NOT EXISTS note_board (
+  id         INTEGER PRIMARY KEY CHECK (id = 1),
+  body       TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS chat_codex_settings (
   session_id TEXT PRIMARY KEY REFERENCES sessions(id) ON DELETE CASCADE,
   service_tier TEXT,

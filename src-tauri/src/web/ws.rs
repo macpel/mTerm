@@ -266,7 +266,7 @@ async fn handle_socket(
         crate::host::SETTINGS_CHANGED,
         crate::session_state::STATE_EVENT,
     ];
-    let full_events: [&str; 19] = [
+    let full_events: [&str; 20] = [
         "spawn://request",
         "spawn://resolved",
         "plan-execute://proposal",
@@ -275,6 +275,7 @@ async fn handle_socket(
         crate::board::CHANGED_EVENT,
         crate::host::TREE_CHANGED,
         crate::host::PRESETS_CHANGED,
+        crate::host::NOTE_BOARD_CHANGED,
         // Preferences are backend-authoritative; this tells every client to re-read them mid-run.
         crate::host::SETTINGS_CHANGED,
         // Authoritative session facts. Registered here, per connection, rather than on attach: a dot on a

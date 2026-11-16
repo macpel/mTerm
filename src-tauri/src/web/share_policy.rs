@@ -566,6 +566,11 @@ mod tests {
             assert!(!allowed_command(cmd), "Public share must deny {cmd}");
             assert!(!app_command(cmd), "Public share app shell must deny {cmd}");
         }
+        // The notes board is private to the host user.
+        for cmd in ["get_note_board", "set_note_board"] {
+            assert!(!allowed_command(cmd), "Public share must deny {cmd}");
+            assert!(!app_command(cmd), "Public share app shell must deny {cmd}");
+        }
         assert!(allowed_command("chat_send"));
         assert!(allowed_command("chat_snapshot"));
     }

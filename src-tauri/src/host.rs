@@ -38,6 +38,10 @@ pub const TREE_CHANGED: &str = "tree://changed";
 /// `TREE_CHANGED` because presets live outside the session tree and change far less often.
 pub const PRESETS_CHANGED: &str = "presets://changed";
 
+/// Global event emitted with an empty payload after the notes board is saved, so other open windows
+/// re-read it. The body is never sent in the event; clients fetch it through `get_note_board`.
+pub const NOTE_BOARD_CHANGED: &str = "note-board://changed";
+
 /// Global event emitted after any successful `app_settings` write, carrying **only the key names** that
 /// were written (`Vec<String>`), never their values. `remoteAccess.*` and `gitea.token` are protected
 /// keys that `web/dispatch.rs` strips from a remote client's `get_app_settings` reply; shipping values

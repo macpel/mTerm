@@ -305,6 +305,8 @@ const ko: typeof en = {
   "memory.collapseAllProjects": "모든 프로젝트 접기",
   "memory.expandAllProjects": "모든 프로젝트 펼치기",
   "memory.title": "지식 베이스",
+  "notes.title": "메모",
+  "notes.loadFailed": "메모를 불러올 수 없습니다.",
   "memory.add": "지식 베이스에 추가",
   "memory.intro": "프로젝트와 세션별로 지식을 정리합니다. 저장된 항목은 원본 변경에 따라 자동으로 갱신되지 않으며 직접 편집할 수 있습니다.",
   "memory.entries": "지식 항목",

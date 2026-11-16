@@ -425,6 +425,12 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
             opt_str(args, "worktreePath").as_deref(),
             opt_str(args, "worktreeBaseRef").as_deref(),
         )?),
+        // The user's notes board. Not on the share-link allowlist, so visitors cannot read or write it.
+        "get_note_board" => to_value(core::get_note_board(app)?),
+        "set_note_board" => {
+            core::set_note_board(app, &req_str(args, "body")?)?;
+            Ok(Value::Null)
+        }
         "list_agent_presets" => to_value(core::list_agent_presets(app)?),
         // Agent presets carry `execPath`, which names a program rather than reading a file. It is gated
         // by the same reasoning as create_session's `agentPath`: a paired device already holds a shell.
@@ -1778,6 +1784,17 @@ mod tests {
         let db = crate::db::Db::open(&data_dir.join("test.db"))
             .expect("failed to open the test database");
         AppCtx::Headless(Arc::new(HeadlessHost::new(data_dir, db)))
+    }
+
+    #[test]
+    fn note_board_round_trips_through_dispatch() {
+        let app = test_ctx();
+        let data_dir = app.data_dir().unwrap();
+        assert_eq!(dispatch(&app, "get_note_board", &json!({}), DESKTOP_SOURCE, CallOrigin::Local).unwrap(), json!(""));
+        dispatch(&app, "set_note_board", &json!({"body": "# Ideas"}), DESKTOP_SOURCE, CallOrigin::Local).unwrap();
+        assert_eq!(dispatch(&app, "get_note_board", &json!({}), DESKTOP_SOURCE, CallOrigin::Local).unwrap(), json!("# Ideas"));
+        drop(app);
+        std::fs::remove_dir_all(data_dir).unwrap();
     }
 
     #[test]

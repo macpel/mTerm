@@ -1,0 +1,6 @@
+/* Notes tab: the shared Markdown editor fitted to the narrow right panel. */
+.notes-tab.docview { position: relative; display: block; flex: 1; min-height: 0; height: auto; overflow: auto; background: transparent; }
+.notes-tab .docview-wysiwyg { padding: 0 0 16px; }
+.notes-tab .milkdown { background: transparent; }
+.notes-tab .milkdown .ProseMirror { padding: 8px 12px; min-height: 200px; }
+.notes-message { color: var(--text-faint); }

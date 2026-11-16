@@ -305,6 +305,8 @@ const zhTW: typeof en = {
   "memory.collapseAllProjects": "收合所有專案",
   "memory.expandAllProjects": "展開所有專案",
   "memory.title": "知識庫",
+  "notes.title": "筆記",
+  "notes.loadFailed": "無法載入筆記。",
   "memory.add": "整理至知識庫",
   "memory.intro": "依專案和工作階段整理知識。條目產生後獨立儲存，不隨來源變更自動更新，可手動編輯。",
   "memory.entries": "知識條目",

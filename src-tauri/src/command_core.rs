@@ -16,7 +16,7 @@
 use crate::agent::chat::protocol::ChatImage;
 use crate::agent::session_settings::{self, Selection};
 use crate::db::repo;
-use crate::host::{AppCtx, PRESETS_CHANGED, SETTINGS_CHANGED, TREE_CHANGED};
+use crate::host::{AppCtx, NOTE_BOARD_CHANGED, PRESETS_CHANGED, SETTINGS_CHANGED, TREE_CHANGED};
 use crate::models::{AgentPreset, Group, NodeKind, Project, Session, SessionKind, Tree};
 
 // Private helpers.
@@ -166,6 +166,22 @@ pub fn create_group(
     };
     ctx.emit(TREE_CHANGED, ());
     Ok(group)
+}
+
+/// Read the notes board's Markdown (empty when never saved).
+pub fn get_note_board(ctx: &AppCtx) -> Result<String, String> {
+    let conn = ctx.db().conn.lock().unwrap();
+    repo::get_note_board(&conn)
+}
+
+/// Save the notes board's Markdown and tell other clients to re-read it.
+pub fn set_note_board(ctx: &AppCtx, body: &str) -> Result<(), String> {
+    {
+        let conn = ctx.db().conn.lock().unwrap();
+        repo::set_note_board(&conn, body)?;
+    }
+    ctx.emit(NOTE_BOARD_CHANGED, ());
+    Ok(())
 }
 
 // Agent presets. Successful writes emit `PRESETS_CHANGED` so every client refreshes its new-session menu.

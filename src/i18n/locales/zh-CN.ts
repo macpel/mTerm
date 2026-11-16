@@ -305,6 +305,8 @@ const zhCN: typeof en = {
   "memory.collapseAllProjects": "折叠全部项目",
   "memory.expandAllProjects": "展开全部项目",
   "memory.title": "知识库",
+  "notes.title": "笔记",
+  "notes.loadFailed": "无法加载笔记。",
   "memory.add": "整理到知识库",
   "memory.intro": "按项目和会话组织知识。条目生成后独立保存，不随来源变化自动更新，可手动编辑。",
   "memory.entries": "知识条目",

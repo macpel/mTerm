@@ -305,6 +305,8 @@ const ptBR: typeof en = {
   "memory.collapseAllProjects": "Recolher todos os projetos",
   "memory.expandAllProjects": "Expandir todos os projetos",
   "memory.title": "Base de conhecimento",
+  "notes.title": "Notas",
+  "notes.loadFailed": "Não foi possível carregar as notas.",
   "memory.add": "Adicionar à base de conhecimento",
   "memory.intro": "Organize o conhecimento por projeto e sessão. Os artigos salvos permanecem independentes das fontes e podem ser editados manualmente.",
   "memory.entries": "Artigos de conhecimento",

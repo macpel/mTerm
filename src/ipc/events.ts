@@ -212,6 +212,11 @@ export function onPresetsChanged(cb: () => void): Promise<UnlistenFn> {
   return listen("presets://changed", () => cb());
 }
 
+/** Listen for notes-board saves from any client; the event carries no body, so re-read it with `getNoteBoard`. */
+export function onNoteBoardChanged(cb: () => void): Promise<UnlistenFn> {
+  return listen("note-board://changed", () => cb());
+}
+
 /**
  * Listen for the account-usage snapshot the backend keeps for this machine. One background poller writes
  * it, so every window, browser client, and session shows the same numbers without querying providers.
