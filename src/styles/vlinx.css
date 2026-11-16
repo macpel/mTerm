@@ -320,7 +320,19 @@ svg { display: block; }
 .st-attention { background: var(--yellow); }
 .st-waiting { background: var(--mag); }
 .st-background { background: var(--cyan); }
+.st-error { background: var(--red); }
+.st-unavailable { background: var(--text-faint); }
 .st-idle { background: var(--text-faint); }
+/* Dot plus a short state word in the dot's color (left tree). Kept as one unit so the session name truncates first. */
+.status-labelled { display: inline-flex; align-items: center; gap: 4px; flex: none; }
+.status-label { font-size: 10px; line-height: 1; white-space: nowrap; }
+.lbl-ready .status-label { color: var(--blue); }
+.lbl-working .status-label { color: var(--green); }
+.lbl-attention .status-label, .lbl-unread .status-label { color: var(--yellow); }
+.lbl-waiting .status-label { color: var(--mag); }
+.lbl-background .status-label { color: var(--cyan); }
+.lbl-error .status-label { color: var(--red); }
+.lbl-unavailable .status-label { color: var(--text-faint); }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 /* Unread notifications use a rippling status dot. Yellow matches the attention counts and filters. */
 .st-unread { background: var(--yellow); animation: unread-pulse 1s ease-in-out infinite; }

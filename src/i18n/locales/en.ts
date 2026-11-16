@@ -425,6 +425,14 @@ const en = {
   "status.waiting": "Viewed",
   "status.background": "Background tasks running",
   "status.unavailable": "Status unavailable",
+  "status.short.working": "Working",
+  "status.short.asking": "Needs you",
+  "status.short.unread": "Done · new",
+  "status.short.waiting": "Done",
+  "status.short.background": "Background",
+  "status.short.error": "Error",
+  "status.short.unavailable": "Unknown",
+  "status.short.running": "Ready",
   "indicator.unread": "Unread · awaiting review",
 
   // ── Title bar ──

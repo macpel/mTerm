@@ -436,6 +436,14 @@ const ru: typeof en = {
   "status.waiting": "Просмотрено", // Viewed
   "status.background": "Выполняются фоновые задачи", // Background tasks running
   "status.unavailable": "Статус недоступен",
+  "status.short.working": "Работает",
+  "status.short.asking": "Нужен ответ",
+  "status.short.unread": "Готово · новое",
+  "status.short.waiting": "Готово",
+  "status.short.background": "В фоне",
+  "status.short.error": "Ошибка",
+  "status.short.unavailable": "Неизвестно",
+  "status.short.running": "Ожидает",
   "indicator.unread": "Непрочитано · к просмотру", // Unread · awaiting review
 
   // ── Title bar ──

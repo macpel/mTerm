@@ -426,6 +426,14 @@ const vi: typeof en = {
   "status.waiting": "Đã xem",
   "status.background": "Đang chạy tác vụ nền",
   "status.unavailable": "Không có trạng thái",
+  "status.short.working": "Đang làm",
+  "status.short.asking": "Cần bạn",
+  "status.short.unread": "Xong · mới",
+  "status.short.waiting": "Xong",
+  "status.short.background": "Chạy nền",
+  "status.short.error": "Lỗi",
+  "status.short.unavailable": "Không rõ",
+  "status.short.running": "Sẵn sàng",
   "indicator.unread": "Chưa đọc · đang chờ xem xét",
 
   // Thanh tiêu đề

@@ -675,11 +675,16 @@ fn serve_with_app(
             if let Some(tool_signal) = parse_tool_signal(&body) {
                 on_signal(sid.clone(), tool_signal);
             }
+            // A turn end tells whether Claude left background work of its own running; `runs::hold` then
+            // reports background instead of done until Claude speaks again.
+            let event = parse_url(&url).map(|(_, _, e)| e).unwrap_or_default();
+            if event == "waiting" {
+                crate::agent::runs::set_claude_background(&sid, stop_has_background_work(&body));
+            }
             // A valid event may have no status signal, such as Copilot `boot`, which only captures its ID.
             if let Some(signal) = signal {
                 // Codex callbacks can arrive out of order; drop mid-turn working that lost the race
                 // against its own turn's Stop. Every other agent passes through untouched.
-                let event = parse_url(&url).map(|(_, _, e)| e).unwrap_or_default();
                 if turn_guard.admit(&sid, &event, Instant::now()) {
                     on_signal(sid, signal);
                 }
@@ -688,6 +693,21 @@ fn serve_with_app(
 
         let _ = request.respond(tiny_http::Response::empty(200));
     }
+}
+
+/// Whether a Claude Stop hook body lists background work still in flight. Claude's `background_tasks`
+/// holds its background shells, subagents, monitors and similar work, and is empty when none is running.
+/// An entry whose status says it is over does not count; an unknown status does, since Claude lists only
+/// what it still tracks. Other agents' turn-end bodies have no such field.
+fn stop_has_background_work(body: &str) -> bool {
+    const OVER: [&str; 7] = ["completed", "failed", "killed", "cancelled", "canceled", "stopped", "error"];
+    let Ok(v) = serde_json::from_str::<serde_json::Value>(body) else { return false };
+    v.get("background_tasks").and_then(|t| t.as_array()).is_some_and(|tasks| {
+        tasks.iter().any(|task| {
+            let status = task.get("status").and_then(|s| s.as_str()).unwrap_or("").to_ascii_lowercase();
+            !OVER.contains(&status.as_str())
+        })
+    })
 }
 
 /// Extract an agent session ID from a hook JSON body. Support `session_id`, `sessionId`,
@@ -3111,6 +3131,20 @@ mod tests {
         );
         assert!(parse_first_prompt(r#"{"hook_event_name":"UserPromptSubmit"}"#).is_none());
         assert!(parse_first_prompt("not json").is_none());
+    }
+
+    /// Claude's Stop body lists its in-flight background work; finished entries, an empty list, a missing
+    /// field and bodies from other agents mean nothing is left running.
+    #[test]
+    fn stop_background_tasks_count_only_work_still_running() {
+        let stop = |tasks: &str| format!(r#"{{"hook_event_name":"Stop","session_id":"x","background_tasks":{tasks}}}"#);
+        assert!(stop_has_background_work(&stop(r#"[{"id":"b1","type":"shell","status":"running","command":"npm test"}]"#)));
+        assert!(stop_has_background_work(&stop(r#"[{"id":"a1","type":"subagent","agent_type":"Explore"}]"#)));
+        assert!(stop_has_background_work(&stop(r#"[{"id":"b1","status":"completed"},{"id":"m1","type":"monitor","status":"pending"}]"#)));
+        assert!(!stop_has_background_work(&stop(r#"[{"id":"b1","status":"completed"},{"id":"b2","status":"Killed"}]"#)));
+        assert!(!stop_has_background_work(&stop("[]")));
+        assert!(!stop_has_background_work(r#"{"hook_event_name":"Stop","session_id":"x"}"#));
+        assert!(!stop_has_background_work("not json"));
     }
 
     /// PreToolUse extracts a tool; Stop clears it; PostToolUse preserves the most recent display.

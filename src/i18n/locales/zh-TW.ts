@@ -426,6 +426,14 @@ const zhTW: typeof en = {
   "status.waiting": "已查看", // Viewed
   "status.background": "背景工作執行中", // Background tasks running
   "status.unavailable": "狀態無法取得",
+  "status.short.working": "工作中",
+  "status.short.asking": "需要你",
+  "status.short.unread": "完成 · 新",
+  "status.short.waiting": "完成",
+  "status.short.background": "背景",
+  "status.short.error": "錯誤",
+  "status.short.unavailable": "未知",
+  "status.short.running": "就緒",
   "indicator.unread": "未讀 · 待查看", // Unread · awaiting review
 
   // ── Title bar ──

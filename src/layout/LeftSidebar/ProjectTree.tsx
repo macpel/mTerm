@@ -287,7 +287,7 @@ const SessionRow = memo(function SessionRow(p: SessionRowProps) {
         </>
       )}
       {/* Browser page nodes have no PTY or agent, so a status dot would be meaningless and is omitted. */}
-      {!isBrowser && <StatusIndicator status={status} unread={unread} />}
+      {!isBrowser && <StatusIndicator status={status} unread={unread} label />}
       {!isShareSurface && <span className="meta">
         <span
           className="add"

@@ -426,6 +426,14 @@ const zhCN: typeof en = {
   "status.waiting": "已查看",
   "status.background": "后台任务运行中",
   "status.unavailable": "状态不可用",
+  "status.short.working": "工作中",
+  "status.short.asking": "需要你",
+  "status.short.unread": "完成 · 新",
+  "status.short.waiting": "完成",
+  "status.short.background": "后台",
+  "status.short.error": "错误",
+  "status.short.unavailable": "未知",
+  "status.short.running": "就绪",
   "indicator.unread": "未读 · 待查看",
 
   // ── Title bar ──
