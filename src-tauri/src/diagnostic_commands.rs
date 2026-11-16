@@ -236,6 +236,7 @@ const COMMANDS: &[&str] = &[
     "public_share_request",
     "read_agent_chat",
     "read_agent_transcript",
+    "read_board_image",
     "read_file_base64",
     "read_file_preview",
     "read_text_file",

@@ -569,6 +569,38 @@ fn board_images_save_and_link_by_absolute_path() {
 }
 
 #[test]
+fn board_images_read_only_validated_names_inside_the_folder() {
+    use super::images;
+    let root = std::env::temp_dir().join(format!("board-images-test-{}", uuid::Uuid::new_v4()));
+    let dir = root.join("board-images");
+    let path = images::save(&dir, b"hi", "png").unwrap();
+    let name = path.rsplit('/').next().unwrap();
+    assert!(images::valid_name(name));
+    assert_eq!(images::read(&dir, name).unwrap(), "aGk=");
+    // A file beside the folder, reachable only by a path, stays out of reach.
+    std::fs::write(root.join("secret.png"), b"secret").unwrap();
+    for bad in [
+        "../secret.png",
+        "..\\secret.png",
+        "\\\\server\\share\\board-images\\a.png",
+        "//server/share/a.png",
+        "\\\\?\\C:\\secret.png",
+        "C:/secret.png",
+        "secret.png",
+        &name.to_uppercase(),
+        &format!("{}.", &name[..36]),
+        &format!("{}.toolongext", &name[..36]),
+        &format!("{}.p/g", &name[..36]),
+    ] {
+        assert!(!images::valid_name(bad), "{bad}");
+        assert!(images::read(&dir, bad).is_err(), "{bad}");
+    }
+    // A well-formed name that does not exist is an error, not a read elsewhere.
+    assert!(images::read(&dir, &format!("{}.png", uuid::Uuid::new_v4())).is_err());
+    let _ = std::fs::remove_dir_all(&root);
+}
+
+#[test]
 fn board_images_sweep_keeps_linked_and_recent_files() {
     use super::images;
     let conn = db();

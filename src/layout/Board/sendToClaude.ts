@@ -9,10 +9,9 @@
 //!
 //! Images pasted into the description travel too: every session gets their file paths at the end of the card,
 //! which Claude opens itself, and a conversation-view session also gets them attached to the message.
-import { boardClaim, isBoardImage, type BoardCard } from "../../ipc/board";
+import { boardClaim, boardImageName, boardImageRead, isBoardImage, type BoardCard } from "../../ipc/board";
 import { chatStart, type ChatImage } from "../../ipc/chat";
 import { ptyWrite } from "../../ipc/commands";
-import { loadFileBlob } from "../../ipc/info";
 import { md } from "../../markdownEngine";
 import { useTermStore } from "../../store/termStore";
 import type { Session } from "../../types";
@@ -57,8 +56,9 @@ export function cardSessionPrefill(card: BoardCard) {
 async function cardImages(card: BoardCard): Promise<ChatImage[]> {
   const files: File[] = [];
   for (const path of cardImagePaths(card)) {
-    const loaded = await loadFileBlob(path).catch(() => null);
-    if (loaded) files.push(new File([loaded.blob], path.split("/").pop() ?? "image.png", { type: mimeFromPath(path) }));
+    const name = boardImageName(path);
+    const data = name ? await boardImageRead(name).catch(() => null) : null;
+    if (name && data) files.push(new File([Uint8Array.from(atob(data), (c) => c.charCodeAt(0))], name, { type: mimeFromPath(name) }));
   }
   const { attachments } = await attachImages([], files);
   return attachments.map(({ mimeType, data }) => ({ mimeType, data }));

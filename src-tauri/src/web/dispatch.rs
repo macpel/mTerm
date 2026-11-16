@@ -1233,6 +1233,7 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
         //   filesystem, independent of repo status — and is therefore gated above.
         // - `save_pasted_image`: writes only into a temp directory it picks itself — no caller path.
         // - `save_board_image`: writes only a fresh name into `<data dir>/board-images/` — no caller path.
+        // - `read_board_image`: reads only a validated file name inside `<data dir>/board-images/` — no caller path.
         "list_dir" => to_value(files::list_dir(&req_str(args, "path")?)?),
         // Drive letters or `/` plus the OS name; no paths below the roots.
         "list_roots" => to_value(files::list_roots()),
@@ -1323,6 +1324,13 @@ fn dispatch_inner(app: &AppCtx, cmd: &str, args: &Value, source: &str, origin: C
             &crate::board::images::dir(&app.data_dir()?),
             &b64_bytes(args, "bytesB64")?,
             &req_str(args, "ext")?,
+        )?),
+        // Reads a board image back for the description preview and chat attachments. Takes a bare file name
+        // that `board::images::read` validates and resolves inside `<data dir>/board-images/` only, so it cannot
+        // reach any other file, the rest of the data dir, or a network share.
+        "read_board_image" => to_value(crate::board::images::read(
+            &crate::board::images::dir(&app.data_dir()?),
+            &req_str(args, "name")?,
         )?),
         // Document-editor images persist beside the document under assets/, returning a relative Markdown
         // path. Electron, browser, and remote windows use this authenticated and optionally encrypted call.
